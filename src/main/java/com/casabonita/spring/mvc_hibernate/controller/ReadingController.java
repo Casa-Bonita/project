@@ -36,7 +36,7 @@ public class ReadingController {
     }
 
     @RequestMapping("/saveReading")
-    public String saveReading(@ModelAttribute("contract") MeterData meterData){
+    public String saveReading(@ModelAttribute("meterData") MeterData meterData){
 
         readingService.saveReading(meterData);
 

@@ -16,10 +16,10 @@
         <tr>
             <th>Number</th>
             <th>Place number</th>
+            <th>Place name</th>
             <th>Place square</th>
             <th>Floor</th>
             <th>Type</th>
-            <th>Electricmeter_reading</th>
             <th>Operations</th>
         </tr>
 
@@ -39,18 +39,10 @@
                     <c:out value="${count}"/>
                 </td>
                 <td>${plc.placeNumber}</td>
+                <td>${plc.placeName}</td>
                 <td>${plc.placeSquare}</td>
                 <td>${plc.placeFloor}</td>
                 <td>${plc.placeType}</td>
-                <td>
-                    ${plc.placeReading}
-<%--                    <c:forEach var="read" items="${allMeterDatas}">--%>
-<%--                        <c:if test="${plc.placeReading==read.id}">--%>
-<%--                            ${read.readingTransferedData}--%>
-<%--&lt;%&ndash;                            <c:out value="${read.readingTransferedData}"/>&ndash;%&gt;--%>
-<%--                        </c:if>--%>
-<%--                    </c:forEach>--%>
-                </td>
                 <td>
                     <input type="button" value="Update"
                            onClick="window.location.href='${updateButton}'"/>
@@ -64,10 +56,10 @@
 
     <br><br><br>
 
-    <input type="button" value="Add new place"
+    <input type="button" value="Add new Place"
            onClick="window.location.href='addNewPlace'"/>
 
-<input type="button" value="Back"
+    <input type="button" value="Cancel"
            onClick="window.location.href='/'"/>
 
 </body>

@@ -16,10 +16,7 @@
             <th>Number</th>
             <th>Contract number</th>
             <th>Contract date</th>
-            <th>Renter</th>
-            <th>Status</th>
-            <th>Place number</th>
-            <th>Fare</th>
+            <th>Contract fare</th>
             <th>Start date</th>
             <th>Finish date</th>
             <th>Payment day</th>
@@ -43,12 +40,9 @@
                 </td>
                 <td>${cntr.contractNumber}</td>
                 <td>${cntr.contractDate}</td>
-                <td>${cntr.contractRenter}</td>
-                <td>${cntr.contractStatus}</td>
-                <td>${cntr.contractPlaceNumber}</td>
                 <td>${cntr.contractFare}</td>
                 <td>${cntr.contractStart}</td>
-                <td>${cntr.contractEnd}</td>
+                <td>${cntr.contractFinish}</td>
                 <td>${cntr.contractPaymentDay}</td>
                 <td>
                     <input type="button" value="Update"
@@ -63,10 +57,10 @@
 
     <br><br><br>
 
-    <input type="button" value="Add new contract"
+    <input type="button" value="Add new Contract"
            onClick="window.location.href='addNewContract'"/>
 
-    <input type="button" value="Back"
+    <input type="button" value="Cancel"
            onClick="window.location.href='/'"/>
 
 

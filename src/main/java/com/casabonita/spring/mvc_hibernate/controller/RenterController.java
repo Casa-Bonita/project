@@ -5,10 +5,15 @@ import com.casabonita.spring.mvc_hibernate.service.RenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -36,11 +41,30 @@ public class RenterController {
     }
 
     @RequestMapping("/saveRenter")
-    public String saveRenter(@ModelAttribute("renter") Renter renter){
+    public String saveRenter(@Valid @ModelAttribute("renter") Renter renter, BindingResult bindingResult){
 
-        renterService.saveRenter(renter);
+        if(bindingResult.hasErrors()){
 
-        return "redirect:/renters";
+            return "renter/renter_info";
+        }
+        else{
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            try{
+                String dateConvert = renter.getDateStringFormat();
+                Date date = sdf.parse(dateConvert);
+
+                Renter newRenter = new Renter(renter.getRenterName(), renter.getRenterOGRN(), renter.getRenterINN(), date,
+                        renter.getRenterAddress(), renter.getRenterDirector(), renter.getRenterContactName(), renter.getRenterPhone(),
+                        renter.getRenterContract());
+                renterService.saveRenter(newRenter);
+            }
+            catch(ParseException ex){
+                ex.printStackTrace();
+            }
+
+            return "redirect:/renters";
+        }
     }
 
     @RequestMapping("/updateRenter")
@@ -49,7 +73,7 @@ public class RenterController {
         Renter renter = renterService.getRenter(id);
         model.addAttribute("renter", renter);
 
-        return "renter/renter_info";
+        return "renter/renter_update";
     }
 
     @RequestMapping("/deleteRenter")

@@ -15,25 +15,19 @@
         <br><br>
         Contract date <form:input path="contractDate"/>
         <br><br>
-        Renter <form:input path="contractRenter"/>
-        <br><br>
-        Status <form:input path="contractStatus"/>
-        <br><br>
-        Place number <form:input path="contractPlaceNumber"/>
-        <br><br>
         Fare <form:input path="contractFare"/>
         <br><br>
         Contact start date <form:input path="contractStart"/>
         <br><br>
-        Contact finish date <form:input path="contractEnd"/>
+        Contact finish date <form:input path="contractFinish"/>
         <br><br>
         Contact payment day <form:input path="contractPaymentDay"/>
         <br><br>
 
+        <input type="submit" value="OK">
+
         <input type="button" value="Cancel"
                onClick="window.location.href='/contracts'"/>
-
-        <input type="submit" value="OK">
 
     </form:form>
 

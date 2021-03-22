@@ -10,21 +10,17 @@
     <form:form action="savePayment" modelAttribute="payment">
 
         <form:hidden path="id"/>
-        Contract number <form:input path="contractNumber"/>
-        <br><br>
-        Payment date <form:input path="paymentDate"/>
-        <br><br>
         Payment amount <form:input path="paymentAmount"/>
         <br><br>
-        Payer <form:input path="payer"/>
+        Payment date <form:input path="paymentDate"/>
         <br><br>
         Payment purpose <form:input path="paymentPurpose"/>
         <br><br>
 
+        <input type="submit" value="OK">
+
         <input type="button" value="Cancel"
                onClick="window.location.href='/payments'"/>
-
-        <input type="submit" value="OK"/>
 
     </form:form>
 

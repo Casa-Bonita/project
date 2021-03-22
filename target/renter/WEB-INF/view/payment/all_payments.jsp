@@ -14,10 +14,8 @@
     <table>
         <tr>
             <th>Number</th>
-            <th>Contract number</th>
-            <th>Payment date</th>
             <th>Payment amount</th>
-            <th>Payer</th>
+            <th>Payment date</th>
             <th>Payment purpose</th>
             <th>Operations</th>
         </tr>
@@ -35,10 +33,8 @@
                     <c:set var="count" scope="session" value="${count + 1}"/>
                     <c:out value="${count}"/>
                 </td>
-                <td>${pmnt.contractNumber}</td>
-                <td>${pmnt.paymentDate}</td>
                 <td>${pmnt.paymentAmount}</td>
-                <td>${pmnt.payer}</td>
+                <td>${pmnt.paymentDate}</td>
                 <td>${pmnt.paymentPurpose}</td>
                 <td>
                     <input type="button" value="Update"
@@ -52,10 +48,10 @@
 
     <br><br><br>
 
-    <input type="button" value="Add new payment"
+    <input type="button" value="Add new Payment"
            onClick="window.location.href='addNewPayment'"/>
 
-    <input type="button" value="Back"
+    <input type="button" value="Cancel"
            onClick="window.location.href='/'"/>
 
 

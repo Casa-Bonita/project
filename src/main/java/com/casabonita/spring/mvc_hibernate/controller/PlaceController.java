@@ -2,7 +2,6 @@ package com.casabonita.spring.mvc_hibernate.controller;
 
 import com.casabonita.spring.mvc_hibernate.entity.Place;
 import com.casabonita.spring.mvc_hibernate.entity.MeterData;
-import com.casabonita.spring.mvc_hibernate.operations.Operations;
 import com.casabonita.spring.mvc_hibernate.service.PlaceService;
 import com.casabonita.spring.mvc_hibernate.service.ReadingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +29,6 @@ public class PlaceController {
         model.addAttribute("allPlaces", allPlaces);
 
         List<MeterData> allMeterDatas = readingService.getAllReadings();
-
-        Operations oper = new Operations();
-        oper.getMaxReading(allPlaces, allMeterDatas);
-
-
-        model.addAttribute("allReadings", allMeterDatas);
 
         return "place/all_places";
     }
