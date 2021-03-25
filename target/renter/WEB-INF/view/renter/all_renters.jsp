@@ -20,20 +20,20 @@
             <th>INN</th>
             <th>Registration Date</th>
             <th>Address</th>
-            <th>Director</th>
+            <th>Director Name</th>
             <th>Contact Name</th>
-            <th>Phone</th>
+            <th>Phone Number</th>
             <th>Operations</th>
         </tr>
 
-        <c:forEach var="rntr" items="${allRenters}">
+        <c:forEach var="rt" items="${rentersList}">
 
             <c:url var="updateButton" value="/updateRenter">
-                <c:param name="rentId" value="${rntr.id}"/>
+                <c:param name="rentId" value="${rt.id}"/>
             </c:url>
 
             <c:url var="deleteButton" value="/deleteRenter">
-                <c:param name="rentId" value="${rntr.id}"/>
+                <c:param name="rentId" value="${rt.id}"/>
             </c:url>
 
             <tr>
@@ -41,14 +41,14 @@
                     <c:set var="count" scope="session" value="${count + 1}" />
                     <c:out value="${count}" />
                 </td>
-                <td>${rntr.renterName}</td>
-                <td>${rntr.renterOGRN}</td>
-                <td>${rntr.renterINN}</td>
-                <td>${rntr.renterRegistrDate}</td>
-                <td>${rntr.renterAddress}</td>
-                <td>${rntr.renterDirector}</td>
-                <td>${rntr.renterContactName}</td>
-                <td>${rntr.renterPhone}</td>
+                <td>${rt.name}</td>
+                <td>${rt.ogrn}</td>
+                <td>${rt.inn}</td>
+                <td>${rt.registrDate}</td>
+                <td>${rt.address}</td>
+                <td>${rt.directorName}</td>
+                <td>${rt.contactName}</td>
+                <td>${rt.phoneNumber}</td>
                 <td>
                     <input type="button" value="Update"
                            onClick="window.location.href= '${updateButton}'"/>

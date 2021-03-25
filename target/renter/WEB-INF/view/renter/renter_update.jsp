@@ -9,27 +9,62 @@
 
     <form:form action="saveRenter" modelAttribute="renter">
 
-        <form:hidden path="id"/>
+        <form:hidden path="id" value="id"/>
 
-        Renter name <form:input path="renterName"/>
-        <br><br>
-        Renter OGRN <form:input path="renterOGRN"/>
-        <br><br>
-        Renter INN <form:input path="renterINN"/>
-        <br><br>
-        Registration date <form:input path="renterRegistrDate"/>
-        <br><br>
-        Renter address <form:input path="renterAddress"/>
-        <br><br>
-        Director name <form:input path="renterDirector"/>
-        <br><br>
-        Contact name <form:input path="renterContactName"/>
-        <br><br>
-        Phone number<form:input path="renterPhone"/>
-        <br><br>
+        <table>
+            <tr>
+                <td><form:label path="name">Renter name</form:label></td>
+                <td><form:input path="name"/>
+                        <%--        <form:errors path="renterName"/>--%>
+                </td>
+            </tr>
 
-        <form:hidden path="renterContract" value="${renterContract}" />
-        <c:param name="renterContract" value="${renterContract}"/>
+            <tr>
+                <td><form:label path="ogrn">Renter OGRN</form:label></td>
+                <td><form:input path="ogrn"/>
+                        <%--        <form:errors path="renterOGRN"/>--%>
+                </td>
+            </tr>
+
+            <tr>
+                <td><form:label path="inn">Renter INN</form:label></td>
+                <td><form:input path="inn"/>
+                        <%--        <form:errors path="renterINN"/>--%>
+                </td>
+            </tr>
+
+            <tr>
+                <td><form:label path="registrDate">Registration date</form:label></td>
+                <td><form:input path="registrDate"/>
+                        <%--        <form:errors path="renterRegistrDate"/>--%>
+                </td>
+            </tr>
+
+            <tr>
+                <td><form:label path="address">Renter address</form:label></td>
+                <td><form:input path="address"/></td>
+            </tr>
+
+            <tr>
+                <td><form:label path="directorName">Director name</form:label></td>
+                <td><form:input path="directorName"/></td>
+            </tr>
+
+            <tr>
+                <td><form:label path="contactName">Contact name</form:label></td>
+                <td><form:input path="contactName"/></td>
+            </tr>
+
+            <tr>
+                <td><form:label path="phoneNumber">Phone number</form:label></td>
+                <td><form:input path="phoneNumber"/>
+                        <%--        <form:errors path="renterPhone"/>--%>
+                </td>
+            </tr>
+
+        </table>
+
+        <form:hidden path="renterContract" value="renterContract"/>
 
         <input type="submit" value="OK">
 

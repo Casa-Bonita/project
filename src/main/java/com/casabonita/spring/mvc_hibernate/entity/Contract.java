@@ -1,6 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="contract")
@@ -12,28 +13,30 @@ public class Contract {
     private int id;
 
     @Column(name="number")
-    private String contractNumber;
+    private String number;
 
     @Column(name="contract_date")
-    private String contractDate;
+    private Date date;
 
     @Column(name="fare")
-    private int contractFare;
+    private int fare;
 
     @Column(name="start_date")
-    private String contractStart;
+    private Date startDate;
 
     @Column(name="finish_date")
-    private String contractFinish;
+    private Date finishDate;
 
     @Column(name="payment_day")
-    private int contractPaymentDay;
+    private int paymentDay;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="place_id")
     private Place contractPlace;
 
-    @OneToOne(mappedBy="renterContract", cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
+            CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinColumn(name="renter_id")
     private Renter renter;
 
     @OneToOne(mappedBy="accountContract", cascade = CascadeType.ALL)
@@ -42,14 +45,17 @@ public class Contract {
     public Contract() {
     }
 
-    public Contract(String contractNumber, String contractDate, int contractFare, String contractStart,
-                    String contractFinish, int contractPaymentDay) {
-        this.contractNumber = contractNumber;
-        this.contractDate = contractDate;
-        this.contractFare = contractFare;
-        this.contractStart = contractStart;
-        this.contractFinish = contractFinish;
-        this.contractPaymentDay = contractPaymentDay;
+    public Contract(String number, Date date, int fare, Date startDate, Date finishDate, int paymentDay,
+                    Place contractPlace, Renter renter, Account account) {
+        this.number = number;
+        this.date = date;
+        this.fare = fare;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.paymentDay = paymentDay;
+        this.contractPlace = contractPlace;
+        this.renter = renter;
+        this.account = account;
     }
 
     public int getId() {
@@ -60,52 +66,52 @@ public class Contract {
         this.id = id;
     }
 
-    public String getContractNumber() {
-        return contractNumber;
+    public String getNumber() {
+        return number;
     }
 
-    public void setContractNumber(String contractNumber) {
-        this.contractNumber = contractNumber;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
-    public String getContractDate() {
-        return contractDate;
+    public Date getDate() {
+        return date;
     }
 
-    public void setContractDate(String contractDate) {
-        this.contractDate = contractDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public int getContractFare() {
-        return contractFare;
+    public int getFare() {
+        return fare;
     }
 
-    public void setContractFare(int contractFare) {
-        this.contractFare = contractFare;
+    public void setFare(int fare) {
+        this.fare = fare;
     }
 
-    public String getContractStart() {
-        return contractStart;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setContractStart(String contractStart) {
-        this.contractStart = contractStart;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public String getContractFinish() {
-        return contractFinish;
+    public Date getFinishDate() {
+        return finishDate;
     }
 
-    public void setContractFinish(String contractFinish) {
-        this.contractFinish = contractFinish;
+    public void setFinishDate(Date finishDate) {
+        this.finishDate = finishDate;
     }
 
-    public int getContractPaymentDay() {
-        return contractPaymentDay;
+    public int getPaymentDay() {
+        return paymentDay;
     }
 
-    public void setContractPaymentDay(int contractPaymentDay) {
-        this.contractPaymentDay = contractPaymentDay;
+    public void setPaymentDay(int paymentDay) {
+        this.paymentDay = paymentDay;
     }
 
     public Place getContractPlace() {

@@ -1,6 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="meter_data")
@@ -17,17 +18,18 @@ public class MeterData {
     private Meter meter;
 
     @Column(name="data")
-    private int meterDataData;
+    private int transferData;
 
     @Column(name="data_date")
-    private String meterDataDate;
+    private Date transferDate;
 
     public MeterData() {
     }
 
-    public MeterData(int meterDataData, String meterDataDate) {
-        this.meterDataData = meterDataData;
-        this.meterDataDate = meterDataDate;
+    public MeterData(Meter meter, int transferData, Date transferDate) {
+        this.meter = meter;
+        this.transferData = transferData;
+        this.transferDate = transferDate;
     }
 
     public int getId() {
@@ -46,19 +48,19 @@ public class MeterData {
         this.meter = meter;
     }
 
-    public int getMeterDataData() {
-        return meterDataData;
+    public int getTransferData() {
+        return transferData;
     }
 
-    public void setMeterDataData(int meterDataData) {
-        this.meterDataData = meterDataData;
+    public void setTransferData(int transferData) {
+        this.transferData = transferData;
     }
 
-    public String getMeterDataDate() {
-        return meterDataDate;
+    public Date getTransferDate() {
+        return transferDate;
     }
 
-    public void setMeterDataDate(String meterDataDate) {
-        this.meterDataDate = meterDataDate;
+    public void setTransferDate(Date transferDate) {
+        this.transferDate = transferDate;
     }
 }

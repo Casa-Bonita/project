@@ -13,7 +13,7 @@ public class Meter {
     private int id;
 
     @Column(name="meter_number")
-    private int meterNumber;
+    private int number;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="place_id")
@@ -21,20 +21,21 @@ public class Meter {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
             CascadeType.REFRESH, CascadeType.MERGE}, mappedBy = "meter")
-    private List<MeterData> meterDatas;
+    private List<MeterData> meterDatasList;
 
     public Meter() {
     }
 
-    public Meter(int meterNumber) {
-        this.meterNumber = meterNumber;
+    public Meter(int number, Place meterPlace) {
+        this.number = number;
+        this.meterPlace = meterPlace;
     }
 
     public void addMeterDataToMeter(MeterData meterData){
-        if(meterDatas == null){
-            meterDatas = new ArrayList<>();
+        if(meterDatasList == null){
+            meterDatasList = new ArrayList<>();
         }
-        meterDatas.add(meterData);
+        meterDatasList.add(meterData);
         meterData.setMeter(this);
     }
 
@@ -46,12 +47,12 @@ public class Meter {
         this.id = id;
     }
 
-    public int getMeterNumber() {
-        return meterNumber;
+    public int getNumber() {
+        return number;
     }
 
-    public void setMeterNumber(int meterNumber) {
-        this.meterNumber = meterNumber;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public Place getMeterPlace() {
@@ -60,5 +61,13 @@ public class Meter {
 
     public void setMeterPlace(Place meterPlace) {
         this.meterPlace = meterPlace;
+    }
+
+    public List<MeterData> getMeterDatasList() {
+        return meterDatasList;
+    }
+
+    public void setMeterDatasList(List<MeterData> meterDatasList) {
+        this.meterDatasList = meterDatasList;
     }
 }

@@ -1,6 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="account_data")
@@ -17,21 +18,22 @@ public class Payment {
     private Account account;
 
     @Column(name="payment")
-    private int paymentAmount;
+    private int amount;
 
     @Column(name="payment_date")
-    private String paymentDate;
+    private Date date;
 
     @Column(name="payment_purpose")
-    private String paymentPurpose;
+    private String purpose;
 
     public Payment() {
     }
 
-    public Payment(int paymentAmount, String paymentDate, String paymentPurpose) {
-        this.paymentAmount = paymentAmount;
-        this.paymentDate = paymentDate;
-        this.paymentPurpose = paymentPurpose;
+    public Payment(Account account, int amount, Date date, String purpose) {
+        this.account = account;
+        this.amount = amount;
+        this.date = date;
+        this.purpose = purpose;
     }
 
     public int getId() {
@@ -50,27 +52,27 @@ public class Payment {
         this.account = account;
     }
 
-    public int getPaymentAmount() {
-        return paymentAmount;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setPaymentAmount(int paymentAmount) {
-        this.paymentAmount = paymentAmount;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
-    public String getPaymentDate() {
-        return paymentDate;
+    public Date getDate() {
+        return date;
     }
 
-    public void setPaymentDate(String paymentDate) {
-        this.paymentDate = paymentDate;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
-    public String getPaymentPurpose() {
-        return paymentPurpose;
+    public String getPurpose() {
+        return purpose;
     }
 
-    public void setPaymentPurpose(String paymentPurpose) {
-        this.paymentPurpose = paymentPurpose;
+    public void setPurpose(String purpose) {
+        this.purpose = purpose;
     }
 }

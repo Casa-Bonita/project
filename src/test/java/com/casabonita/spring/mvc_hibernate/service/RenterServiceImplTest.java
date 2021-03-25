@@ -1,6 +1,5 @@
 package com.casabonita.spring.mvc_hibernate.service;
 
-import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,10 +30,10 @@ public class RenterServiceImplTest {
             Assert.assertNotEquals("", ex.getMessage());
         }
 
-        String renterAddress = "Address-Test";
-        String renterDirector = "DirectorName-Test";
-        String renterContactName = "ContactName-Test";
-        String renterPhone = "RenterPhone-Test";
-        Contract renterContract
+//        String renterAddress = "Address-Test";
+//        String renterDirector = "DirectorName-Test";
+//        String renterContactName = "ContactName-Test";
+//        String renterPhone = "RenterPhone-Test";
+//        Contract renterContract
     }
 }

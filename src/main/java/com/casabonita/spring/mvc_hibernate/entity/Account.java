@@ -13,7 +13,7 @@ public class Account {
     private int id;
 
     @Column(name="account_number")
-    private String accountNumber;
+    private String number;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="contract_id")
@@ -21,20 +21,21 @@ public class Account {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
             CascadeType.REFRESH, CascadeType.MERGE}, mappedBy = "account")
-    private List<Payment> payments;
+    private List<Payment> paymentList;
 
     public Account() {
     }
 
-    public Account(String accountNumber) {
-        this.accountNumber = accountNumber;
+    public Account(String number, Contract accountContract) {
+        this.number = number;
+        this.accountContract = accountContract;
     }
 
     public void addPaymentToAccount(Payment payment){
-        if(payments == null){
-            payments = new ArrayList<>();
+        if(paymentList == null){
+            paymentList = new ArrayList<>();
         }
-        payments.add(payment);
+        paymentList.add(payment);
         payment.setAccount(this);
     }
 
@@ -46,12 +47,12 @@ public class Account {
         this.id = id;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
+    public String getNumber() {
+        return number;
     }
 
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public Contract getAccountContract() {
@@ -60,5 +61,13 @@ public class Account {
 
     public void setAccountContract(Contract accountContract) {
         this.accountContract = accountContract;
+    }
+
+    public List<Payment> getPaymentList() {
+        return paymentList;
+    }
+
+    public void setPaymentList(List<Payment> paymentList) {
+        this.paymentList = paymentList;
     }
 }

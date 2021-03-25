@@ -12,19 +12,19 @@ public class Place {
     private int id;
 
     @Column(name="number")
-    private int placeNumber;
+    private int number;
 
     @Column(name="name")
-    private String placeName;
+    private String name;
 
     @Column(name="square")
-    private double placeSquare;
+    private double square;
 
     @Column(name="floor")
-    private int placeFloor;
+    private int floor;
 
     @Column(name="type")
-    private String placeType;
+    private String type;
 
     @OneToOne(mappedBy="contractPlace", cascade = CascadeType.ALL)
     private Contract contract;
@@ -35,11 +35,14 @@ public class Place {
     public Place() {
     }
 
-    public Place(int placeNumber, double placeSquare, int placeFloor, String placeType) {
-        this.placeNumber = placeNumber;
-        this.placeSquare = placeSquare;
-        this.placeFloor = placeFloor;
-        this.placeType = placeType;
+    public Place(int number, String name, double square, int floor, String type, Contract contract, Meter meter) {
+        this.number = number;
+        this.name = name;
+        this.square = square;
+        this.floor = floor;
+        this.type = type;
+        this.contract = contract;
+        this.meter = meter;
     }
 
     public int getId() {
@@ -50,44 +53,44 @@ public class Place {
         this.id = id;
     }
 
-    public int getPlaceNumber() {
-        return placeNumber;
+    public int getNumber() {
+        return number;
     }
 
-    public void setPlaceNumber(int placeNumber) {
-        this.placeNumber = placeNumber;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
-    public String getPlaceName() {
-        return placeName;
+    public String getName() {
+        return name;
     }
 
-    public void setPlaceName(String placeName) {
-        this.placeName = placeName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public double getPlaceSquare() {
-        return placeSquare;
+    public double getSquare() {
+        return square;
     }
 
-    public void setPlaceSquare(double placeSquare) {
-        this.placeSquare = placeSquare;
+    public void setSquare(double square) {
+        this.square = square;
     }
 
-    public int getPlaceFloor() {
-        return placeFloor;
+    public int getFloor() {
+        return floor;
     }
 
-    public void setPlaceFloor(int placeFloor) {
-        this.placeFloor = placeFloor;
+    public void setFloor(int floor) {
+        this.floor = floor;
     }
 
-    public String getPlaceType() {
-        return placeType;
+    public String getType() {
+        return type;
     }
 
-    public void setPlaceType(String placeType) {
-        this.placeType = placeType;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Contract getContract() {

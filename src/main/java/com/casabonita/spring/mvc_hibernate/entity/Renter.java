@@ -1,11 +1,11 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
-import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="renter")
@@ -17,84 +17,63 @@ public class Renter {
     private int id;
 
     @Column(name="name")
-    @Size(min=3, max=50, message="Renter name must be at least 3 and no more than 50 characters long")
-    @NotBlank(message="Renter name is required field")
-    private String renterName;
+//    @Size(min=3, max=50, message="Renter name must be at least 3 and no more than 50 characters long")
+//    @NotBlank(message="Renter name is required field")
+    private String name;
 
     @Column(name="ogrn")
-    @Size(min=13, max=13, message="Renter name must be 13 characters long")
-    private String renterOGRN;
+//    @Size(min=13, max=13, message="Renter OGRN must be 13 characters long")
+    private String ogrn;
 
     @Column(name="inn")
-    @Pattern(regexp="^[A-Za-z0-9]{3}(\\d?){2}[A-Za-z0-9]{3}$", message="Please use pattern XXXXPPXXX, where:" +
-            " X - any word character or number, and PP - a number in the range 0-99.")
-    private String renterINN;
+//    @Pattern(regexp="^[A-Za-z0-9]{3}(\\d?){2}[A-Za-z0-9]{3}$", message="Please use pattern XXXXPPXXX, where:" +
+//            " X - any word character or number, and PP - a number in the range 0-99.")
+    private String inn;
 
     @Column(name="registr_date")
-    @Pattern(regexp="^(((19){1})|((20){1}))\\d{2}-((0{1}[1-9]{1})|(1{1}[0-2]{1}))-((0{1}[1-9]{1})|((1|2){1}[0-9]{1})|(3{1}[0-1]{1}))$",
-            message="Please use pattern YYYY-MM-DD")
-    private Date renterRegistrDate;
+//    @Pattern(regexp="^(((19){1})|((20){1}))\\d{2}-((0{1}[1-9]{1})|(1{1}[0-2]{1}))-((0{1}[1-9]{1})|((1|2){1}[0-9]{1})|(3{1}[0-1]{1}))$",
+//            message="Please use pattern YYYY-MM-DD")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private Date registrDate;
 
     @Column(name="address")
-    private String renterAddress;
+    private String address;
 
     @Column(name="director_name")
-    private String renterDirector;
+    private String directorName;
 
     @Column(name="contact_name")
-    private String renterContactName;
+    private String contactName;
 
     @Column(name="phone")
-    @Pattern(regexp="^(\\+7\\()\\d{3}\\)\\d{3}(-\\d{2}){2}$", message="Please use pattern +7(XXX)XXX-XX-XX")
-    private String renterPhone;
+//    @Pattern(regexp="^(\\+7\\()\\d{3}\\)\\d{3}(-\\d{2}){2}$", message="Please use pattern +7(XXX)XXX-XX-XX")
+    private String phoneNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="contract_id")
-    private Contract renterContract;
-
-    private String dateStringFormat;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
+            CascadeType.REFRESH, CascadeType.MERGE}, mappedBy = "renter")
+    private List<Contract> contractList;
 
     public Renter() {
     }
 
-//    public Renter(String renterName, String renterOGRN, String renterINN, String renterRegistrDate, String renterAddress,
-//                  String renterDirector, String renterContactName, String renterPhone) {
-//        this.renterName = renterName;
-//        this.renterOGRN = renterOGRN;
-//        this.renterINN = renterINN;
-//        this.renterRegistrDate = renterRegistrDate;
-//        this.renterAddress = renterAddress;
-//        this.renterDirector = renterDirector;
-//        this.renterContactName = renterContactName;
-//        this.renterPhone = renterPhone;
-//    }
-
-    // Constructor witn Date registrDate
-    public Renter(String renterName, String renterOGRN, String renterINN, Date renterRegistrDate, String renterAddress,
-                  String renterDirector, String renterContactName, String renterPhone, Contract renterContract) {
-        this.renterName = renterName;
-        this.renterOGRN = renterOGRN;
-        this.renterINN = renterINN;
-        this.renterRegistrDate = renterRegistrDate;
-        this.renterAddress = renterAddress;
-        this.renterDirector = renterDirector;
-        this.renterContactName = renterContactName;
-        this.renterPhone = renterPhone;
-        this.renterContract = renterContract;
+    public Renter(String name, String ogrn, String inn, Date registrDate, String address, String directorName,
+                  String contactName, String phoneNumber) {
+        this.name = name;
+        this.ogrn = ogrn;
+        this.inn = inn;
+        this.registrDate = registrDate;
+        this.address = address;
+        this.directorName = directorName;
+        this.contactName = contactName;
+        this.phoneNumber = phoneNumber;
     }
 
-    // Constructor with String dateStringFormat
-    public Renter(String renterName, String renterOGRN, String renterINN, String renterAddress, String renterDirector,
-                  String renterContactName, String renterPhone, Contract renterContract, String dateStringFormat) {
-        this.renterName = renterName;
-        this.renterOGRN = renterOGRN;
-        this.renterINN = renterINN;
-        this.renterAddress = renterAddress;
-        this.renterDirector = renterDirector;
-        this.renterContactName = renterContactName;
-        this.renterPhone = renterPhone;
-        this.renterContract = renterContract;
-        this.dateStringFormat = dateStringFormat;
+    public void addContractToRenter(Contract contract){
+        if(contractList == null){
+            contractList = new ArrayList<>();
+        }
+        contractList.add(contract);
+        contract.setRenter(this);
     }
 
     public int getId() {
@@ -105,83 +84,75 @@ public class Renter {
         this.id = id;
     }
 
-    public String getRenterName() {
-        return renterName;
+    public String getName() {
+        return name;
     }
 
-    public void setRenterName(String renterName) {
-        this.renterName = renterName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getRenterOGRN() {
-        return renterOGRN;
+    public String getOgrn() {
+        return ogrn;
     }
 
-    public void setRenterOGRN(String renterOGRN) {
-        this.renterOGRN = renterOGRN;
+    public void setOgrn(String ogrn) {
+        this.ogrn = ogrn;
     }
 
-    public String getRenterINN() {
-        return renterINN;
+    public String getInn() {
+        return inn;
     }
 
-    public void setRenterINN(String renterINN) {
-        this.renterINN = renterINN;
+    public void setInn(String inn) {
+        this.inn = inn;
     }
 
-    public Date getRenterRegistrDate() {
-        return renterRegistrDate;
+    public Date getRegistrDate() {
+        return registrDate;
     }
 
-    public void setRenterRegistrDate(Date renterRegistrDate) {
-        this.renterRegistrDate = renterRegistrDate;
+    public void setRegistrDate(Date registrDate) {
+        this.registrDate = registrDate;
     }
 
-    public String getRenterAddress() {
-        return renterAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setRenterAddress(String renterAddress) {
-        this.renterAddress = renterAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getRenterDirector() {
-        return renterDirector;
+    public String getDirectorName() {
+        return directorName;
     }
 
-    public void setRenterDirector(String renterDirector) {
-        this.renterDirector = renterDirector;
+    public void setDirectorName(String directorName) {
+        this.directorName = directorName;
     }
 
-    public String getRenterContactName() {
-        return renterContactName;
+    public String getContactName() {
+        return contactName;
     }
 
-    public void setRenterContactName(String renterContactName) {
-        this.renterContactName = renterContactName;
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
-    public String getRenterPhone() {
-        return renterPhone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setRenterPhone(String renterPhone) {
-        this.renterPhone = renterPhone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public Contract getRenterContract() {
-        return renterContract;
+    public List<Contract> getContractList() {
+        return contractList;
     }
 
-    public void setRenterContract(Contract renterContract) {
-        this.renterContract = renterContract;
-    }
-
-    public String getDateStringFormat() {
-        return dateStringFormat;
-    }
-
-    public void setDateStringFormat(String dateStringFormat) {
-        this.dateStringFormat = dateStringFormat;
+    public void setContractList(List<Contract> contractList) {
+        this.contractList = contractList;
     }
 }
