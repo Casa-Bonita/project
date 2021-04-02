@@ -63,7 +63,7 @@
     <br><br><br>
 
     <input type="button" value="Add new Renter"
-           onclick="window.location.href = 'addNewRenter'"/>
+           onclick="window.location.href='addNewRenter'"/>
 
     <input type="button" value="Cancel"
            onclick="window.location.href='/'"/>

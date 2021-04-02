@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -17,16 +18,16 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @RequestMapping("/payments")
+    @RequestMapping(value = "/payments", method = RequestMethod.GET)
     public String showAllPayments(Model model){
 
         List<Payment> allPayments = paymentService.getAllPayments();
-        model.addAttribute("allPayments", allPayments);
+        model.addAttribute("paymentsList", allPayments);
 
         return "payment/all_payments";
     }
 
-    @RequestMapping("/addNewPayment")
+    @RequestMapping(value = "/addNewPayment", method = RequestMethod.GET)
     public String addNewPayment(Model model){
 
         Payment payment = new Payment();
@@ -35,7 +36,7 @@ public class PaymentController {
         return "payment/payment_info";
     }
 
-    @RequestMapping("/savePayment")
+    @RequestMapping(value = "/savePayment", method = RequestMethod.POST)
     public String savePayment(@ModelAttribute("payment") Payment payment){
 
         paymentService.savePayment(payment);
@@ -43,7 +44,7 @@ public class PaymentController {
         return "redirect:/payments";
     }
 
-    @RequestMapping("/updatePayment")
+    @RequestMapping(value = "/updatePayment", method = RequestMethod.GET)
     public String updatePayment(@RequestParam("paymId") int id, Model model){
 
         Payment payment = paymentService.getPayment(id);
@@ -52,7 +53,7 @@ public class PaymentController {
         return "payment/payment_info";
     }
 
-    @RequestMapping("/deletePayment")
+    @RequestMapping(value = "/deletePayment", method = RequestMethod.GET)
     public String deletePayment(@RequestParam("paymId") int id){
 
         paymentService.deletePaymetn(id);

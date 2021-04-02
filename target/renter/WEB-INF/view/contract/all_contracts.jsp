@@ -16,21 +16,23 @@
             <th>Number</th>
             <th>Contract number</th>
             <th>Contract date</th>
-            <th>Contract fare</th>
+            <th>Fare</th>
             <th>Start date</th>
             <th>Finish date</th>
             <th>Payment day</th>
+            <th>Place</th>
+            <th>Renter</th>
             <th>Operations</th>
         </tr>
 
-        <c:forEach var="cntr" items="${allContracts}">
+        <c:forEach var="ct" items="${contractsList}">
 
             <c:url var="updateButton" value="/updateContract">
-                <c:param name="contrId" value="${cntr.id}"/>
+                <c:param name="contrId" value="${ct.id}"/>
             </c:url>
 
             <c:url var="deleteButton" value="/deleteContract">
-                <c:param name="contrId" value="${cntr.id}"/>
+                <c:param name="contrId" value="${ct.id}"/>
             </c:url>
 
             <tr>
@@ -38,12 +40,14 @@
                     <c:set var="count" scope="session" value="${count + 1}"/>
                     <c:out value="${count}"/>
                 </td>
-                <td>${cntr.contractNumber}</td>
-                <td>${cntr.contractDate}</td>
-                <td>${cntr.contractFare}</td>
-                <td>${cntr.contractStart}</td>
-                <td>${cntr.contractFinish}</td>
-                <td>${cntr.contractPaymentDay}</td>
+                <td>${ct.number}</td>
+                <td>${ct.date}</td>
+                <td>${ct.fare}</td>
+                <td>${ct.startDate}</td>
+                <td>${ct.finishDate}</td>
+                <td>${ct.paymentDay}</td>
+                <td>${ct.contractPlace.name}</td>
+                <td>${ct.renter.name}</td>
                 <td>
                     <input type="button" value="Update"
                            onClick="window.location.href='${updateButton}'"/>

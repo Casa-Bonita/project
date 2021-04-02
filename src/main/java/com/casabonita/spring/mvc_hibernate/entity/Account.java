@@ -21,7 +21,7 @@ public class Account {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
             CascadeType.REFRESH, CascadeType.MERGE}, mappedBy = "account")
-    private List<Payment> paymentList;
+    private List<Payment> paymentsList;
 
     public Account() {
     }
@@ -32,10 +32,10 @@ public class Account {
     }
 
     public void addPaymentToAccount(Payment payment){
-        if(paymentList == null){
-            paymentList = new ArrayList<>();
+        if(paymentsList == null){
+            paymentsList = new ArrayList<>();
         }
-        paymentList.add(payment);
+        paymentsList.add(payment);
         payment.setAccount(this);
     }
 
@@ -63,11 +63,11 @@ public class Account {
         this.accountContract = accountContract;
     }
 
-    public List<Payment> getPaymentList() {
-        return paymentList;
+    public List<Payment> getPaymentsList() {
+        return paymentsList;
     }
 
-    public void setPaymentList(List<Payment> paymentList) {
-        this.paymentList = paymentList;
+    public void setPaymentsList(List<Payment> paymentsList) {
+        this.paymentsList = paymentsList;
     }
 }

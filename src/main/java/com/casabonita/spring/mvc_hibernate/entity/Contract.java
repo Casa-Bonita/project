@@ -1,5 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -16,15 +18,18 @@ public class Contract {
     private String number;
 
     @Column(name="contract_date")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date date;
 
     @Column(name="fare")
     private int fare;
 
     @Column(name="start_date")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date startDate;
 
     @Column(name="finish_date")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date finishDate;
 
     @Column(name="payment_day")
@@ -35,7 +40,7 @@ public class Contract {
     private Place contractPlace;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
-            CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+            CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name="renter_id")
     private Renter renter;
 

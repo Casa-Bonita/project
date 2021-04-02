@@ -11,9 +11,24 @@
 
         <form:hidden path="id"/>
 
-        Transfered data <form:input path="meterDataData"/>
-        <br><br>
-        Date of transfer <form:input path="meterDataDate"/>
+        <table>
+            <tr>
+                <td><form:label path="meter">Meter number</form:label></td>
+                <td><form:input path="meter"/></td>
+            </tr>
+
+            <tr>
+                <td><form:label path="transferData">Transfered data</form:label></td>
+                <td><form:input path="transferData"/></td>
+            </tr>
+
+            <tr>
+                <td><form:label path="transferDate">Date of transfer</form:label></td>
+                <td><form:input path="transferDate"/></td>
+            </tr>
+
+        </table>
+
         <br><br>
 
         <input type="submit" value="OK">

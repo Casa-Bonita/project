@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -17,16 +18,16 @@ public class ReadingController {
     @Autowired
     private ReadingService readingService;
 
-    @RequestMapping("/readings")
+    @RequestMapping(value = "/readings", method = RequestMethod.GET)
     public String showAllReadings(Model model){
 
         List<MeterData> allMeterDatas = readingService.getAllReadings();
-        model.addAttribute("allReadings", allMeterDatas);
+        model.addAttribute("readingsList", allMeterDatas);
 
         return "reading/all_readings";
     }
 
-    @RequestMapping("/addNewReading")
+    @RequestMapping(value = "/addNewReading", method = RequestMethod.GET)
     public String addNewReading(Model model){
 
         MeterData meterData = new MeterData();
@@ -35,7 +36,7 @@ public class ReadingController {
         return "reading/reading_info";
     }
 
-    @RequestMapping("/saveReading")
+    @RequestMapping(value = "/saveReading", method = RequestMethod.POST)
     public String saveReading(@ModelAttribute("meterData") MeterData meterData){
 
         readingService.saveReading(meterData);
@@ -43,7 +44,7 @@ public class ReadingController {
         return "redirect:/readings";
     }
 
-    @RequestMapping("/updateReading")
+    @RequestMapping(value = "/updateReading", method = RequestMethod.GET)
     public String updateReading(@RequestParam("readId") int id, Model model){
 
         MeterData meterData = readingService.getReading(id);
@@ -52,7 +53,7 @@ public class ReadingController {
         return "reading/reading_info";
     }
 
-    @RequestMapping("/deleteReading")
+    @RequestMapping(value = "/deleteReading", method = RequestMethod.GET)
     public String deleteReading(@RequestParam("readId") int id){
 
         readingService.deleteReading(id);

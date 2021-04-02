@@ -4,31 +4,30 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>All readings</title>
+    <title>All accounts</title>
 </head>
 <body>
 
-<h2>All Readings</h2>
+<h2>All Accounts</h2>
 
-    <c:set var="count" scope="session" value="${0}"/>
+<c:set var="count" scope="session" value="${0}"/>
 
     <table>
         <tr>
             <th>Number</th>
-            <th>Meter number</th>
-            <th>Transfer data</th>
-            <th>Date of transfer</th>
+            <th>Account number</th>
+            <th>Linked contract</th>
             <th>Operations</th>
         </tr>
 
-        <c:forEach var="re" items="${readingsList}">
+        <c:forEach var="ac" items="${accountsList}">
 
-            <c:url var="updateButton" value="/updateReading">
-                <c:param name="readId" value="${re.id}"/>
+            <c:url var="updateButton" value="/updateAccount">
+                <c:param name="accId" value="${ac.id}"/>
             </c:url>
 
-            <c:url var="deleteButton" value="/deleteReading">
-                <c:param name="readId" value="${re.id}"/>
+            <c:url var="deleteButton" value="/deleteAccount">
+                <c:param name="accId" value="${ac.id}"/>
             </c:url>
 
             <tr>
@@ -36,9 +35,8 @@
                     <c:set var="count" scope="session" value="${count + 1}"/>
                     <c:out value="${count}"/>
                 </td>
-                <td>${re.meter.number}</td>
-                <td>${re.transferData}</td>
-                <td>${re.transferDate}</td>
+                <td>${ac.number}</td>
+                <td>${ac.accountContract.number}</td>
                 <td>
                     <input type="button" value="Update"
                            onClick="window.location.href='${updateButton}'"/>
@@ -52,8 +50,8 @@
 
     <br><br><br>
 
-    <input type="button" value="Add new Reading"
-           onClick="window.location.href='addNewReading'"/>
+    <input type="button" value="Add new Account"
+           onClick="window.location.href='addNewAccount'"/>
 
     <input type="button" value="Cancel"
            onClick="window.location.href='/'"/>

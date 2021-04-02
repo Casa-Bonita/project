@@ -23,14 +23,14 @@
             <th>Operations</th>
         </tr>
 
-        <c:forEach var="plc" items="${allPlaces}">
+        <c:forEach var="pl" items="${placesList}">
 
             <c:url var="updateButton" value="/updatePlace">
-                <c:param name="plId" value="${plc.id}"/>
+                <c:param name="plcId" value="${pl.id}"/>
             </c:url>
 
             <c:url var="deleteButton" value="/deletePlace">
-                <c:param name="plId" value="${plc.id}"/>
+                <c:param name="plcId" value="${pl.id}"/>
             </c:url>
 
             <tr>
@@ -38,11 +38,11 @@
                     <c:set var="count" scope="session" value="${count + 1}"/>
                     <c:out value="${count}"/>
                 </td>
-                <td>${plc.placeNumber}</td>
-                <td>${plc.placeName}</td>
-                <td>${plc.placeSquare}</td>
-                <td>${plc.placeFloor}</td>
-                <td>${plc.placeType}</td>
+                <td>${pl.number}</td>
+                <td>${pl.name}</td>
+                <td>${pl.square}</td>
+                <td>${pl.floor}</td>
+                <td>${pl.type}</td>
                 <td>
                     <input type="button" value="Update"
                            onClick="window.location.href='${updateButton}'"/>

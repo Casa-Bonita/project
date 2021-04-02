@@ -14,18 +14,19 @@
     <table>
         <tr>
             <th>Number</th>
+            <th>Payment account</th>
             <th>Payment amount</th>
             <th>Payment date</th>
             <th>Payment purpose</th>
             <th>Operations</th>
         </tr>
 
-        <c:forEach var="pmnt" items="${allPayments}">
+        <c:forEach var="pm" items="${paymentsList}">
             <c:url var="updateButton" value="/updatePayment">
-                <c:param name="paymId" value="${pmnt.id}"/>
+                <c:param name="paymId" value="${pm.id}"/>
             </c:url>
             <c:url var="deleteButton" value="/deletePayment">
-                <c:param name="paymId" value="${pmnt.id}"/>
+                <c:param name="paymId" value="${pm.id}"/>
             </c:url>
 
             <tr>
@@ -33,9 +34,10 @@
                     <c:set var="count" scope="session" value="${count + 1}"/>
                     <c:out value="${count}"/>
                 </td>
-                <td>${pmnt.paymentAmount}</td>
-                <td>${pmnt.paymentDate}</td>
-                <td>${pmnt.paymentPurpose}</td>
+                <td>${pm.account.number}</td>
+                <td>${pm.amount}</td>
+                <td>${pm.date}</td>
+                <td>${pm.purpose}</td>
                 <td>
                     <input type="button" value="Update"
                            onClick="window.location.href='${updateButton}'"/>

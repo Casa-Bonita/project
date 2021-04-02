@@ -1,13 +1,25 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class StartController {
 
-    @RequestMapping("/")
-    public String showStartPage(){
-        return "start_page";
-    }
+//    @Autowired
+//    private StartService startService;
+//    private ContractService contractService;
+//
+//    @RequestMapping(value = "/", method = RequestMethod.GET)
+//    public String showStartPage(Model model){
+//
+//        Contract contract = new Contract();
+//        contract.getContractPlace().getMeter().getMeterDatasList();
+//
+//
+//        List<Summary> allInformation = startService.getSummary();
+//        model.addAttribute("summaryList", allInformation);
+//
+//        return "start_page";
+//    }
+
 }

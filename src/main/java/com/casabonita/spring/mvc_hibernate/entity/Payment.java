@@ -1,5 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -13,7 +15,7 @@ public class Payment {
     private int id;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
-            CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+            CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name="account_id")
     private Account account;
 
@@ -21,6 +23,7 @@ public class Payment {
     private int amount;
 
     @Column(name="payment_date")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date date;
 
     @Column(name="payment_purpose")

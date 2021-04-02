@@ -15,19 +15,20 @@
     <table>
         <tr>
             <th>Number</th>
+            <th>Meter number</th>
             <th>Transfer data</th>
             <th>Date of transfer</th>
             <th>Operations</th>
         </tr>
 
-        <c:forEach var="rdng" items="${allReadings}">
+        <c:forEach var="re" items="${readingsList}">
 
             <c:url var="updateButton" value="/updateReading">
-                <c:param name="readId" value="${rdng.id}"/>
+                <c:param name="readId" value="${re.id}"/>
             </c:url>
 
             <c:url var="deleteButton" value="/deleteReading">
-                <c:param name="readId" value="${rdng.id}"/>
+                <c:param name="readId" value="${re.id}"/>
             </c:url>
 
             <tr>
@@ -35,8 +36,9 @@
                     <c:set var="count" scope="session" value="${count + 1}"/>
                     <c:out value="${count}"/>
                 </td>
-                <td>${rdng.meterDataData}</td>
-                <td>${rdng.meterDataDate}</td>
+                <td>${re.meter.number}</td>
+                <td>${re.transferData}</td>
+                <td>${re.transferDate}</td>
                 <td>
                     <input type="button" value="Update"
                            onClick="window.location.href='${updateButton}'"/>
