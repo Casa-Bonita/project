@@ -19,8 +19,7 @@ public class Account {
     @JoinColumn(name="contract_id")
     private Contract accountContract;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
-            CascadeType.REFRESH, CascadeType.MERGE}, mappedBy = "account")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
     private List<Payment> paymentsList;
 
     public Account() {

@@ -35,7 +35,7 @@ public class Contract {
     @Column(name="payment_day")
     private int paymentDay;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name="place_id")
     private Place contractPlace;
 

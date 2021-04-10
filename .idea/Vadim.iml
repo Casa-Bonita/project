@@ -5,6 +5,7 @@
       <configuration>
         <datasource-map>
           <unit-entry name="sessionFactory" />
+          <unit-entry name="sessionFactoryH2" />
         </datasource-map>
         <naming-strategy-map />
       </configuration>

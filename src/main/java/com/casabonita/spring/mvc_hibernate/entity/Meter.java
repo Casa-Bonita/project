@@ -15,12 +15,11 @@ public class Meter {
     @Column(name="meter_number")
     private int number;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name="place_id")
     private Place meterPlace;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
-            CascadeType.REFRESH, CascadeType.MERGE}, mappedBy = "meter")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meter")
     private List<MeterData> meterDatasList;
 
     public Meter() {
