@@ -50,8 +50,7 @@ public class Renter {
     @Pattern(regexp="^(\\+7\\()\\d{3}\\)\\d{3}(-\\d{2}){2}$", message="Please use pattern +7(XXX)XXX-XX-XX")
     private String phoneNumber;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
-            CascadeType.REFRESH, CascadeType.MERGE}, mappedBy = "renter")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "renter")
     private List<Contract> contractList;
 
     public Renter() {

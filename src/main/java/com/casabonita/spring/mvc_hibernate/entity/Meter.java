@@ -19,7 +19,7 @@ public class Meter {
     @JoinColumn(name="place_id")
     private Place meterPlace;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meter")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meter")
     private List<MeterData> meterDatasList;
 
     public Meter() {

@@ -39,7 +39,7 @@
             <property name="packagesToScan" value="com.casabonita.spring.mvc_hibernate.entity" />
             <property name="hibernateProperties">
                 <props>
-                    <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgresPlusDialect</prop>
                     <prop key="hibernate.show_sql">true</prop>
                     <prop key="hibernate.hbm2ddl.auto">create</prop>
                 </props>

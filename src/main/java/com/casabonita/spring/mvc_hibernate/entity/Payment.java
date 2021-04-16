@@ -14,8 +14,10 @@ public class Payment {
     @Column(name="id")
     private int id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
-            CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+//    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
+//            CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+//    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name="account_id")
     private Account account;
 
