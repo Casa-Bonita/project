@@ -1,6 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
-import com.casabonita.spring.mvc_hibernate.entity.MeterData;
+import com.casabonita.spring.mvc_hibernate.entity.Reading;
 import com.casabonita.spring.mvc_hibernate.service.ReadingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,8 +21,8 @@ public class ReadingController {
     @RequestMapping(value = "/readings", method = RequestMethod.GET)
     public String showAllReadings(Model model){
 
-        List<MeterData> allMeterDatas = readingService.getAllReadings();
-        model.addAttribute("readingsList", allMeterDatas);
+        List<Reading> allReadings = readingService.getAllReadings();
+        model.addAttribute("readingsList", allReadings);
 
         return "reading/all_readings";
     }
@@ -30,16 +30,16 @@ public class ReadingController {
     @RequestMapping(value = "/addNewReading", method = RequestMethod.GET)
     public String addNewReading(Model model){
 
-        MeterData meterData = new MeterData();
-        model.addAttribute("reading", meterData);
+        Reading reading = new Reading();
+        model.addAttribute("reading", reading);
 
         return "reading/reading_info";
     }
 
     @RequestMapping(value = "/saveReading", method = RequestMethod.POST)
-    public String saveReading(@ModelAttribute("meterData") MeterData meterData){
+    public String saveReading(@ModelAttribute("meterData") Reading reading){
 
-        readingService.saveReading(meterData);
+        readingService.saveReading(reading);
 
         return "redirect:/readings";
     }
@@ -47,8 +47,8 @@ public class ReadingController {
     @RequestMapping(value = "/updateReading", method = RequestMethod.GET)
     public String updateReading(@RequestParam("readId") int id, Model model){
 
-        MeterData meterData = readingService.getReading(id);
-        model.addAttribute("reading", meterData);
+        Reading reading = readingService.getReading(id);
+        model.addAttribute("reading", reading);
 
         return "reading/reading_info";
     }

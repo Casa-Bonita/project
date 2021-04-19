@@ -1,7 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
 import com.casabonita.spring.mvc_hibernate.entity.Contract;
-import com.casabonita.spring.mvc_hibernate.entity.MeterData;
+import com.casabonita.spring.mvc_hibernate.entity.Reading;
 import com.casabonita.spring.mvc_hibernate.entity.Payment;
 import com.casabonita.spring.mvc_hibernate.entity.Summary;
 import com.casabonita.spring.mvc_hibernate.service.ContractService;
@@ -85,10 +85,10 @@ public class ContractController {
             summary.setMeterNumber(contract.getContractPlace().getMeter().getNumber());
 
             int max = 0;
-            List<MeterData> meterDataList = contract.getContractPlace().getMeter().getMeterDatasList();
-            for (int j = 0; j < meterDataList.size(); j++) {
-                if(max < meterDataList.get(j).getTransferData()){
-                    max = meterDataList.get(j).getTransferData();
+            List<Reading> readingList = contract.getContractPlace().getMeter().getReadingsList();
+            for (int j = 0; j < readingList.size(); j++) {
+                if(max < readingList.get(j).getTransferData()){
+                    max = readingList.get(j).getTransferData();
                 }
             }
             summary.setLastMeterData(max);

@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="meter_data")
-public class MeterData {
+public class Reading {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +26,10 @@ public class MeterData {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date transferDate;
 
-    public MeterData() {
+    public Reading() {
     }
 
-    public MeterData(Meter meter, int transferData, Date transferDate) {
+    public Reading(Meter meter, int transferData, Date transferDate) {
         this.meter = meter;
         this.transferData = transferData;
         this.transferDate = transferDate;

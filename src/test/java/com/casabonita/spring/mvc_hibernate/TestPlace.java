@@ -1,7 +1,7 @@
 package com.casabonita.spring.mvc_hibernate;
 
-import com.casabonita.spring.mvc_hibernate.dao.RenterDAO;
-import com.casabonita.spring.mvc_hibernate.entity.Renter;
+import com.casabonita.spring.mvc_hibernate.dao.*;
+import com.casabonita.spring.mvc_hibernate.entity.*;
 import org.assertj.db.api.Assertions;
 import org.assertj.db.type.Request;
 import org.junit.Test;
@@ -29,171 +29,150 @@ import static org.assertj.core.api.Assertions.tuple;
                 }
         )
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TestRenter{
-
-    private List<Renter> renterList;
+public class TestPlace {
 
     @Autowired
-    private RenterDAO renterDAO;
+    private ContractDAO contractDAO;
+
+    @Autowired
+    private MeterDAO meterDAO;
+
+    @Autowired
+    private PlaceDAO placeDAO;
 
     @Autowired
     private DataSource dataSource;
 
-    // Нужно ли сравнивать contract_id
+    // TODO занести данные в contract_init, meter_init и запустить тест
     @Test
-    public void testSave() throws ParseException{
+    @Sql("/scripts/contract_init.sql")
+    @Sql("/scripts/meter_init.sql")
+    public void testSave(){
 
-        String d = "2021-01-01";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
+        int testNumber = 100;
         String testName = "TestName";
-        String testOGRN = "TestOGRN";
-        String testINN = "TestINN";
-        Date testDate = sdf.parse(d);
-        String testAddress = "TestAddress";
-        String testDirectorName = "TestDirectorName";
-        String testContactName = "testContactName";
-        String testPhoneNumber = "testPhoneNumber";
+        double testSquare = 200.00;
+        int testFloor = 1;
+        String testType = "TestType";
 
-        Renter renter = new Renter();
+        Contract contract = contractDAO.getContract(1);
+        Meter meter = meterDAO.getMeter(1);
 
-        renter.setName(testName);
-        renter.setOgrn(testOGRN);
-        renter.setInn(testINN);
-        renter.setRegistrDate(testDate);
-        renter.setAddress(testAddress);
-        renter.setDirectorName(testDirectorName);
-        renter.setContactName(testContactName);
-        renter.setPhoneNumber(testPhoneNumber);
+        Place place = new Place();
 
-        renterDAO.saveRenter(renter);
+        place.setNumber(testNumber);
+        place.setName(testName);
+        place.setSquare(testSquare);
+        place.setFloor(testFloor);
+        place.setType(testType);
+        place.setContract(contract);
+        place.setMeter(meter);
+
+        placeDAO.savePlace(place);
 
         Request request = new Request(dataSource,
-                "SELECT * FROM renter");
+                "SELECT * FROM place");
 
         Assertions.assertThat(request)
                 .hasNumberOfRows(1)
+                .column("number").hasValues(testNumber)
                 .column("name").hasValues(testName)
-                .column("ogrn").hasValues(testOGRN)
-                .column("inn").hasValues(testINN)
-                .column("registr_date").hasValues(d) // почему тут String, а не Date
-                .column("address").hasValues(testAddress)
-                .column("director_name").hasValues(testDirectorName)
-                .column("contact_name").hasValues(testContactName)
-                .column("phone").hasValues(testPhoneNumber);
+                .column("square").hasValues(testSquare)
+                .column("floor").hasValues(testFloor)
+                .column("type").hasValues(testType)
+                .column("contract").hasValues(contract)
+                .column("meter").hasValues(meter);
     }
 
+    // TODO занести данные в contract_init, meter_init, place_init и запустить тест
     @Test
-    @Sql("/scripts/renter_init.sql")
-    public void testGetById() throws ParseException{
+    @Sql("/scripts/contract_init.sql")
+    @Sql("/scripts/meter_init.sql")
+    @Sql("/scripts/place_init.sql")
+    public void testGetById() {
 
-        String name = "Romashka";
-        String ogrn = "1076318010548";
-        String inn = "6318308609";
-        String d = "1995-01-11";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse(d);
-        String address = "443117, Samarskaya oblast, gorod Samara, Orshanskij pereulok, 9";
-        String directorName = "Prohorov Vladimir Stepanovich";
-        String contactName = "Yablochkin Vasilij Petrovich";
-        String phone = "+7(495)123-45-67";
+        int testNumber = 100;
+        String testName = "TestName";
+        double testSquare = 200.00;
+        int testFloor = 1;
+        String testType = "TestType";
+        int testContract = contractDAO.getContract(1).getId();
+        int testMeter = meterDAO.getMeter(1).getId();
 
-        Renter renter = renterDAO.getRenter(0);
+        Place place = placeDAO.getPlace(1);
 
-        assert name.equals(renter.getName());
-        assert ogrn.equals(renter.getOgrn());
-        assert inn.equals(renter.getInn());
-        assert date.equals(renter.getRegistrDate());
-        assert address.equals(renter.getAddress());
-        assert directorName.equals(renter.getDirectorName());
-        assert contactName.equals(renter.getContactName());
-        assert phone.equals(renter.getPhoneNumber());
+        assert testNumber == place.getNumber();
+        assert testName.equals(place.getName());
+        assert testSquare == place.getSquare();
+        assert testFloor == place.getFloor();
+        assert testType.equals(place.getType());
+        assert testContract == place.getContract().getId();
+        assert testMeter == place.getMeter().getId();
     }
 
-    // не работает
+    // TODO занести данные в contract_init, meter_init, place_init и запустить тест
     @Test
-    @Sql("/scripts/renter_init.sql")
-    public void testDeleteById() throws ParseException{
+    @Sql("/scripts/contract_init.sql")
+    @Sql("/scripts/meter_init.sql")
+    @Sql("/scripts/place_init.sql")
+    public void testDeleteById() {
 
-        String name = "Romashka";
-        String ogrn = "1076318010548";
-        String inn = "6318308609";
-        String d = "1995-01-11";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse(d);
-        String address = "443117, Samarskaya oblast, gorod Samara, Orshanskij pereulok, 9";
-        String directorName = "Prohorov Vladimir Stepanovich";
-        String contactName = "Yablochkin Vasilij Petrovich";
-        String phone = "+7(495)123-45-67";
+        int testNumber = 100;
+        String testName = "TestName";
+        double testSquare = 200.00;
+        int testFloor = 1;
+        String testType = "TestType";
+        int testContract = contractDAO.getContract(1).getId();
+        int testMeter = meterDAO.getMeter(1).getId();
 
-        renterDAO.deleteRenter(0);
+        placeDAO.deletePlace(1);
 
-        Renter renter = renterDAO.getRenter(0);
+        Place place = placeDAO.getPlace(1);
 
-        assert name.equals(renter.getName());
-        assert ogrn.equals(renter.getOgrn());
-        assert inn.equals(renter.getInn());
-        assert date.equals(renter.getRegistrDate());
-        assert address.equals(renter.getAddress());
-        assert directorName.equals(renter.getDirectorName());
-        assert contactName.equals(renter.getContactName());
-        assert phone.equals(renter.getPhoneNumber());
-
+        assert testNumber == place.getNumber();
+        assert testName.equals(place.getName());
+        assert testSquare == place.getSquare();
+        assert testFloor == place.getFloor();
+        assert testType.equals(place.getType());
+        assert testContract == place.getContract().getId();
+        assert testMeter == place.getMeter().getId();
     }
 
-    // не работает
+    // TODO занести данные в place_init и запустить тест
     @Test
-    @Sql("/scripts/renter_init.sql")
-    public void testUpdate() throws ParseException{
+    @Sql("/scripts/place_init.sql")
 
-        String name = "Test";
-        String ogrn = "1076318010548";
-        String inn = "6318308609";
-        String d = "1995-01-11";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse(d);
-        String address = "443117, Samarskaya oblast, gorod Samara, Orshanskij pereulok, 9";
-        String directorName = "Prohorov Vladimir Stepanovich";
-        String contactName = "Yablochkin Vasilij Petrovich";
-        String phone = "+7(495)123-45-67";
+    public void testUpdate() {
 
-        Renter renterExpected = renterDAO.getRenter(0);
+        Place placeExpected = placeDAO.getPlace(1);
 
-        renterExpected.setName(name);
+        placeExpected.setNumber(123456);
 
-        renterDAO.saveRenter(renterExpected);
+        placeDAO.savePlace(placeExpected);
 
-        Renter renterActual = renterDAO.getRenter(0);
+        Place placeActual = placeDAO.getPlace(1);
 
-        assert name.equals(renterActual.getName());
-        assert ogrn.equals(renterActual.getOgrn());
-        assert inn.equals(renterActual.getInn());
-        assert date.equals(renterActual.getRegistrDate());
-        assert address.equals(renterActual.getAddress());
-        assert directorName.equals(renterActual.getDirectorName());
-        assert contactName.equals(renterActual.getContactName());
-        assert phone.equals(renterActual.getPhoneNumber());
-
+        assert placeExpected.getNumber() == placeActual.getNumber();
+        assert placeExpected.getName().equals(placeActual.getName());
+        assert placeExpected.getSquare() == placeActual.getSquare();
+        assert placeExpected.getFloor() == placeActual.getFloor();
+        assert placeExpected.getType().equals(placeActual.getType());
+        assert placeExpected.getContract().equals(placeActual.getContract());
+        assert placeExpected.getMeter().equals(placeActual.getMeter());
     }
 
-    // не работает
+    // TODO занести данные в place_init и запустить тест
     @Test
-    @Sql("/scripts/renter_init.sql")
-    public void testGetAll() throws ParseException{
+    @Sql("/scripts/place_init.sql")
+    public void testGetAll() {
 
-        String d1 = "1995-01-11";
-        String d2 = "2006-05-03";
-        String d3 = "2014-03-18";
-        String d4 = "2008-12-23";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Place> placeList = placeDAO.getAllPlaces();
 
-        List<Renter> renterList = renterDAO.getAllRenters();
-
-        assertThat(renterList).extracting("id", "name", "ogrn", "inn", "registrDate", "address", "directorName", "contactName", "phoneNumber")
-                .contains(tuple(0, "Romashka", "1076318010548", "6318308609", sdf.parse(d1), "443117, Samarskaya oblast, gorod Samara, Orshanskij pereulok, 9", "Prohorov Vladimir Stepanovich", "Yablochkin Vasilij Petrovich", "+7(495)123-45-67"),
-                        tuple(1, "Luytik", "1064027042991", "4027073395", sdf.parse(d2), "248002, Kaluzhskaya oblast, gorod Kaluga, ulica Saltykova-Shchedrina, 76", "Shumakov Grigorij Anatolevich", "Goncharov Eduard Sergeevich", "+7(495)123-67-45"),
-                        tuple(2, "Oduvanchik", "1145476032668", "5406775985", sdf.parse(d3), "656056, Altajskij kraj, gorod Barnaul, ploshchad im V.N.Bavarina, dom 2, ofis 910", "Trufanov Anton Yurevich", "Arhipova Nadezhda Viktorovna", "+7(495)123-45-89"),
-                        tuple(3, "Margaritka", "1086168005550", "6168024958", sdf.parse(d4), "344015, Rostovskaya oblast, gorod Rostov-na-Donu, ulica Eremenko, 58/9", "Pavlickaya Natalya Yakovlevna", "Boldyreva Svetlana Aleksandrovna", "+7(495)123-67-45"));
+        assertThat(placeList).extracting("id", "number", "name", "square", "floor", "type", "contract", "meter")
+                .contains(tuple(0, "Romashka", "1076318010548", "6318308609", "443117, Samarskaya oblast, gorod Samara, Orshanskij pereulok, 9", "Prohorov Vladimir Stepanovich", "Yablochkin Vasilij Petrovich", "+7(495)123-45-67"),
+                        tuple(1, "Luytik", "1064027042991", "4027073395", "248002, Kaluzhskaya oblast, gorod Kaluga, ulica Saltykova-Shchedrina, 76", "Shumakov Grigorij Anatolevich", "Goncharov Eduard Sergeevich", "+7(495)123-67-45"),
+                        tuple(2, "Oduvanchik", "1145476032668", "5406775985", "656056, Altajskij kraj, gorod Barnaul, ploshchad im V.N.Bavarina, dom 2, ofis 910", "Trufanov Anton Yurevich", "Arhipova Nadezhda Viktorovna", "+7(495)123-45-89"),
+                        tuple(3, "Margaritka", "1086168005550", "6168024958", "344015, Rostovskaya oblast, gorod Rostov-na-Donu, ulica Eremenko, 58/9", "Pavlickaya Natalya Yakovlevna", "Boldyreva Svetlana Aleksandrovna", "+7(495)123-67-45"));
 
     }
 }

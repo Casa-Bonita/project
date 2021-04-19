@@ -1,7 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.service;
 
 import com.casabonita.spring.mvc_hibernate.dao.ReadingDAO;
-import com.casabonita.spring.mvc_hibernate.entity.MeterData;
+import com.casabonita.spring.mvc_hibernate.entity.Reading;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,22 +16,22 @@ public class ReadingServiceImpl implements ReadingService{
 
     @Override
     @Transactional
-    public List<MeterData> getAllReadings() {
+    public List<Reading> getAllReadings() {
 
         return readingDAO.getAllReadings();
     }
 
     @Override
     @Transactional
-    public void saveReading(MeterData meterData) {
+    public void saveReading(Reading reading) {
 
-        readingDAO.saveReading(meterData);
+        readingDAO.saveReading(reading);
 
     }
 
     @Override
     @Transactional
-    public MeterData getReading(int id) {
+    public Reading getReading(int id) {
 
         return readingDAO.getReading(id);
     }

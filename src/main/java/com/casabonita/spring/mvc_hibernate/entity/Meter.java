@@ -19,8 +19,8 @@ public class Meter {
     @JoinColumn(name="place_id")
     private Place meterPlace;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meter")
-    private List<MeterData> meterDatasList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meter")
+    private List<Reading> readingsList;
 
     public Meter() {
     }
@@ -30,12 +30,12 @@ public class Meter {
         this.meterPlace = meterPlace;
     }
 
-    public void addMeterDataToMeter(MeterData meterData){
-        if(meterDatasList == null){
-            meterDatasList = new ArrayList<>();
+    public void addReadingToMeter(Reading reading){
+        if(readingsList == null){
+            readingsList = new ArrayList<>();
         }
-        meterDatasList.add(meterData);
-        meterData.setMeter(this);
+        readingsList.add(reading);
+        reading.setMeter(this);
     }
 
     public int getId() {
@@ -62,11 +62,11 @@ public class Meter {
         this.meterPlace = meterPlace;
     }
 
-    public List<MeterData> getMeterDatasList() {
-        return meterDatasList;
+    public List<Reading> getReadingsList() {
+        return readingsList;
     }
 
-    public void setMeterDatasList(List<MeterData> meterDatasList) {
-        this.meterDatasList = meterDatasList;
+    public void setReadingsList(List<Reading> readingsList) {
+        this.readingsList = readingsList;
     }
 }

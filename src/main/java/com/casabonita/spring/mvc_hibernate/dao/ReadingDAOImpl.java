@@ -1,51 +1,53 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
-import com.casabonita.spring.mvc_hibernate.entity.MeterData;
+import com.casabonita.spring.mvc_hibernate.entity.Reading;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional
 public class ReadingDAOImpl implements ReadingDAO{
 
     @Autowired
     private SessionFactory sessionFactory;
 
     @Override
-    public List<MeterData> getAllReadings() {
+    public List<Reading> getAllReadings() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<MeterData> allMeterDatas = session.createQuery("from MeterData", MeterData.class).getResultList();
+        List<Reading> allReadings = session.createQuery("from MeterData", Reading.class).getResultList();
 
-        return allMeterDatas;
+        return allReadings;
     }
 
     @Override
-    public void saveReading(MeterData meterData) {
+    public void saveReading(Reading reading) {
 
         Session session = sessionFactory.getCurrentSession();
-        session.saveOrUpdate(meterData);
+        session.saveOrUpdate(reading);
 
     }
 
     @Override
-    public MeterData getReading(int id) {
+    public Reading getReading(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        MeterData meterData = session.get(MeterData.class, id);
+        Reading reading = session.get(Reading.class, id);
 
-        return meterData;
+        return reading;
     }
 
     @Override
     public void deleteReading(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<MeterData> query = session.createQuery("delete from MeterData where id=:readingId");
+        Query<Reading> query = session.createQuery("delete from Reading where id=:readingId");
         query.setParameter("readingId", id);
         query.executeUpdate();
 

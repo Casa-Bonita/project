@@ -1,16 +1,16 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
-import com.casabonita.spring.mvc_hibernate.entity.MeterData;
+import com.casabonita.spring.mvc_hibernate.entity.Reading;
 
 import java.util.List;
 
 public interface ReadingDAO {
 
-    public List<MeterData> getAllReadings();
+    public List<Reading> getAllReadings();
 
-    public void saveReading(MeterData meterData);
+    public void saveReading(Reading reading);
 
-    public MeterData getReading(int id);
+    public Reading getReading(int id);
 
     public void deleteReading(int id);
 }

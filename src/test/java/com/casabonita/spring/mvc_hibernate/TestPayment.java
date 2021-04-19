@@ -11,12 +11,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 
 @ActiveProfiles("test")
@@ -30,15 +35,16 @@ import java.util.Date;
 public class TestPayment {
 
     @Autowired
-    private PaymentDAO paymentDAO;
+    private AccountDAO accountDAO;
 
     @Autowired
-    private AccountDAO accountDAO;
+    private PaymentDAO paymentDAO;
 
     @Autowired
     private DataSource dataSource;
 
     @Test
+    @Sql("/scripts/account_init.sql")
     public void testSave() throws ParseException {
 
         String d = "2021-01-01";
@@ -50,178 +56,120 @@ public class TestPayment {
         Date testDate = sdf.parse(d);
         String testPurpose = "TestPurpose";
 
-        Payment paymentActual = new Payment();
+        Payment payment = new Payment();
 
-        paymentActual.setAccount(account);
-        paymentActual.setAmount(testAmount);
-        paymentActual.setDate(testDate);
-        paymentActual.setPurpose(testPurpose);
+        payment.setAccount(account);
+        payment.setAmount(testAmount);
+        payment.setDate(testDate);
+        payment.setPurpose(testPurpose);
 
-        paymentDAO.savePayment(paymentActual);
+        paymentDAO.savePayment(payment);
 
         Request request = new Request(dataSource,
                 "SELECT * FROM account_data");
 
         Assertions.assertThat(request)
                 .hasNumberOfRows(1)
-                .column("payment").hasValues(100);
-
+                .column("payment").hasValues(testAmount)
+                .column("payment_date").hasValues(d)
+                .column("payment_purpose").hasValues(testPurpose);
     }
-//
-//    @Test
-//    public void TestGetById() throws ParseException{
-//
-//        String d = "2021-01-01";
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date = sdf.parse(d);
-//
-//        account = new Account();
-//        account.setId(0);
-//        account.setNumber("62.01.001");
-//        account.setAccountContract(null);
-//
-//        paymentActual = new Payment();
-//        paymentActual.setAccount(account);
-//        paymentActual.setAmount(100);
-//        paymentActual.setDate(date);
-//        paymentActual.setPurpose("TestPurpose");
-//
-//        account.addPaymentToAccount(paymentActual);
-//
-//        accountDAO.saveAccount(account);
-//        paymentDAO.savePayment(paymentActual);
-//
-//        Request request = new Request(dataSource,
-//                "SELECT * FROM account_data INNER JOIN account ON account_data.account_id = account.id WHERE account_data.id = 0");
-//
-//        Assertions.assertThat(request)
-//                .hasFieldOrPropertyWithValue("payment", 100)
-//                .hasFieldOrPropertyWithValue("payment_date", date)
-//                .hasFieldOrPropertyWithValue("payment_purpose", "TestPurpose");
-//
-//    }
-//
-//    @Test
-//    public void TestDeleteById() throws ParseException{
-//
-//        String d1 = "2021-01-01";
-//        String d2 = "2021-15-04";
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date1 = sdf.parse(d1);
-//        Date date2 = sdf.parse(d2);
-//
-//        account = new Account();
-//        account.setId(0);
-//        account.setNumber("62.01.001");
-//        account.setAccountContract(null);
-//
-//        paymentActual1 = new Payment();
-//        paymentActual1.setAccount(account);
-//        paymentActual1.setAmount(100);
-//        paymentActual1.setDate(date1);
-//        paymentActual1.setPurpose("TestPurpose_1");
-//
-//        paymentActual2 = new Payment();
-//        paymentActual2.setAccount(account);
-//        paymentActual2.setAmount(2000);
-//        paymentActual2.setDate(date2);
-//        paymentActual2.setPurpose("TestPurpose_2");
-//
-//        account.addPaymentToAccount(paymentActual1);
-//        account.addPaymentToAccount(paymentActual2);
-//
-//        accountDAO.saveAccount(account);
-//        paymentDAO.savePayment(paymentActual1);
-//        paymentDAO.savePayment(paymentActual2);
-//
-//        paymentDAO.deletePayment(0);
-//
-//        Request request = new Request(dataSource,
-//                "SELECT * FROM account_data INNER JOIN account ON account_data.account_id = account.id WHERE account_data.id = 1");
-//
-//        Assertions.assertThat(request)
-//                .hasFieldOrPropertyWithValue("payment", 2000)
-//                .hasFieldOrPropertyWithValue("payment_date", date2)
-//                .hasFieldOrPropertyWithValue("payment_purpose", "TestPurpose");
-//
-//    }
-//
-//    @Test
-//    public void TestUpdate() throws ParseException{
-//
-//        String d = "2021-01-01";
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date = sdf.parse(d);
-//
-//        account = new Account();
-//        account.setId(0);
-//        account.setNumber("62.01.001");
-//        account.setAccountContract(null);
-//
-//        paymentActual = new Payment();
-//        paymentActual.setAccount(account);
-//        paymentActual.setAmount(100);
-//        paymentActual.setDate(date);
-//        paymentActual.setPurpose("TestPurpose");
-//
-//        account.addPaymentToAccount(paymentActual);
-//
-//        accountDAO.saveAccount(account);
-//        paymentDAO.savePayment(paymentActual);
-//
-//        paymentActual.setPurpose("TestPurpose_Changed");
-//
-//        paymentDAO.savePayment(paymentActual);
-//
-//        Request request = new Request(dataSource,
-//                "SELECT * FROM account_data INNER JOIN account ON account_data.account_id = account.id");
-//
-//        Assertions.assertThat(request)
-//                .hasFieldOrPropertyWithValue("payment", 100)
-//                .hasFieldOrPropertyWithValue("payment_date", date)
-//                .hasFieldOrPropertyWithValue("payment_purpose", "TestPurpose_Changed");
-//
-//    }
-//
-//    @Test
-//    public void TestGetAll() throws ParseException{
-//
-//        String d1 = "2021-01-01";
-//        String d2 = "2021-15-04";
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date1 = sdf.parse(d1);
-//        Date date2 = sdf.parse(d2);
-//
-//        account = new Account();
-//        account.setId(0);
-//        account.setNumber("62.01.001");
-//        account.setAccountContract(null);
-//
-//        paymentActual1 = new Payment();
-//        paymentActual1.setAccount(account);
-//        paymentActual1.setAmount(100);
-//        paymentActual1.setDate(date1);
-//        paymentActual1.setPurpose("TestPurpose_1");
-//
-//        paymentActual2 = new Payment();
-//        paymentActual2.setAccount(account);
-//        paymentActual2.setAmount(2000);
-//        paymentActual2.setDate(date2);
-//        paymentActual2.setPurpose("TestPurpose_2");
-//
-//        account.addPaymentToAccount(paymentActual1);
-//        account.addPaymentToAccount(paymentActual2);
-//
-//        accountDAO.saveAccount(account);
-//        paymentDAO.savePayment(paymentActual1);
-//        paymentDAO.savePayment(paymentActual2);
-//
-//        paymentList = paymentDAO.getAllPayments();
-//
-//        Assertions.assertThat(paymentList).extracting("id", "account_id", "payment", "payment_date", "payment_purpose")
-//                .contains(tuple(0, 0, 100, date1, "TestPurpose_1"),
-//                        tuple(1, 0, 2000, date2, "TestPurpose_2"));
-//
-//    }
+
+    // TODO занести данные в payment_init, запустить тест
+    @Test
+    @Sql("/scripts/account_init.sql")
+    @Sql("/scripts/payment_init.sql")
+    public void testGetById() throws ParseException{
+
+        String d = "2021-01-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        int accountId = 1;
+        int amount = 100;
+        Date date = sdf.parse(d);
+        String purpose = "TestPurpose";
+
+        Payment payment = paymentDAO.getPayment(1);
+
+        assert accountId == payment.getAccount().getId();
+        assert amount == payment.getAmount();
+        assert date.equals(payment.getDate());
+        assert purpose.equals(payment.getPurpose());
+    }
+
+    // TODO занести данные в payment_init, запустить тест
+    @Test
+    @Sql("/scripts/account_init.sql")
+    @Sql("/scripts/payment_init.sql")
+    public void testDeleteById() throws ParseException{
+
+        String d = "2021-01-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        int accountId = 1;
+        int amount = 100;
+        Date date = sdf.parse(d);
+        String purpose = "TestPurpose";
+
+        paymentDAO.deletePayment(1);
+
+        Payment payment = paymentDAO.getPayment(1);
+
+        assert accountId == payment.getAccount().getId();
+        assert amount == payment.getAmount();
+        assert date.equals(payment.getDate());
+        assert purpose.equals(payment.getPurpose());
+    }
+
+    // TODO занести данные в payment_init, запустить тест
+    @Test
+    @Sql("/scripts/account_init.sql")
+    @Sql("/scripts/payment_init.sql")
+    public void testUpdate() throws ParseException{
+
+        String d = "2021-01-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        int accountId = 1;
+        int amount = 100;
+        Date date = sdf.parse(d);
+        String purpose = "TestPurpose";
+
+        Payment paymentExpected = paymentDAO.getPayment(1);
+
+        paymentExpected.setAmount(200);
+
+        paymentDAO.savePayment(paymentExpected);
+
+        Payment paymentActual = paymentDAO.getPayment(1);
+
+        assert accountId == paymentActual.getAccount().getId();
+        assert amount == paymentActual.getAmount();
+        assert date.equals(paymentActual.getDate());
+        assert purpose.equals(paymentActual.getPurpose());
+    }
+
+    // TODO занести данные в payment_init, запустить тест
+    @Test
+    @Sql("/scripts/account_init.sql")
+    @Sql("/scripts/payment_init.sql")
+    public void testGetAll() throws ParseException{
+
+        // TODO указать даты из payment_init
+        String d1 = "1995-01-11";
+        String d2 = "2006-05-03";
+        String d3 = "2014-03-18";
+        String d4 = "2008-12-23";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        List<Payment> paymentList = paymentDAO.getAllPayments();
+
+        // TODO занести данные из payment_init
+        assertThat(paymentList).extracting("id", "account", "amount", "date", "purpose")
+                .contains(tuple(0, 0, 100, sdf.parse(d1), "payment_purpose_1"),
+                        tuple(1, 1, 200, sdf.parse(d2), "payment_purpose_2"),
+                        tuple(2, 2, 300, sdf.parse(d3), "payment_purpose_3"),
+                        tuple(3, 3, 400, sdf.parse(d4), "payment_purpose_4"));
+    }
 
 }
