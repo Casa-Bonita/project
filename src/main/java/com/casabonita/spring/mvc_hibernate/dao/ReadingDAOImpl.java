@@ -21,7 +21,7 @@ public class ReadingDAOImpl implements ReadingDAO{
     public List<Reading> getAllReadings() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<Reading> allReadings = session.createQuery("from MeterData", Reading.class).getResultList();
+        List<Reading> allReadings = session.createQuery("from Reading", Reading.class).getResultList();
 
         return allReadings;
     }
@@ -47,8 +47,8 @@ public class ReadingDAOImpl implements ReadingDAO{
     public void deleteReading(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Reading> query = session.createQuery("delete from Reading where id=:readingId");
-        query.setParameter("readingId", id);
+        Query<Reading> query = session.createQuery("delete from Reading where id=:param");
+        query.setParameter("param", id);
         query.executeUpdate();
 
     }

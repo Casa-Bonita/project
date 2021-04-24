@@ -2,13 +2,10 @@ package com.casabonita.spring.mvc_hibernate;
 
 import com.casabonita.spring.mvc_hibernate.dao.AccountDAO;
 import com.casabonita.spring.mvc_hibernate.dao.ContractDAO;
-import com.casabonita.spring.mvc_hibernate.dao.PaymentDAO;
 import com.casabonita.spring.mvc_hibernate.entity.Account;
 import com.casabonita.spring.mvc_hibernate.entity.Contract;
-import com.casabonita.spring.mvc_hibernate.entity.Payment;
 import org.assertj.db.api.Assertions;
 import org.assertj.db.type.Request;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +15,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ActiveProfiles("test")
@@ -44,19 +37,14 @@ public class TestAccount {
     private ContractDAO contractDAO;
 
     @Autowired
-    private PaymentDAO paymentDAO;
-
-    @Autowired
     private DataSource dataSource;
 
-    // Нужно ли проверять сохранение списка платежей или только счёт?
     @Test
-    @Sql("/scripts/payment_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testSave(){
 
-        Contract contract = contractDAO.getContract(1);
-
-        List<Payment> paymentList = paymentDAO.getAllPayments();
+        int testContractId = 1;
+        Contract contract = contractDAO.getContract(testContractId);
 
         String testNumber = "TestNumber";
 
@@ -64,103 +52,118 @@ public class TestAccount {
 
         account.setNumber(testNumber);
         account.setAccountContract(contract);
-        account.setPaymentsList(paymentList);
+
+        contract.setAccount(account);
 
         accountDAO.saveAccount(account);
 
         Request request = new Request(dataSource,
-                "SELECT * FROM account");
+                "SELECT * FROM account WHERE id = 8");
 
         Assertions.assertThat(request)
                 .hasNumberOfRows(1)
+                .column("id").hasValues(8)
                 .column("account_number").hasValues(testNumber)
-                .column("contract_id").hasValues(contract.getId());
+                .column("contract_id").hasValues(testContractId);
     }
 
-    // Надо ли извлекать списки и сравнивать их?
-    // TODO занести данные в contract_init, payment_init, запустить тест
     @Test
-    @Sql("/scripts/account_init.sql")
-    @Sql("/scripts/contract_init.sql")
-    @Sql("/scripts/payment_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testGetById(){
 
-        String accountNumber = "TestNumber";
+        int id = 1;
+        String accountNumber = "62.01.001";
         int contractId = 1;
-        List<Payment> paymentList = paymentDAO.getAllPayments();
 
-        Account account = accountDAO.getAccount(1);
+        Account account = accountDAO.getAccount(id);
 
-        assert accountNumber == account.getNumber();
-        assert contractId == account.getAccountContract().getId();
+        assertThat(id).isEqualTo(account.getId());
+        assertThat(accountNumber).isEqualTo(account.getNumber());
+        assertThat(contractId).isEqualTo(account.getAccountContract().getId());
 
-        Assert.assertEquals(paymentList, account.getPaymentsList());
+        // проверка без getAccount через request из БД
+        Request request = new Request(dataSource,
+                "SELECT * FROM account WHERE id = 1");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("account_number").hasValues(accountNumber)
+                .column("contract_id").hasValues(contractId);
+
     }
 
-    // Надо ли извлекать списки и сравнивать их?
-    // TODO занести данные в contract_init, payment_init, запустить тест
     @Test
-    @Sql("/scripts/account_init.sql")
-    @Sql("/scripts/contract_init.sql")
-    @Sql("/scripts/payment_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testDeleteById(){
 
-        String accountNumber = "TestNumber";
-        int contractId = 1;
-        List<Payment> paymentList = paymentDAO.getAllPayments();
+        int id = 1;
+        accountDAO.deleteAccount(id);
 
-        accountDAO.deleteAccount(1);
+        // проверка через request удаления строки
+        Request requestOne = new Request(dataSource,
+                "SELECT * FROM account WHERE id = 1");
 
-        Account account = accountDAO.getAccount(1);
+        Assertions.assertThat(requestOne)
+                .isEmpty();
 
-        assert accountNumber.equals(account.getNumber());
-        assert contractId == account.getAccountContract().getId();
+        // проверка через request всех оставшихся после удаления строк таблицы
+        Request requestAll = new Request(dataSource,
+                "SELECT * FROM account");
 
-        Assert.assertEquals(paymentList, account.getPaymentsList());
+        Assertions.assertThat(requestAll)
+                .column("id").hasValues(2, 3, 4, 5, 6, 7)
+                .column("account_number").hasValues("62.01.002", "62.01.003", "62.01.004", "62.01.005", "62.01.006", "62.01.007")
+                .column("contract_id").hasValues(2, 3, 4, 5, 6, 7);
+
+        //проверка через getAllAccounts
+        List<Account> accountList = accountDAO.getAllAccounts();
+
+        assertThat(accountList).extracting(x -> x.getId()).contains(2, 3, 4, 5, 6, 7);
+        assertThat(accountList).extracting(x -> x.getNumber()).contains("62.01.002", "62.01.003", "62.01.004", "62.01.005", "62.01.006", "62.01.007");
+        assertThat(accountList).extracting(x -> x.getAccountContract().getId()).contains(2, 3, 4, 5, 6, 7);
     }
 
-    // Надо ли извлекать списки и сравнивать их?
-    // TODO занести данные в contract_init, payment_init, запустить тест
     @Test
-    @Sql("/scripts/account_init.sql")
-    @Sql("/scripts/contract_init.sql")
-    @Sql("/scripts/payment_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testUpdate(){
 
         String accountNumber = "TestNumber";
-        int contractId = 1;
-        List<Payment> paymentList = paymentDAO.getAllPayments();
 
-        Account accountExpected = accountDAO.getAccount(1);
+        int id = 1;
+        Account accountExpected = accountDAO.getAccount(id);
 
-        accountExpected.setNumber("TestNumber_2");
+        accountExpected.setNumber(accountNumber);
 
         accountDAO.saveAccount(accountExpected);
 
-        Account accountActual = accountDAO.getAccount(1);
+        Account accountActual = accountDAO.getAccount(id);
 
-        assert accountNumber == accountActual.getNumber();
-        assert contractId == accountActual.getAccountContract().getId();
+        // тест без использования getAccount
+        Request request = new Request(dataSource,
+                "SELECT * FROM account WHERE id = 1");
 
-        Assert.assertEquals(paymentList, accountActual.getPaymentsList());
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(accountExpected.getId())
+                .column("account_number").hasValues(accountNumber)
+                .column("contract_id").hasValues(accountExpected.getAccountContract().getId());
+
+        // тест с использованием getAccount
+        assertThat(accountExpected.getId()).isEqualTo(accountActual.getId());
+        assertThat(accountNumber).isEqualTo(accountActual.getNumber());
+        assertThat(accountExpected.getAccountContract().getId()).isEqualTo(accountActual.getAccountContract().getId());
+
     }
 
-    // нужно ли указывать список платежей paymentList
-    // TODO занести данные в contract_init, payment_init, запустить тест
     @Test
-    @Sql("/scripts/account_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testGetAll(){
 
         List<Account> accountList = accountDAO.getAllAccounts();
 
-        assertThat(accountList).extracting("id", "number", "accountContract")
-                .contains(tuple(0, "62.01.001", 0),
-                        tuple(1, "62.01.002", 1),
-                        tuple(2, "62.01.003", 2),
-                        tuple(3, "62.01.004", 3),
-                        tuple(4, "62.01.005", 4),
-                        tuple(5, "62.01.006", 5),
-                        tuple(6, "62.01.007", 6));
+        assertThat(accountList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
+        assertThat(accountList).extracting(x -> x.getNumber()).contains("62.01.001", "62.01.002", "62.01.003", "62.01.004", "62.01.005", "62.01.006", "62.01.007");
+        assertThat(accountList).extracting(x -> x.getAccountContract().getId()).contains(1, 2, 3, 4, 5, 6, 7);
     }
-
 }

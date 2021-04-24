@@ -1,6 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
 import com.casabonita.spring.mvc_hibernate.entity.Account;
+import com.casabonita.spring.mvc_hibernate.entity.Payment;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -46,8 +47,12 @@ public class AccountDAOImpl implements AccountDAO{
     public void deleteAccount(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Account> query = session.createQuery("delete from Account where id=:accountId");
-        query.setParameter("accountId", id);
-        query.executeUpdate();
+        Query<Payment> queryPayment = session.createQuery("delete from Payment where account.id=:param1");
+        queryPayment.setParameter("param1", id);
+        queryPayment.executeUpdate();
+
+        Query<Account> queryAccount = session.createQuery("delete from Account where id=:param2");
+        queryAccount.setParameter("param2", id);
+        queryAccount.executeUpdate();
     }
 }

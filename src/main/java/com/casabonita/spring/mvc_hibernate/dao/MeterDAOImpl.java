@@ -1,6 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
 import com.casabonita.spring.mvc_hibernate.entity.Meter;
+import com.casabonita.spring.mvc_hibernate.entity.Reading;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -46,8 +47,12 @@ public class MeterDAOImpl implements MeterDAO{
     public void deleteMeter(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Meter> query = session.createQuery("delete from Meter where id=:meterId");
-        query.setParameter("meterId", id);
-        query.executeUpdate();
+        Query<Reading> queryReading = session.createQuery("delete from Reading where meter.id=:param1");
+        queryReading.setParameter("param1", id);
+        queryReading.executeUpdate();
+
+        Query<Meter> queryMeter = session.createQuery("delete from Meter where id=:param2");
+        queryMeter.setParameter("param2", id);
+        queryMeter.executeUpdate();
     }
 }

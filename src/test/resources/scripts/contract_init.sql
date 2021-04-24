@@ -1,6 +1,9 @@
-INSERT INTO renter (id, name, ogrn, inn, registr_date, address, director_name, contact_name, phone)
+INSERT INTO contract (number, contract_date, fare, start_date, finish_date, payment_day, place_id, renter_id)
 VALUES
-(0, 'Romashka', '1076318010548', '6318308609', '1995-01-11', '443117, Samarskaya oblast, gorod Samara, Orshanskij pereulok, 9', 'Prohorov Vladimir Stepanovich', 'Yablochkin Vasilij Petrovich', '+7(495)123-45-67'),
-(1, 'Luytik', '1064027042991', '4027073395', '2006-05-03', '248002, Kaluzhskaya oblast, gorod Kaluga, ulica Saltykova-Shchedrina, 76', 'Shumakov Grigorij Anatolevich', 'Goncharov Eduard Sergeevich', '+7(495)123-67-45'),
-(2, 'Oduvanchik', '1145476032668', '5406775985', '2014-03-18', '656056, Altajskij kraj, gorod Barnaul, ploshchad im V.N.Bavarina, dom 2, ofis 910', 'Trufanov Anton Yurevich', 'Arhipova Nadezhda Viktorovna', '+7(495)123-45-89'),
-(3, 'Margaritka', '1086168005550', '6168024958', '2008-12-23', '344015, Rostovskaya oblast, gorod Rostov-na-Donu, ulica Eremenko, 58/9', 'Pavlickaya Natalya Yakovlevna', 'Boldyreva Svetlana Aleksandrovna', '+7(495)123-67-45');
+('100R', '2019-01-01', 1000, '2019-01-01', '2021-12-31', 5, 1, 1),
+('101R', '2019-01-01', 2000, '2019-01-01', '2021-12-31', 5, 2, 1),
+('102R', '2019-01-01', 3000, '2019-01-01', '2021-12-31', 5, 3, 1),
+('103L', '2019-01-01', 500, '2019-01-01', '2021-12-31', 4, 4, 2),
+('104O', '2019-01-01', 1500, '2019-01-01', '2021-12-31', 3, 5, 3),
+('105O', '2019-01-01', 2500, '2019-01-01', '2021-12-31', 3, 6, 3),
+('106M', '2019-01-01', 3500, '2019-01-01', '2021-12-31', 2, 7, 4);

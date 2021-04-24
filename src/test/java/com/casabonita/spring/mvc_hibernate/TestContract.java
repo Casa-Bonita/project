@@ -1,9 +1,9 @@
 package com.casabonita.spring.mvc_hibernate;
 
+import com.casabonita.spring.mvc_hibernate.dao.AccountDAO;
 import com.casabonita.spring.mvc_hibernate.dao.ContractDAO;
 import com.casabonita.spring.mvc_hibernate.dao.PlaceDAO;
 import com.casabonita.spring.mvc_hibernate.dao.RenterDAO;
-import com.casabonita.spring.mvc_hibernate.dao.AccountDAO;
 import com.casabonita.spring.mvc_hibernate.entity.Account;
 import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import com.casabonita.spring.mvc_hibernate.entity.Place;
@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 @ActiveProfiles("test")
 @ContextConfiguration
@@ -52,12 +51,12 @@ public class TestContract {
     @Autowired
     private DataSource dataSource;
 
-    // TODO занести данные в account_init, place_init, renter_init и запустить тест
     @Test
-    @Sql("/scripts/account_init.sql")
-    @Sql("/scripts/place_init.sql")
-    @Sql("/scripts/renter_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql",
+            "/scripts/reading_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testSave() throws ParseException{
+
+        int id = 1;
 
         String d1 = "2021-01-01";
         String d2 = "2021-01-15";
@@ -70,9 +69,9 @@ public class TestContract {
         Date testStartDate = sdf.parse(d2);
         Date testFinishDate = sdf.parse(d3);
         int testPaymentDay = 25;
-        Place place = placeDAO.getPlace(1);
-        Renter renter = renterDAO.getRenter(1);
-        Account account = accountDAO.getAccount(1);
+        Place place = placeDAO.getPlace(id);
+        Renter renter = renterDAO.getRenter(id);
+        Account account = accountDAO.getAccount(id);
 
         Contract contract = new Contract();
 
@@ -89,277 +88,172 @@ public class TestContract {
         contractDAO.saveContract(contract);
 
         Request request = new Request(dataSource,
-                "SELECT * FROM contract");
+                "SELECT * FROM contract WHERE id = 8");
 
         Assertions.assertThat(request)
                 .hasNumberOfRows(1)
+                .column("id").hasValues(8)
                 .column("number").hasValues(testNumber)
-                .column("date").hasValues(d1)
+                .column("contract_date").hasValues(d1)
                 .column("fare").hasValues(testFare)
-                .column("startDate").hasValues(d2) // почему тут String, а не Date
-                .column("finishDate").hasValues(d3)
-                .column("paymentDay").hasValues(testPaymentDay)
-                .column("contractPlace").hasValues(place)
-                .column("renter").hasValues(renter)
-                .column("account").hasValues(account);
+                .column("start_date").hasValues(d2)
+                .column("finish_date").hasValues(d3)
+                .column("payment_day").hasValues(testPaymentDay)
+                .column("place_id").hasValues(place.getId()) // правильно ли вызывать getId() ?
+                .column("renter_id").hasValues(renter.getId()); // правильно ли вызывать getId() ?
     }
 
-    // TODO занести данные в account_init, place_init, renter_init и запустить тест
+    // не работает
     @Test
-    @Sql("/scripts/account_init.sql")
-    @Sql("/scripts/place_init.sql")
-    @Sql("/scripts/renter_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql",
+            "/scripts/reading_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testGetById() throws ParseException{
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String d1 = "2021-01-01";
-        String d2 = "2021-01-15";
+        String d1 = "2019-01-01";
+        String d2 = "2019-01-01";
         String d3 = "2021-12-31";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        String testNumber = "TestNumber";
-        Date testContractDate = sdf.parse(d1);
-        int testFare = 100;
-        Date testStartDate = sdf.parse(d2);
-        Date testFinishDate = sdf.parse(d3);
-        int testPaymentDay = 25;
-        int testContractPlace = placeDAO.getPlace(1).getId();
-        int testRenter = renterDAO.getRenter(1).getId();
-        int testAccount = accountDAO.getAccount(1).getId();
+        int id = 1;
+        String number = "100R";
+        Date contractDate = sdf.parse(d1);
+        int fare = 1000;
+        Date startDate = sdf.parse(d2);
+        Date finishDate = sdf.parse(d3);
+        int paymentDay = 5;
+        int contractPlace = 1;
+        int renter = 1;
 
-        Contract contract = contractDAO.getContract(1);
+        // проверка через getContract
+        Contract contract = contractDAO.getContract(id);
 
-        assert testNumber.equals(contract.getNumber());
-        assert testContractDate.equals(contract.getDate());
-        assert testFare == contract.getFare();
-        assert testStartDate.equals(contract.getStartDate());
-        assert testFinishDate.equals(contract.getFinishDate());
-        assert testPaymentDay == contract.getPaymentDay();
-        assert testContractPlace == contract.getContractPlace().getId();
-        assert testRenter == contract.getRenter().getId();
-        assert testAccount == contract.getAccount().getId();
+        assertThat(id).isEqualTo(contract.getId());
+        assertThat(number).isEqualTo(contract.getNumber());
+        assertThat(contractDate).isEqualTo(contract.getDate());
+        assertThat(fare).isEqualTo(contract.getFare());
+        assertThat(startDate).isEqualTo(contract.getStartDate());
+        assertThat(finishDate).isEqualTo(contract.getFinishDate());
+        assertThat(paymentDay).isEqualTo(contract.getPaymentDay());
+        assertThat(contractPlace).isEqualTo(contract.getContractPlace().getId());
+        assertThat(renter).isEqualTo(contract.getRenter().getId());
+
+        // проверка без getContract через request из БД
+        Request request = new Request(dataSource,
+                "SELECT * FROM contract WHERE id = 1");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("number").hasValues(number)
+                .column("contract_date").hasValues(contractDate)
+                .column("fare").hasValues(fare)
+                .column("start_date").hasValues(startDate)
+                .column("finish_date").hasValues(finishDate)
+                .column("payment_day").hasValues(paymentDay)
+                .column("place_id").hasValues(contractPlace)
+                .column("renter_id").hasValues(renter);
+
     }
 
-    // TODO занести данные в account_init, place_init, renter_init и запустить тест
+    // не работает - добавить удаления в DAOImpl
     @Test
-    @Sql("/scripts/account_init.sql")
-    @Sql("/scripts/contract_init.sql")
-    @Sql("/scripts/place_init.sql")
-    @Sql("/scripts/renter_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql",
+            "/scripts/reading_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testDeleteById() throws ParseException{
 
-        String d1 = "2021-01-01";
-        String d2 = "2021-01-15";
+        String d1 = "2019-01-01";
+        String d2 = "2019-01-01";
         String d3 = "2021-12-31";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        String testNumber = "TestNumber";
-        Date testContractDate = sdf.parse(d1);
-        int testFare = 100;
-        Date testStartDate = sdf.parse(d2);
-        Date testFinishDate = sdf.parse(d3);
-        int testPaymentDay = 25;
-        Place place = placeDAO.getPlace(1);
-        Renter renter = renterDAO.getRenter(1);
-        Account account = accountDAO.getAccount(1);
+        int id = 1;
+        contractDAO.deleteContract(id);
 
-        contractDAO.deleteContract(1);
+        // проверка через request удаления строки
+        Request requestOne = new Request(dataSource,
+                "SELECT * FROM contract WHERE id = 1");
 
-        Contract contract = contractDAO.getContract(1);
+        Assertions.assertThat(requestOne)
+                .isEmpty();
 
-        assert testNumber.equals(contract.getNumber());
-        assert testContractDate.equals(contract.getDate());
-        assert testFare == contract.getFare();
-        assert testStartDate.equals(contract.getStartDate());
-        assert testFinishDate.equals(contract.getFinishDate());
-        assert testPaymentDay == contract.getPaymentDay();
-        assert place.equals(contract.getContractPlace());
-        assert renter.equals(contract.getRenter());
-        assert account.equals(contract.getAccount());
+        // проверка через request всех оставшихся после удаления строк таблицы
+        Request requestAll = new Request(dataSource,
+                "SELECT * FROM contract");
+
+        Assertions.assertThat(requestAll)
+                .column("id").hasValues(2, 3, 4, 5, 6, 7)
+                .column("number").hasValues("101R", "102R", "103L", "104O", "105O", "106M")
+                .column("contract_date").hasValues(sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1))
+                .column("fare").hasValues(2000, 3000, 500, 1500, 2500, 3500)
+                .column("start_date").hasValues(sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2))
+                .column("finish_date").hasValues(sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3))
+                .column("payment_day").hasValues(5, 5, 4, 3, 3, 2)
+                .column("place_id").hasValues(2, 3, 4, 5, 6, 7)
+                .column("renter_id").hasValues(1, 1, 2, 3, 3, 4);
+
+        //проверка через getAllContracts
+        List<Contract> contractList = contractDAO.getAllContracts();
+
+        assertThat(contractList).extracting(x -> x.getId()).contains(2, 3, 4, 5, 6, 7);
+        assertThat(contractList).extracting(x -> x.getNumber()).contains("101R", "102R", "103L", "104O", "105O", "106M");
+        assertThat(contractList).extracting(x -> sdf.parse(x.getDate().toString())).contains(sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1));
+        assertThat(contractList).extracting(x -> x.getFare()).contains(2000, 3000, 500, 1500, 2500, 3500);
+        assertThat(contractList).extracting(x -> sdf.parse(x.getStartDate().toString())).contains(sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2));
+        assertThat(contractList).extracting(x -> sdf.parse(x.getFinishDate().toString())).contains(sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3));
+        assertThat(contractList).extracting(x -> x.getPaymentDay()).contains(5, 5, 4, 3, 3, 2);
+        assertThat(contractList).extracting(x -> x.getContractPlace().getId()).contains(2, 3, 4, 5, 6, 7);
+        assertThat(contractList).extracting(x -> x.getRenter().getId()).contains(1, 1, 2, 3, 3, 4);
     }
 
-    // TODO занести данные в contract_init и запустить тест
     @Test
-    @Sql("/scripts/contract_init.sql")
-
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql",
+            "/scripts/reading_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testUpdate() throws ParseException{
 
-        Contract contractExpected = contractDAO.getContract(1);
+        String number = "TestNumber";
 
-        contractExpected.setNumber("Test");
+        int id = 1;
+        Contract contractExpected = contractDAO.getContract(id);
+
+        contractExpected.setNumber(number);
 
         contractDAO.saveContract(contractExpected);
 
-        Contract contractActual = contractDAO.getContract(1);
+        Contract contractActual = contractDAO.getContract(id);
 
-        assert contractExpected.getNumber().equals(contractActual.getNumber());
-        assert contractExpected.getDate().equals(contractActual.getDate());
-        assert contractExpected.getFare() == contractActual.getFare();
-        assert contractExpected.getStartDate().equals(contractActual.getStartDate());
-        assert contractExpected.getFinishDate().equals(contractActual.getFinishDate());
-        assert contractExpected.getPaymentDay() == contractActual.getPaymentDay();
-        assert contractExpected.getContractPlace().equals(contractActual.getContractPlace());
-        assert contractExpected.getRenter().equals(contractActual.getRenter());
-        assert contractExpected.getAccount().equals(contractActual.getAccount());
+        assertThat(contractExpected.getId()).isEqualTo(contractActual.getId());
+        assertThat(number).isEqualTo(contractActual.getNumber());
+        assertThat(contractExpected.getDate()).isEqualTo(contractActual.getDate());
+        assertThat(contractExpected.getFare()).isEqualTo(contractActual.getFare());
+        assertThat(contractExpected.getStartDate()).isEqualTo(contractActual.getStartDate());
+        assertThat(contractExpected.getFinishDate()).isEqualTo(contractActual.getFinishDate());
+        assertThat(contractExpected.getPaymentDay()).isEqualTo(contractActual.getPaymentDay());
+        assertThat(contractExpected.getContractPlace().getId()).isEqualTo(contractActual.getContractPlace().getId());
+        assertThat(contractExpected.getRenter().getId()).isEqualTo(contractActual.getRenter().getId());
 
     }
 
-    // TODO занести данные в тест и в contract_init, запустить тест
     @Test
-    @Sql("/scripts/contract_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql",
+            "/scripts/reading_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
     public void testGetAll() throws ParseException{
-        String d1 = "2021-01-01";
-        String d2 = "2021-01-15";
-        String d3 = "2021-12-31";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         List<Contract> contractList = contractDAO.getAllContracts();
 
-        assertThat(contractList).extracting("id", "number", "date", "fare", "startDate", "finishDate", "paymentDay", "contractPlace", "renter", "account")
-                .contains(tuple(0, "Romashka", "1076318010548", "6318308609", sdf.parse(d1), "443117, Samarskaya oblast, gorod Samara, Orshanskij pereulok, 9", "Prohorov Vladimir Stepanovich", "Yablochkin Vasilij Petrovich", "+7(495)123-45-67"),
-                        tuple(1, "Luytik", "1064027042991", "4027073395", sdf.parse(d2), "248002, Kaluzhskaya oblast, gorod Kaluga, ulica Saltykova-Shchedrina, 76", "Shumakov Grigorij Anatolevich", "Goncharov Eduard Sergeevich", "+7(495)123-67-45"),
-                        tuple(2, "Oduvanchik", "1145476032668", "5406775985", sdf.parse(d3), "656056, Altajskij kraj, gorod Barnaul, ploshchad im V.N.Bavarina, dom 2, ofis 910", "Trufanov Anton Yurevich", "Arhipova Nadezhda Viktorovna", "+7(495)123-45-89"),
-                        tuple(3, "Margaritka", "1086168005550", "6168024958", sdf.parse(d3), "344015, Rostovskaya oblast, gorod Rostov-na-Donu, ulica Eremenko, 58/9", "Pavlickaya Natalya Yakovlevna", "Boldyreva Svetlana Aleksandrovna", "+7(495)123-67-45"));
+        String d1 = "2019-01-01";
+        String d2 = "2019-01-01";
+        String d3 = "2021-12-31";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        assertThat(contractList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
+        assertThat(contractList).extracting(x -> x.getNumber()).contains("100R", "101R", "102R", "103L", "104O", "105O", "106M");
+        assertThat(contractList).extracting(x -> sdf.parse(x.getDate().toString())).contains(sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1));
+        assertThat(contractList).extracting(x -> x.getFare()).contains(1000, 2000, 3000, 500, 1500, 2500, 3500);
+        assertThat(contractList).extracting(x -> sdf.parse(x.getStartDate().toString())).contains(sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2));
+        assertThat(contractList).extracting(x -> sdf.parse(x.getFinishDate().toString())).contains(sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3));
+        assertThat(contractList).extracting(x -> x.getPaymentDay()).contains(5, 5, 5, 4, 3, 3, 2);
+        assertThat(contractList).extracting(x -> x.getContractPlace().getId()).contains(1, 2, 3, 4, 5, 6, 7);
+        assertThat(contractList).extracting(x -> x.getRenter().getId()).contains(1, 1, 1, 2, 3, 3, 4);
 
     }
 }
-
-// Тестирование через JdbcTemplate
-//@RunWith(SpringJUnit4ClassRunner.class)
-//public class TestRenter{
-//
-//    private Renter renterBefore1;
-//    private Renter renterBefore2;
-//    private List<Renter> renterList;
-//
-//    @Autowired
-//    private RenterDAO renterDAO;
-//
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
-//
-//    @Before
-//    public void createRenter() throws ParseException {
-//        String d1 = "2021-01-01";
-//        String d2 = "2021-07-04";
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        Date date1 = sdf.parse(d1);
-//        Date date2 = sdf.parse(d2);
-//
-//        renterBefore1 = new Renter();
-//        renterBefore1.setName("TestName_1");
-//        renterBefore1.setOgrn("TestOGRN_1");
-//        renterBefore1.setInn("TestINN_1");
-//        renterBefore1.setRegistrDate(date1);
-//        renterBefore1.setAddress("TestAddress_1");
-//        renterBefore1.setDirectorName("TestDirectorName_1");
-//        renterBefore1.setContactName("testContactName_1");
-//        renterBefore1.setPhoneNumber("testPhoneNumber_1");
-//
-//        renterBefore2 = new Renter();
-//        renterBefore2.setName("TestName_2");
-//        renterBefore2.setOgrn("TestOGRN_2");
-//        renterBefore2.setInn("TestINN_2");
-//        renterBefore2.setRegistrDate(date2);
-//        renterBefore2.setAddress("TestAddress_2");
-//        renterBefore2.setDirectorName("TestDirectorName_2");
-//        renterBefore2.setContactName("testContactName_2");
-//        renterBefore2.setPhoneNumber("testPhoneNumber_2");
-//
-//        renterDAO.saveRenter(renterBefore1);
-//        renterDAO.saveRenter(renterBefore2);
-//    }
-//
-//    @Before
-//    public void fillRenterList(){
-//        renterList = jdbcTemplate.query(
-//                "SELECT * FROM renter",
-//                new RowMapper<Renter>() {
-//                    @Override
-//                    public Renter mapRow(ResultSet resultSet, int i) throws SQLException {
-//                        Renter renterAfter = new Renter();
-//
-//                        renterAfter.setName(resultSet.getString("name"));
-//                        renterAfter.setOgrn(resultSet.getString("ogrn"));
-//                        renterAfter.setInn(resultSet.getString("inn"));
-//                        renterAfter.setRegistrDate(resultSet.getDate("registr_date"));
-//                        renterAfter.setAddress(resultSet.getString("address"));
-//                        renterAfter.setDirectorName(resultSet.getString("director_name"));
-//                        renterAfter.setContactName(resultSet.getString("contact_name"));
-//                        renterAfter.setPhoneNumber(resultSet.getString("phone"));
-//
-//                        return renterAfter;
-//                    }
-//                }
-//        );
-//    }
-//
-//    @After
-//    public void clearRenterList(){
-//
-//        renterList.clear();
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void testInsert(){
-//
-//        assertFalse(renterList.isEmpty());
-//
-//        assertEquals(renterBefore1.getName(), renterList.get(0).getName());
-//        assertEquals(renterBefore1.getOgrn(), renterList.get(0).getOgrn());
-//        assertEquals(renterBefore1.getInn(), renterList.get(0).getInn());
-//        assertEquals(renterBefore1.getRegistrDate(), renterList.get(0).getRegistrDate());
-//        assertEquals(renterBefore1.getAddress(), renterList.get(0).getAddress());
-//        assertEquals(renterBefore1.getDirectorName(), renterList.get(0).getDirectorName());
-//        assertEquals(renterBefore1.getContactName(), renterList.get(0).getContactName());
-//        assertEquals(renterBefore1.getPhoneNumber(), renterList.get(0).getPhoneNumber());
-//
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void TestGetById(){
-//
-//        assertFalse(renterList.isEmpty());
-//
-//        assertEquals(renterBefore1.getName(), renterList.get(0).getName());
-//        assertEquals(renterBefore1.getOgrn(), renterList.get(0).getOgrn());
-//        assertEquals(renterBefore1.getInn(), renterList.get(0).getInn());
-//        assertEquals(renterBefore1.getRegistrDate(), renterList.get(0).getRegistrDate());
-//        assertEquals(renterBefore1.getAddress(), renterList.get(0).getAddress());
-//        assertEquals(renterBefore1.getDirectorName(), renterList.get(0).getDirectorName());
-//        assertEquals(renterBefore1.getContactName(), renterList.get(0).getContactName());
-//        assertEquals(renterBefore1.getPhoneNumber(), renterList.get(0).getPhoneNumber());
-//
-//        assertEquals(renterBefore2.getName(), renterList.get(1).getName());
-//        assertEquals(renterBefore2.getOgrn(), renterList.get(1).getOgrn());
-//        assertEquals(renterBefore2.getInn(), renterList.get(1).getInn());
-//        assertEquals(renterBefore2.getRegistrDate(), renterList.get(1).getRegistrDate());
-//        assertEquals(renterBefore2.getAddress(), renterList.get(1).getAddress());
-//        assertEquals(renterBefore2.getDirectorName(), renterList.get(1).getDirectorName());
-//        assertEquals(renterBefore2.getContactName(), renterList.get(1).getContactName());
-//        assertEquals(renterBefore2.getPhoneNumber(), renterList.get(1).getPhoneNumber());
-//
-//    }
-//
-//    @Test
-//    @Transactional
-//    public void TestDeleteById(){
-//
-//        renterDAO.deleteRenter(1);
-//
-//        fillRenterList();
-//
-//        assertEquals(renterList.size(), 1);
-//
-//        assertEquals(renterBefore2.getName(), renterList.get(0).getName());
-//        assertEquals(renterBefore2.getOgrn(), renterList.get(0).getOgrn());
-//        assertEquals(renterBefore2.getInn(), renterList.get(0).getInn());
-//        assertEquals(renterBefore2.getRegistrDate(), renterList.get(0).getRegistrDate());
-//        assertEquals(renterBefore2.getAddress(), renterList.get(0).getAddress());
-//        assertEquals(renterBefore2.getDirectorName(), renterList.get(0).getDirectorName());
-//        assertEquals(renterBefore2.getContactName(), renterList.get(0).getContactName());
-//        assertEquals(renterBefore2.getPhoneNumber(), renterList.get(0).getPhoneNumber());
-//
-//    }
-//}

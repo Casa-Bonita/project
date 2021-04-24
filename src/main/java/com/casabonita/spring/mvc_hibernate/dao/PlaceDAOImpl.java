@@ -1,19 +1,23 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
+import com.casabonita.spring.mvc_hibernate.entity.Meter;
 import com.casabonita.spring.mvc_hibernate.entity.Place;
+import com.casabonita.spring.mvc_hibernate.entity.Reading;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional
 public class PlaceDAOImpl implements PlaceDAO{
 
     @Autowired
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     @Override
     public List<Place> getAllPlaces() {
@@ -45,8 +49,17 @@ public class PlaceDAOImpl implements PlaceDAO{
     public void deletePlace(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Place> query = session.createQuery("delete from Place where id=:placeId");
-        query.setParameter("placeId", id);
-        query.executeUpdate();
+
+        Query<Reading> queryReading = session.createQuery("delete from Reading where meter.id=:param1");
+        queryReading.setParameter("param1", id);
+        queryReading.executeUpdate();
+
+        Query<Meter> queryMeter = session.createQuery("delete from Meter where meterPlace.id=:param2");
+        queryMeter.setParameter("param2", id);
+        queryMeter.executeUpdate();
+
+        Query<Place> queryPlace = session.createQuery("delete from Place where id=:param3");
+        queryPlace.setParameter("param3", id);
+        queryPlace.executeUpdate();
     }
 }

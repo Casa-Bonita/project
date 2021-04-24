@@ -20,8 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ActiveProfiles("test")
@@ -44,13 +43,14 @@ public class TestReading {
     private DataSource dataSource;
 
     @Test
-    @Sql("/scripts/meter_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql"})
     public void testSave() throws ParseException {
 
         String d = "2021-01-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        Meter meter = meterDAO.getMeter(1);
+        int id = 1;
+        Meter meter = meterDAO.getMeter(id);
 
         int testTransferData = 100;
         Date testTransferDate = sdf.parse(d);
@@ -68,99 +68,102 @@ public class TestReading {
 
         Assertions.assertThat(request)
                 .hasNumberOfRows(1)
+                .column("id").hasValues(id)
                 .column("data").hasValues(testTransferData)
                 .column("data_date").hasValues(d);
     }
 
-    // TODO занести данные в reading_init, meter_init, запустить тест
     @Test
-    @Sql("/scripts/meter_init.sql")
-    @Sql("/scripts/reading_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testGetById() throws ParseException{
 
-        String d = "2021-01-01";
+        String d = "2021-03-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+        int id = 1;
         int meterId = 1;
-        int transferData = 100;
+        int transferData = 11100;
         Date transferDate = sdf.parse(d);
 
-        Reading reading = readingDAO.getReading(1);
+        // проверка через getReading
+        Reading reading = readingDAO.getReading(id);
 
-        assert meterId == reading.getMeter().getId();
-        assert transferData == reading.getTransferData();
-        assert transferDate.equals(reading.getTransferDate());
+        assertThat(id).isEqualTo(reading.getId());
+        assertThat(meterId).isEqualTo(reading.getMeter().getId());
+        assertThat(transferData).isEqualTo(reading.getTransferData());
+        assertThat(transferDate).isEqualTo(reading.getTransferDate());
+
+        // тест без использования getPayment
+        Request request = new Request(dataSource,
+                "SELECT * FROM meter_data WHERE id = 1");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("meter_id").hasValues(meterId)
+                .column("data").hasValues(transferData)
+                .column("data_date").hasValues(d);
     }
 
-    // TODO занести данные в reading_init, meter_init, запустить тест
     @Test
-    @Sql("/scripts/meter_init.sql")
-    @Sql("/scripts/reading_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testDeleteById() throws ParseException{
 
-        String d = "2021-01-01";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        int meterId = 1;
-        int transferData = 100;
-        Date transferDate = sdf.parse(d);
-
-        readingDAO.deleteReading(1);
-
-        Reading reading = readingDAO.getReading(1);
-
-        assert meterId == reading.getMeter().getId();
-        assert transferData == reading.getTransferData();
-        assert transferDate.equals(reading.getTransferDate());
-    }
-
-    // TODO занести данные в reading_init, meter_init, запустить тест
-    @Test
-    @Sql("/scripts/meter_init.sql")
-    @Sql("/scripts/reading_init.sql")
-    public void testUpdate() throws ParseException{
-
-        String d = "2021-01-01";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        int meterId = 1;
-        int transferData = 100;
-        Date transferDate = sdf.parse(d);
-
-        Reading readingExpected = readingDAO.getReading(1);
-
-        readingExpected.setTransferData(200);
-
-        readingDAO.saveReading(readingExpected);
-
-        Reading readingActual = readingDAO.getReading(1);
-
-        assert meterId == readingActual.getMeter().getId();
-        assert transferData == readingActual.getTransferData();
-        assert transferDate.equals(readingActual.getTransferDate());
-    }
-
-    // TODO занести данные в reading_init, meter_init, запустить тест
-    @Test
-    @Sql("/scripts/meter_init.sql")
-    @Sql("/scripts/reading_init.sql")
-    public void testGetAll() throws ParseException{
-
-        // TODO указать даты из reading_init
-        String d1 = "1995-01-11";
-        String d2 = "2006-05-03";
-        String d3 = "2014-03-18";
-        String d4 = "2008-12-23";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        int id = 1;
+        readingDAO.deleteReading(id);
 
         List<Reading> readingList = readingDAO.getAllReadings();
 
-        // TODO занести данные из reading_init
-        assertThat(readingList).extracting("id", "meter", "transferData", "transferDate")
-                .contains(tuple(0, 0, 100, sdf.parse(d1)),
-                        tuple(1, 1, 200, sdf.parse(d2)),
-                        tuple(2, 2, 300, sdf.parse(d3)),
-                        tuple(3, 3, 400, sdf.parse(d4)));
+        assertThat(readingList)
+                .isNotEmpty()
+                .hasSize(13);
+
+        String d1 = "2021-03-01";
+        String d2 = "2021-02-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        assertThat(readingList).extracting(x -> x.getId()).contains(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+        assertThat(readingList).extracting(x -> x.getMeter().getId()).contains(1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
+        assertThat(readingList).extracting(x -> x.getTransferData()).contains(11000, 21900, 21800, 3700, 3800, 6800, 6900, 15900, 15800, 32700, 32600, 29000, 28900);
+        assertThat(readingList).extracting(x -> sdf.parse(x.getTransferDate().toString())).contains(sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
+
     }
 
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
+    public void testUpdate() throws ParseException{
+
+        int data = 123456;
+
+        int id = 1;
+        Reading readingExpected = readingDAO.getReading(id);
+
+        readingExpected.setTransferData(data);
+
+        readingDAO.saveReading(readingExpected);
+
+        Reading readingActual = readingDAO.getReading(id);
+
+        assertThat(readingExpected.getId()).isEqualTo(readingActual.getId());
+        assertThat(readingExpected.getMeter().getId()).isEqualTo(readingActual.getMeter().getId());
+        assertThat(data).isEqualTo(readingActual.getTransferData());
+        assertThat(readingExpected.getTransferDate()).isEqualTo(readingActual.getTransferDate());
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
+    public void testGetAll() throws ParseException{
+
+        List<Reading> readingList = readingDAO.getAllReadings();
+
+        String d1 = "2021-03-01";
+        String d2 = "2021-02-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        assertThat(readingList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+        assertThat(readingList).extracting(x -> x.getMeter().getId()).contains(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
+        assertThat(readingList).extracting(x -> x.getTransferData()).contains(11100, 11000, 21900, 21800, 3700, 3800, 6800, 6900, 15900, 15800, 32700, 32600, 29000, 28900);
+        assertThat(readingList).extracting(x -> sdf.parse(x.getTransferDate().toString())).contains(sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
+
+    }
 }

@@ -30,6 +30,7 @@ public class PaymentDAOImpl implements PaymentDAO{
     public void savePayment(Payment payment) {
 
         Session session = sessionFactory.getCurrentSession();
+
         session.saveOrUpdate(payment);
 
     }
@@ -47,8 +48,8 @@ public class PaymentDAOImpl implements PaymentDAO{
     public void deletePayment(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Payment> query = session.createQuery("delete from Payment where id=:paymentId");
-        query.setParameter("paymentId", id);
+        Query<Payment> query = session.createQuery("delete from Payment where id=:param");
+        query.setParameter("param", id);
         query.executeUpdate();
 
     }

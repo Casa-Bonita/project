@@ -1,10 +1,12 @@
 package com.casabonita.spring.mvc_hibernate;
 
-import com.casabonita.spring.mvc_hibernate.dao.*;
-import com.casabonita.spring.mvc_hibernate.entity.*;
+import com.casabonita.spring.mvc_hibernate.dao.MeterDAO;
+import com.casabonita.spring.mvc_hibernate.dao.PlaceDAO;
+import com.casabonita.spring.mvc_hibernate.dao.ReadingDAO;
+import com.casabonita.spring.mvc_hibernate.entity.Meter;
+import com.casabonita.spring.mvc_hibernate.entity.Place;
 import org.assertj.db.api.Assertions;
 import org.assertj.db.type.Request;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.sql.DataSource;
-import java.text.ParseException;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ActiveProfiles("test")
@@ -43,14 +43,12 @@ public class TestMeter {
     @Autowired
     private DataSource dataSource;
 
-    // Нужно ли проверять сохранение списка показаний или только счётчика?
     @Test
-    @Sql("/scripts/reading_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testSave(){
 
-        Place place = placeDAO.getPlace(1);
-
-        List<Reading> readingList = readingDAO.getAllReadings();
+        int testPlaceId = 1;
+        Place place = placeDAO.getPlace(testPlaceId);
 
         int testNumber = 123456;
 
@@ -59,101 +57,112 @@ public class TestMeter {
         meter.setNumber(testNumber);
         meter.setMeterPlace(place);
 
+        place.setMeter(meter);
+
         meterDAO.saveMeter(meter);
 
         Request request = new Request(dataSource,
-                "SELECT * FROM meter");
+                "SELECT * FROM meter WHERE id = 8");
 
         Assertions.assertThat(request)
                 .hasNumberOfRows(1)
-                .column("number").hasValues(testNumber)
-                .column("meterPlace").hasValues(place.getId());
+                .column("id").hasValues(8)
+                .column("meter_number").hasValues(testNumber)
+                .column("place_id").hasValues(place.getId());
     }
 
-    // Надо ли извлекать списки и сравнивать их?
-    // TODO занести данные в contract_init, payment_init, запустить тест
     @Test
-    @Sql("/scripts/meter_init.sql")
-    @Sql("/scripts/place_init.sql")
-    @Sql("/scripts/reading_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testGetById(){
 
-        int meterNumber = 123456;;
+        int id = 1;
+        int meterNumber = 428510;
         int placeId = 1;
-        List<Reading> readingList = readingDAO.getAllReadings();
 
-        Meter meter = meterDAO.getMeter(1);
+        // проверка через getMeter
+        Meter meter = meterDAO.getMeter(id);
 
-        assert meterNumber == meter.getNumber();
-        assert placeId == meter.getMeterPlace().getId();
+        assertThat(id).isEqualTo(meter.getId());
+        assertThat(meterNumber).isEqualTo(meter.getNumber());
+        assertThat(placeId).isEqualTo(meter.getMeterPlace().getId());
 
-        Assert.assertEquals(readingList, meter.getReadingsList());
+        // проверка без getMeter через request из БД
+        Request request = new Request(dataSource,
+                "SELECT * FROM meter WHERE id = 1");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("meter_number").hasValues(meterNumber)
+                .column("place_id").hasValues(placeId);
+
     }
 
-    // Надо ли извлекать списки и сравнивать их?
-    // TODO занести данные в place_init, reading_init, запустить тест
     @Test
-    @Sql("/scripts/meter_init.sql")
-    @Sql("/scripts/place_init.sql")
-    @Sql("/scripts/reading_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testDeleteById(){
 
-        int meterNumber = 123456;;
-        int placeId = 1;
-        List<Reading> readingList = readingDAO.getAllReadings();
+        int id = 1;
+        meterDAO.deleteMeter(id);
 
-        meterDAO.deleteMeter(1);
+        // проверка через request всех оставшихся после удаления строк таблицы
+        Request requestAll = new Request(dataSource,
+                "SELECT * FROM meter");
 
-        Meter meter = meterDAO.getMeter(1);
+        Assertions.assertThat(requestAll)
+                .column("id").hasValues(2, 3, 4, 5, 6, 7)
+                .column("meter_number").hasValues(428511, 428512, 428513, 428514, 428515, 428516)
+                .column("place_id").hasValues(2, 3, 4, 5, 6, 7);
 
-        assert meterNumber == meter.getNumber();
-        assert placeId == meter.getMeterPlace().getId();
+        //проверка через getAllMeters
+        List<Meter> meterList = meterDAO.getAllMeters();
 
-        Assert.assertEquals(readingList, meter.getReadingsList());
+        assertThat(meterList).extracting(x -> x.getId()).contains(2, 3, 4, 5, 6, 7);
+        assertThat(meterList).extracting(x -> x.getNumber()).contains(428511, 428512, 428513, 428514, 428515, 428516);
+        assertThat(meterList).extracting(x -> x.getMeterPlace().getId()).contains(2, 3, 4, 5, 6, 7);
     }
 
-    // Надо ли извлекать списки и сравнивать их?
-    // TODO занести данные в place_init, reading_init, запустить тест
     @Test
-    @Sql("/scripts/meter_init.sql")
-    @Sql("/scripts/place_init.sql")
-    @Sql("/scripts/reading_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testUpdate(){
 
         int meterNumber = 123456;;
-        int placeId = 1;
-        List<Reading> readingList = readingDAO.getAllReadings();
 
-        Meter meterExpected = meterDAO.getMeter(1);
+        int id = 1;
+        Meter meterExpected = meterDAO.getMeter(id);
 
-        meterExpected.setNumber(654321);
+        meterExpected.setNumber(meterNumber);
 
         meterDAO.saveMeter(meterExpected);
 
-        Meter meterActual = meterDAO.getMeter(1);
+        Meter meterActual = meterDAO.getMeter(id);
 
-        assert meterNumber == meterActual.getNumber();
-        assert placeId == meterActual.getMeterPlace().getId();
+        // тест без использования getMeter
+        Request request = new Request(dataSource,
+                "SELECT * FROM meter WHERE id = 1");
 
-        Assert.assertEquals(readingList, meterActual.getReadingsList());
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(meterExpected.getId())
+                .column("meter_number").hasValues(meterNumber)
+                .column("place_id").hasValues(meterExpected.getMeterPlace().getId());
+
+        // тест с использованием getMeter
+        assertThat(meterExpected.getId()).isEqualTo(meterActual.getId());
+        assertThat(meterNumber).isEqualTo(meterActual.getNumber());
+        assertThat(meterExpected.getMeterPlace().getId()).isEqualTo(meterActual.getMeterPlace().getId());
     }
 
-    // нужно ли указывать список показаний readingList
-    // TODO занести данные в place_init, reading_init, запустить тест
     @Test
-    @Sql("/scripts/meter_init.sql")
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testGetAll(){
 
         List<Meter> meterList = meterDAO.getAllMeters();
 
-        assertThat(meterList).extracting("id", "number", "meterPlace")
-                .contains(tuple(0, "62.01.001", 0),
-                        tuple(1, "62.01.002", 1),
-                        tuple(2, "62.01.003", 2),
-                        tuple(3, "62.01.004", 3),
-                        tuple(4, "62.01.005", 4),
-                        tuple(5, "62.01.006", 5),
-                        tuple(6, "62.01.007", 6));
+        assertThat(meterList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
+        assertThat(meterList).extracting(x -> x.getNumber()).contains(428510, 428511, 428512, 428513, 428514, 428515, 428516);
+        assertThat(meterList).extracting(x -> x.getMeterPlace().getId()).contains(1, 2, 3, 4, 5, 6, 7);
+
     }
 
 }

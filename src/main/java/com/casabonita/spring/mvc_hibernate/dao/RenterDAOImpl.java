@@ -47,8 +47,8 @@ public class RenterDAOImpl implements RenterDAO{
     public void deleteRenter(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Renter> query = session.createQuery("delete from Renter where id=:renterId");
-        query.setParameter("renterId", id);
+        Query<Renter> query = session.createQuery("delete from Renter where id=:param");
+        query.setParameter("param", id);
         query.executeUpdate();
     }
 }
