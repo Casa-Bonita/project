@@ -1,5 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
+import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import com.casabonita.spring.mvc_hibernate.entity.Meter;
 import com.casabonita.spring.mvc_hibernate.entity.Place;
 import com.casabonita.spring.mvc_hibernate.entity.Reading;
@@ -58,8 +59,12 @@ public class PlaceDAOImpl implements PlaceDAO{
         queryMeter.setParameter("param2", id);
         queryMeter.executeUpdate();
 
-        Query<Place> queryPlace = session.createQuery("delete from Place where id=:param3");
-        queryPlace.setParameter("param3", id);
+        Query<Contract> queryContract = session.createQuery("delete from Contract where contractPlace.id=:param3");
+        queryContract.setParameter("param3", id);
+        queryContract.executeUpdate();
+
+        Query<Place> queryPlace = session.createQuery("delete from Place where id=:param4");
+        queryPlace.setParameter("param4", id);
         queryPlace.executeUpdate();
     }
 }

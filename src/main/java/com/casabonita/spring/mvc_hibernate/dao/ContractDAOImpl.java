@@ -1,6 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
-import com.casabonita.spring.mvc_hibernate.entity.Contract;
+import com.casabonita.spring.mvc_hibernate.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -46,8 +46,17 @@ public class ContractDAOImpl implements ContractDAO{
     public void deleteContract(int id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Contract> query = session.createQuery("delete from Contract where id=:param");
-        query.setParameter("param", id);
+
+        Query<Payment> queryPayment = session.createQuery("delete from Payment where account.id=:param1");
+        queryPayment.setParameter("param1", id);
+        queryPayment.executeUpdate();
+
+        Query<Account> queryAccount = session.createQuery("delete from Account where accountContract.id=:param2");
+        queryAccount.setParameter("param2", id);
+        queryAccount.executeUpdate();
+
+        Query<Contract> query = session.createQuery("delete from Contract where id=:param3");
+        query.setParameter("param3", id);
         query.executeUpdate();
 
     }

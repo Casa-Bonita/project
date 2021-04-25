@@ -103,7 +103,6 @@ public class TestContract {
                 .column("renter_id").hasValues(renter.getId()); // правильно ли вызывать getId() ?
     }
 
-    // не работает
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql",
             "/scripts/reading_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
@@ -145,17 +144,16 @@ public class TestContract {
                 .hasNumberOfRows(1)
                 .column("id").hasValues(id)
                 .column("number").hasValues(number)
-                .column("contract_date").hasValues(contractDate)
+                .column("contract_date").hasValues(d1)
                 .column("fare").hasValues(fare)
-                .column("start_date").hasValues(startDate)
-                .column("finish_date").hasValues(finishDate)
+                .column("start_date").hasValues(d2)
+                .column("finish_date").hasValues(d3)
                 .column("payment_day").hasValues(paymentDay)
                 .column("place_id").hasValues(contractPlace)
                 .column("renter_id").hasValues(renter);
 
     }
 
-    // не работает - добавить удаления в DAOImpl
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql",
             "/scripts/reading_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
@@ -183,10 +181,10 @@ public class TestContract {
         Assertions.assertThat(requestAll)
                 .column("id").hasValues(2, 3, 4, 5, 6, 7)
                 .column("number").hasValues("101R", "102R", "103L", "104O", "105O", "106M")
-                .column("contract_date").hasValues(sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1), sdf.parse(d1))
+                .column("contract_date").hasValues(d1, d1, d1, d1, d1, d1)
                 .column("fare").hasValues(2000, 3000, 500, 1500, 2500, 3500)
-                .column("start_date").hasValues(sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2), sdf.parse(d2))
-                .column("finish_date").hasValues(sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3), sdf.parse(d3))
+                .column("start_date").hasValues(d2, d2, d2, d2, d2, d2)
+                .column("finish_date").hasValues(d3, d3, d3, d3, d3, d3)
                 .column("payment_day").hasValues(5, 5, 4, 3, 3, 2)
                 .column("place_id").hasValues(2, 3, 4, 5, 6, 7)
                 .column("renter_id").hasValues(1, 1, 2, 3, 3, 4);

@@ -111,7 +111,6 @@ public class TestPlace {
                 .column("type").hasValues(type);
     }
 
-    // не работает
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testDeleteById() {
