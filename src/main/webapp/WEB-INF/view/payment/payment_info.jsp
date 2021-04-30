@@ -7,11 +7,16 @@
 </head>
 <body>
 
-    <form:form action="savePayment" method="POST" modelAttribute="payment">
+    <form:form action="savePayment" method="POST" modelAttribute="payment", modelA>
 
         <form:hidden path="id"/>
 
         <table>
+            <tr>
+                <td><form:label path="account.number">Payment account</form:label></td>
+                <td><form:input path="account.number"/></td>
+            </tr>
+
             <tr>
                 <td><form:label path="account.number">Payment account</form:label></td>
                 <td><form:input path="account.number"/></td>

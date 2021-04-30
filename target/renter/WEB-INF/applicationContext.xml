@@ -14,9 +14,9 @@
 		http://www.springframework.org/schema/tx
 		http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <context:component-scan base-package="com.casabonita.spring.mvc_hibernate" />
-
     <mvc:annotation-driven/>
+
+    <context:component-scan base-package="com.casabonita.spring.mvc_hibernate" />
 
     <bean
             class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -39,8 +39,9 @@
             <property name="packagesToScan" value="com.casabonita.spring.mvc_hibernate.entity" />
             <property name="hibernateProperties">
                 <props>
-                    <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
+                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgresPlusDialect</prop>
                     <prop key="hibernate.show_sql">true</prop>
+                    <prop key="hibernate.hbm2ddl.auto">create</prop>
                 </props>
             </property>
         </bean>
@@ -50,10 +51,15 @@
             <property name="sessionFactory" ref="sessionFactoryH2"/>
         </bean>
 
+        <bean id="jdbcTemplate"
+              class="org.springframework.jdbc.core.JdbcTemplate">
+            <property name="dataSource" ref="dataSourceH2"/>
+        </bean>
+
         <tx:annotation-driven transaction-manager="transactionManagerH2" />
     </beans>
 
-    <beans>
+    <beans profile="!test">
         <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
               destroy-method="close">
             <property name="driverClass" value="org.postgresql.Driver" />

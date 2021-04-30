@@ -1,11 +1,8 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,17 +17,17 @@ public class Renter {
     private int id;
 
     @Column(name="name")
-    @Size(min=3, max=50, message="Renter name must be at least 3 and no more than 50 characters long")
-    @NotBlank(message="Renter name is required field")
+//    @Size(min=3, max=50, message="Renter name must be at least 3 and no more than 50 characters long")
+//    @NotBlank(message="Renter name is required field")
     private String name;
 
     @Column(name="ogrn")
-    @Size(min=13, max=13, message="Renter OGRN must be 13 characters long")
+//    @Size(min=13, max=13, message="Renter OGRN must be 13 characters long")
     private String ogrn;
 
     @Column(name="inn")
-    @Pattern(regexp="^[A-Za-z0-9]{3}(\\d?){2}[A-Za-z0-9]{3}$", message="Please use pattern XXXXPPXXX, where:" +
-            " X - any word character or number, and PP - a number in the range 0-99.")
+//    @Pattern(regexp="^[A-Za-z0-9]{3}(\\d?){2}[A-Za-z0-9]{3}$", message="Please use pattern XXXXPPXXX, where:" +
+//            " X - any word character or number, and PP - a number in the range 0-99.")
     private String inn;
 
     @Column(name="registr_date")
@@ -47,7 +44,7 @@ public class Renter {
     private String contactName;
 
     @Column(name="phone")
-    @Pattern(regexp="^(\\+7\\()\\d{3}\\)\\d{3}(-\\d{2}){2}$", message="Please use pattern +7(XXX)XXX-XX-XX")
+//    @Pattern(regexp="^(\\+7\\()\\d{3}\\)\\d{3}(-\\d{2}){2}$", message="Please use pattern +7(XXX)XXX-XX-XX")
     private String phoneNumber;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "renter")

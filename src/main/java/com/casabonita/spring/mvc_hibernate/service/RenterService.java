@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface RenterService {
 
-    public List<Renter> getAllRenters();
+    List<Renter> getAllRenters();
 
-    public void saveRenter(Renter renter);
+    void saveRenter(Renter renter);
 
-    public Renter getRenter (int id);
+    Renter getRenter (int id);
 
-    public void deleteRenter(int id);
+    void deleteRenter(int id);
 }

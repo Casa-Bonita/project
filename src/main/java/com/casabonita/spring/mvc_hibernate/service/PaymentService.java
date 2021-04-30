@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface PaymentService {
 
-    public List<Payment> getAllPayments();
+    List<Payment> getAllPayments();
 
-    public void savePayment(Payment payment);
+    void savePayment(Payment payment);
 
-    public Payment getPayment(int id);
+    Payment getPayment(int id);
 
-    public void deletePaymetn(int id);
+    void deletePaymetn(int id);
 }

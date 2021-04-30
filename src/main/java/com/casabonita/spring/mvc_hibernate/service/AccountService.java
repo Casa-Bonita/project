@@ -6,12 +6,12 @@ import java.util.List;
 
 public interface AccountService {
 
-    public List<Account> getAllAccounts();
+    List<Account> getAllAccounts();
 
-    public void saveAccount(Account account);
+    void saveAccount(Account account);
 
-    public Account getAccount(int id);
+    Account getAccount(int id);
 
-    public void deleteAccount(int id);
+    void deleteAccount(int id);
 
 }

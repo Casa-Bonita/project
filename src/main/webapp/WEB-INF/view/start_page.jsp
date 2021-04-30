@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -8,36 +9,34 @@
 
 <h2>Start page</h2>
 
-    <c:set var="count" scope="session" value="${0}" />
+<c:set var="count" scope="session" value="${0}" />
 
     <table>
         <tr>
             <th>Number</th>
-            <th>Place</th>
-            <th>Renter</th>
-            <th>Contract</th>
-            <th>Finish date</th>
-            <th>Meter</th>
-            <th>Last meter data</th>
-            <th>Account number</th>
-            <th>Total payments under the Contract</th>
+            <th valign=middle align=center><a href="/places">Place</a></th>
+            <th valign=middle align=center><a href="/renters">Renter</a></th>
+            <th valign=middle align=center><a href="/contracts">Contract</a></th>
+            <th valign=middle align=center><a href="/meters">Meter</a></th>
+            <th valign=middle align=center><a href="/readings">Last meter data</a></th>
+            <th valign=middle align=center><a href="/accounts">Account number</a></th>
+            <th valign=middle align=center><a href="/payments">Total payments</a></th>
         </tr>
 
         <c:forEach var="sl" items="${summaryList}">
 
             <tr>
-                <td>
+                <td valign=middle align=center>
                     <c:set var="count" scope="session" value="${count + 1}" />
                     <c:out value="${count}" />
                 </td>
-                <td>${sl.placeName}</td>
-                <td>${sl.renterName}</td>
-                <td>${sl.contractNumber}</td>
-                <td>${sl.contractFinishDate}</td>
-                <td>${sl.meterNumber}</td>
-                <td>${sl.lastMeterData}</td>
-                <td>${sl.accountNumber}</td>
-                <td>${sl.totalPayments}</td>
+                <td valign=middle align=center>${sl.placeName}</td>
+                <td valign=middle align=center>${sl.renterName}</td>
+                <td valign=middle align=center>${sl.contractNumber}</td>
+                <td valign=middle align=center>${sl.meterNumber}</td>
+                <td valign=middle align=center>${sl.lastMeterData}</td>
+                <td valign=middle align=center>${sl.accountNumber}</td>
+                <td valign=middle align=center>${sl.totalPayments}</td>
             </tr>
         </c:forEach>
     </table>

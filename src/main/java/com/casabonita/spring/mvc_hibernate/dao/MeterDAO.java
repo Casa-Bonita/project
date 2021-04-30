@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface MeterDAO {
 
-    public List<Meter> getAllMeters();
+    List<Meter> getAllMeters();
 
-    public void saveMeter(Meter meter);
+    void saveMeter(Meter meter);
 
-    public Meter getMeter(int id);
+    Meter getMeter(int id);
 
-    public void deleteMeter(int id);
+    void deleteMeter(int id);
 }

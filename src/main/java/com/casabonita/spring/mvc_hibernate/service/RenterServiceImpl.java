@@ -2,7 +2,6 @@ package com.casabonita.spring.mvc_hibernate.service;
 
 import com.casabonita.spring.mvc_hibernate.dao.RenterDAO;
 import com.casabonita.spring.mvc_hibernate.entity.Renter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +10,12 @@ import java.util.List;
 @Service
 public class RenterServiceImpl implements RenterService{
 
-    @Autowired
-    private RenterDAO renterDAO;
+//    @Autowired
+    private final RenterDAO renterDAO;
+
+    public RenterServiceImpl(RenterDAO renterDAO) {
+        this.renterDAO = renterDAO;
+    }
 
     @Override
     @Transactional

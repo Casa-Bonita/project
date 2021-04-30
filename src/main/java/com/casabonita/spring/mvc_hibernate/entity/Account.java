@@ -1,7 +1,11 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="account")
@@ -19,7 +23,8 @@ public class Account {
     @JoinColumn(name="contract_id")
     private Contract accountContract;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "account")
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Payment> paymentsList;
 
     public Account() {

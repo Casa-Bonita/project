@@ -11,12 +11,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
+
+    private Map<String, String> accounts;
 
     @RequestMapping(value = "/payments", method = RequestMethod.GET)
     public String showAllPayments(Model model){
@@ -32,6 +35,13 @@ public class PaymentController {
 
         Payment payment = new Payment();
         model.addAttribute("payment", payment);
+
+        List<Payment> paymentList = paymentService.getAllPayments();
+        for (int i = 0; i < paymentList.size(); i++) {
+            String accountNumber = paymentList.get(i).getAccount().getNumber();
+            accounts.put(accountNumber, accountNumber);
+        }
+        model.addAttribute("accountsMap", accounts);
 
         return "payment/payment_info";
     }

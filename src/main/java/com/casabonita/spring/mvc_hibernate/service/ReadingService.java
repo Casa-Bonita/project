@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface ReadingService {
 
-    public List<Reading> getAllReadings();
+    List<Reading> getAllReadings();
 
-    public void saveReading(Reading reading);
+    void saveReading(Reading reading);
 
-    public Reading getReading(int id);
+    Reading getReading(int id);
 
-    public void deleteReading(int id);
+    void deleteReading(int id);
 }

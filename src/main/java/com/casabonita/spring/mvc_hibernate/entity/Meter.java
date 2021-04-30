@@ -1,5 +1,8 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -19,7 +22,8 @@ public class Meter {
     @JoinColumn(name="place_id")
     private Place meterPlace;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meter")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "meter")
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<Reading> readingsList;
 
     public Meter() {

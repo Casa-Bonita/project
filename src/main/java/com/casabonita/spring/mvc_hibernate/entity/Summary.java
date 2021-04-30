@@ -1,13 +1,10 @@
 package com.casabonita.spring.mvc_hibernate.entity;
 
-import java.util.Date;
-
 public class Summary {
 
     private String placeName;
     private String renterName;
     private String contractNumber;
-    private Date contractFinishDate;
     private int meterNumber;
     private int lastMeterData;
     private String accountNumber;
@@ -16,12 +13,10 @@ public class Summary {
     public Summary() {
     }
 
-    public Summary(String placeName, String renterName, String contractNumber, Date contractFinishDate,
-                   int meterNumber, int lastMeterData, String accountNumber, int totalPayments) {
+    public Summary(String placeName, String renterName, String contractNumber, int meterNumber, int lastMeterData, String accountNumber, int totalPayments) {
         this.placeName = placeName;
         this.renterName = renterName;
         this.contractNumber = contractNumber;
-        this.contractFinishDate = contractFinishDate;
         this.meterNumber = meterNumber;
         this.lastMeterData = lastMeterData;
         this.accountNumber = accountNumber;
@@ -50,14 +45,6 @@ public class Summary {
 
     public void setContractNumber(String contractNumber) {
         this.contractNumber = contractNumber;
-    }
-
-    public Date getContractFinishDate() {
-        return contractFinishDate;
-    }
-
-    public void setContractFinishDate(Date contractFinishDate) {
-        this.contractFinishDate = contractFinishDate;
     }
 
     public int getMeterNumber() {

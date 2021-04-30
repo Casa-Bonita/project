@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface PlaceDAO {
 
-    public List<Place> getAllPlaces();
+    List<Place> getAllPlaces();
 
-    public void savePlace (Place place);
+    void savePlace (Place place);
 
-    public Place getPlace(int id);
+    Place getPlace(int id);
 
-    public void deletePlace(int id);
+    void deletePlace(int id);
 }
