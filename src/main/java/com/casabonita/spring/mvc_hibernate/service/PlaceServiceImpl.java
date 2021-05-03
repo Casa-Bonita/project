@@ -11,8 +11,12 @@ import java.util.List;
 @Service
 public class PlaceServiceImpl implements PlaceService{
 
-    @Autowired
-    private PlaceDAO placeDAO;
+//    @Autowired
+    private final PlaceDAO placeDAO;
+
+    public PlaceServiceImpl(PlaceDAO placeDAO) {
+        this.placeDAO = placeDAO;
+    }
 
     @Override
     @Transactional

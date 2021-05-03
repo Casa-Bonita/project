@@ -11,8 +11,12 @@ import java.util.List;
 @Service
 public class ReadingServiceImpl implements ReadingService{
 
-    @Autowired
-    private ReadingDAO readingDAO;
+//    @Autowired
+    private final ReadingDAO readingDAO;
+
+    public ReadingServiceImpl(ReadingDAO readingDAO) {
+        this.readingDAO = readingDAO;
+    }
 
     @Override
     @Transactional

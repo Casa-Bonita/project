@@ -11,8 +11,12 @@ import java.util.List;
 @Service
 public class MeterServiceImpl implements MeterService{
 
-    @Autowired
-    private MeterDAO meterDAO;
+//    @Autowired
+    private final MeterDAO meterDAO;
+
+    public MeterServiceImpl(MeterDAO meterDAO) {
+        this.meterDAO = meterDAO;
+    }
 
     @Override
     @Transactional

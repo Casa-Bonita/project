@@ -11,8 +11,12 @@ import java.util.List;
 @Service
 public class ContractServiceImpl implements ContractService{
 
-    @Autowired
-    private ContractDAO contractDAO;
+//    @Autowired
+    private final ContractDAO contractDAO;
+
+    public ContractServiceImpl(ContractDAO contractDAO) {
+        this.contractDAO = contractDAO;
+    }
 
     @Override
     @Transactional

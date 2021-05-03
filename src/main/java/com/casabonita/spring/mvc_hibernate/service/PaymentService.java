@@ -12,5 +12,5 @@ public interface PaymentService {
 
     Payment getPayment(int id);
 
-    void deletePaymetn(int id);
+    void deletePayment(int id);
 }

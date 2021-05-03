@@ -66,7 +66,7 @@ public class PaymentController {
     @RequestMapping(value = "/deletePayment", method = RequestMethod.GET)
     public String deletePayment(@RequestParam("paymId") int id){
 
-        paymentService.deletePaymetn(id);
+        paymentService.deletePayment(id);
 
         return "redirect:/payments";
     }
