@@ -7,19 +7,14 @@
 </head>
 <body>
 
-    <form:form action="savePayment" method="POST" modelAttribute="payment", modelA>
+    <form:form action="savePayment" method="POST" modelAttribute="payment">
 
         <form:hidden path="id"/>
 
         <table>
             <tr>
-                <td><form:label path="account.number">Payment account</form:label></td>
-                <td><form:input path="account.number"/></td>
-            </tr>
-
-            <tr>
-                <td><form:label path="account.number">Payment account</form:label></td>
-                <td><form:input path="account.number"/></td>
+                <td><form:label path="account.number">Account number</form:label></td>
+                <td><form:select path="account.number" items="${accountMap}"/></td>
             </tr>
 
             <tr>

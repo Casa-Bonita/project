@@ -212,6 +212,7 @@ VALUES
 (6, 26500, '2019-02-01'),
 (6, 26400, '2019-01-01');
 
+
 INSERT INTO renter (name, ogrn, inn, registr_date, address, director_name, contact_name, phone)
 VALUES
 ('Romashka', '1076318010548', '6318308609', '1995-01-11', '443117, Samarskaya oblast, gorod Samara, Orshanskij pereulok, 9', 'Prohorov Vladimir Stepanovich', 'Yablochkin Vasilij Petrovich', '+7(495)123-45-67'),

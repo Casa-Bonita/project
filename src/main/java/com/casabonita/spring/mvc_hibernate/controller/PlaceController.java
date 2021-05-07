@@ -1,6 +1,8 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
+import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import com.casabonita.spring.mvc_hibernate.entity.Place;
+import com.casabonita.spring.mvc_hibernate.service.ContractService;
 import com.casabonita.spring.mvc_hibernate.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,13 +12,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Controller
 public class PlaceController {
 
     @Autowired
     private PlaceService placeService;
+
+    @Autowired
+    private ContractService contractService;
 
     @RequestMapping(value = "/places", method = RequestMethod.GET)
     public String showAllPlaces(Model model){
@@ -60,5 +68,4 @@ public class PlaceController {
 
         return "redirect:/places";
     }
-
 }

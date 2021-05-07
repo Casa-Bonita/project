@@ -7,14 +7,14 @@
 </head>
 <body>
 
-    <form:form action="saveReading" modelAttribute="reading">
+    <form:form action="saveReading" method="POST" modelAttribute="reading">
 
         <form:hidden path="id"/>
 
         <table>
             <tr>
-                <td><form:label path="meter">Meter number</form:label></td>
-                <td><form:input path="meter"/></td>
+                <td><form:label path="meter.number">Meter number</form:label></td>
+                <td><form:select path="meter.number" items="${meterMap}"/></td>
             </tr>
 
             <tr>

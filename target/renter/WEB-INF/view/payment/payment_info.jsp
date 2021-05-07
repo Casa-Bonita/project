@@ -13,8 +13,8 @@
 
         <table>
             <tr>
-                <td><form:label path="account.number">Payment account</form:label></td>
-                <td><form:input path="account.number"/></td>
+                <td><form:label path="account.number">Account number</form:label></td>
+                <td><form:select path="account.number" items="${accountMap}"/></td>
             </tr>
 
             <tr>

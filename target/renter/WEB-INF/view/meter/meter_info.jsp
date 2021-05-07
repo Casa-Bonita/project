@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <form:form action="saveMeter" modelAttribute="meter">
+    <form:form action="saveMeter" method="POST" modelAttribute="meter">
 
         <form:hidden path="id"/>
 
@@ -18,8 +18,8 @@
             </tr>
 
             <tr>
-                <td><form:label path="meterPlace.name">Linked place name</form:label></td>
-                <td><form:input path="meterPlace.name"/></td>
+                <td><form:label path="meterPlace.number">Linked place number</form:label></td>
+                <td><form:select path="meterPlace.number" items="${placeMap}"/></td>
             </tr>
 
         </table>

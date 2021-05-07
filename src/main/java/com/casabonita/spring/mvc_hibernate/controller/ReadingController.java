@@ -1,6 +1,9 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
+import com.casabonita.spring.mvc_hibernate.entity.Contract;
+import com.casabonita.spring.mvc_hibernate.entity.Meter;
 import com.casabonita.spring.mvc_hibernate.entity.Reading;
+import com.casabonita.spring.mvc_hibernate.service.MeterService;
 import com.casabonita.spring.mvc_hibernate.service.ReadingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,13 +13,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Controller
 public class ReadingController {
 
     @Autowired
     private ReadingService readingService;
+
+    @Autowired
+    private MeterService meterService;
 
     @RequestMapping(value = "/readings", method = RequestMethod.GET)
     public String showAllReadings(Model model){
@@ -59,5 +68,24 @@ public class ReadingController {
         readingService.deleteReading(id);
 
         return "redirect:/readings";
+    }
+
+    // Отображение перечня отсортированных по возрастанию Meter-ов
+    @ModelAttribute("meterMap")
+    public TreeMap<Integer, Integer> getSortedMeterMap() {
+
+        Map<Integer, Integer> meterMap = new HashMap<>();
+
+        List<Meter> meterList = meterService.getAllMeters();
+
+        for (int i = 0; i < meterList.size(); i++) {
+            Integer meterNumber = meterList.get(i).getNumber();
+            meterMap.put(meterNumber, meterNumber);
+        }
+        // sort HahsMap by TreeMap
+        TreeMap<Integer, Integer> sortedMeterMap = new TreeMap<>();
+        sortedMeterMap.putAll(meterMap);
+
+        return sortedMeterMap;
     }
 }

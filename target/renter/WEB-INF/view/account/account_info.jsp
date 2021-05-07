@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <form:form action="saveAccount" modelAttribute="account">
+    <form:form action="saveAccount" method="POST" modelAttribute="account">
 
         <form:hidden path="id"/>
 
@@ -19,7 +19,7 @@
 
             <tr>
                 <td><form:label path="accountContract.number">Linked contract</form:label></td>
-                <td><form:input path="accountContract.number"/></td>
+                <td><form:select path="accountContract.number" items="${contractMap}"/></td>
             </tr>
 
         </table>

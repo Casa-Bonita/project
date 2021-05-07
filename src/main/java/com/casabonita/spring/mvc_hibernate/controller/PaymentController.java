@@ -1,6 +1,8 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
+import com.casabonita.spring.mvc_hibernate.entity.Account;
 import com.casabonita.spring.mvc_hibernate.entity.Payment;
+import com.casabonita.spring.mvc_hibernate.service.AccountService;
 import com.casabonita.spring.mvc_hibernate.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 public class PaymentController {
@@ -19,7 +22,8 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    private Map<String, String> accounts;
+    @Autowired
+    private AccountService accountService;
 
     @RequestMapping(value = "/payments", method = RequestMethod.GET)
     public String showAllPayments(Model model){
@@ -36,18 +40,21 @@ public class PaymentController {
         Payment payment = new Payment();
         model.addAttribute("payment", payment);
 
-        List<Payment> paymentList = paymentService.getAllPayments();
-        for (int i = 0; i < paymentList.size(); i++) {
-            String accountNumber = paymentList.get(i).getAccount().getNumber();
-            accounts.put(accountNumber, accountNumber);
-        }
-        model.addAttribute("accountsMap", accounts);
-
         return "payment/payment_info";
     }
 
     @RequestMapping(value = "/savePayment", method = RequestMethod.POST)
-    public String savePayment(@ModelAttribute("payment") Payment payment){
+    public String savePayment(@RequestParam("account.number") String accountNumber, @ModelAttribute("payment") Payment payment){
+
+        Account account = null;
+        List<Account> accountList = accountService.getAllAccounts();
+        for (int i = 0; i < accountList.size(); i++) {
+            if(accountNumber.equals(accountList.get(i).getNumber())){
+                account = accountList.get(i);
+            }
+        }
+
+        payment.setAccount(account);
 
         paymentService.savePayment(payment);
 
@@ -70,4 +77,24 @@ public class PaymentController {
 
         return "redirect:/payments";
     }
+
+    // Отображение перечня отсортированных по возрастанию Account-ов
+    @ModelAttribute("accountMap")
+    public TreeMap<String, String> getSortedAccountMap() {
+
+        Map<String, String> accountMap = new HashMap<>();
+
+        List<Account> accountList = accountService.getAllAccounts();
+
+        for (int i = 0; i < accountList.size(); i++) {
+            String accountNumber = accountList.get(i).getNumber();
+            accountMap.put(accountNumber, accountNumber);
+        }
+        // sort HahsMap by TreeMap
+        TreeMap<String, String> sortedAccountMap = new TreeMap<>();
+        sortedAccountMap.putAll(accountMap);
+
+        return sortedAccountMap;
+    }
+
 }

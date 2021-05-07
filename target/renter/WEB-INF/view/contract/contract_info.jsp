@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <form:form action="saveContract" modelAttribute="contract">
+    <form:form action="saveContract" method="POST" modelAttribute="contract">
 
         <form:hidden path="id"/>
 
@@ -43,13 +43,13 @@
             </tr>
 
             <tr>
-                <td><form:label path="contractPlace.id">Place (id) under contract</form:label></td>
-                <td><form:input path="contractPlace.id"/></td>
+                <td><form:label path="contractPlace.number">Place number under contract</form:label></td>
+                <td><form:select path="contractPlace.number" items="${placeMap}"/></td>
             </tr>
 
             <tr>
-                <td><form:label path="renter.id">Renter (id) under contract</form:label></td>
-                <td><form:input path="renter.id"/></td>
+                <td><form:label path="renter.name">Renter name under contract</form:label></td>
+                <td><form:select path="renter.name" items="${renterMap}"/></td>
             </tr>
 
         </table>
