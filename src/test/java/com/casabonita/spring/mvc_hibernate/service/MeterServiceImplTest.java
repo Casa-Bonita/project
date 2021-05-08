@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 
 class MeterServiceImplTest {
 
@@ -17,9 +17,10 @@ class MeterServiceImplTest {
     MeterService meterService = new MeterServiceImpl(meterDAO);
 
     @Test
-    void shoulReturnAllMeters() {
+    public void shouldReturnAllMeters() {
 
         List<Meter> expected = List.of(new Meter());
+
         Mockito.when(meterDAO.getAllMeters()).thenReturn(expected);
 
         List<Meter> actual = meterService.getAllMeters();
@@ -28,22 +29,23 @@ class MeterServiceImplTest {
     }
 
     @Test
-    void shouldSaveMeter() {
+    public void shouldSaveMeter() {
 
         Meter expected = new Meter();
-        meterDAO.saveMeter(expected);
 
-        Mockito.when(meterService.getMeter(1)).thenReturn(expected);
+        Mockito.doNothing().when(meterDAO).saveMeter(expected);
 
-        Meter actual = meterService.getMeter(1);
+        meterService.saveMeter(expected);
 
-        Assertions.assertEquals(expected, actual);
+        Mockito.verify(meterDAO, times(1)).saveMeter(expected);
+
     }
 
     @Test
-    void shouldReturnMeter() {
+    public void shouldReturnMeterById() {
 
         Meter expected = new Meter();
+
         Mockito.when(meterDAO.getMeter(1)).thenReturn(expected);
 
         Meter actual = meterService.getMeter(1);
@@ -52,16 +54,13 @@ class MeterServiceImplTest {
     }
 
     @Test
-    void shouldDeleteMeter() {
+    public void shouldDeleteMeter() {
 
-        List<Meter> expected = List.of(new Meter());
+        Mockito.doNothing().when(meterDAO).deleteMeter(1);
 
-        meterDAO.deleteMeter(1);
+        meterService.deleteMeter(1);
 
-        Mockito.when(meterService.getAllMeters()).thenReturn(expected);
+        Mockito.verify(meterDAO, times(1)).deleteMeter(1);
 
-        List<Meter> actual = meterService.getAllMeters();
-
-        Assertions.assertEquals(expected, actual);
     }
 }

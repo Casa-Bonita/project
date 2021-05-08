@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 
 class PaymentServiceImplTest {
 
@@ -17,9 +17,10 @@ class PaymentServiceImplTest {
     PaymentService paymentService = new PaymentServiceImpl(paymentDAO);
 
     @Test
-    void shoudReturnAllPayments() {
+    public void shouldReturnAllPayments() {
 
         List<Payment> expected = List.of(new Payment());
+
         Mockito.when(paymentDAO.getAllPayments()).thenReturn(expected);
 
         List<Payment> actual = paymentService.getAllPayments();
@@ -28,24 +29,23 @@ class PaymentServiceImplTest {
     }
 
     @Test
-    void shouldSavePayment() {
+    public void shouldSavePayment() {
 
         Payment expected = new Payment();
 
-        paymentDAO.savePayment(expected);
+        Mockito.doNothing().when(paymentDAO).savePayment(expected);
 
-        Mockito.when(paymentService.getPayment(1)).thenReturn(expected);
+        paymentService.savePayment(expected);
 
-        Payment actual = paymentService.getPayment(1);
-
-        Assertions.assertEquals(expected, actual);
+        Mockito.verify(paymentDAO, times(1)).savePayment(expected);
 
     }
 
     @Test
-    void shouldReturnPayment() {
+    public void shouldReturnPaymentById() {
 
         Payment expected = new Payment();
+
         Mockito.when(paymentDAO.getPayment(1)).thenReturn(expected);
 
         Payment actual = paymentService.getPayment(1);
@@ -54,15 +54,13 @@ class PaymentServiceImplTest {
     }
 
     @Test
-    void shouldDeletePayment() {
+    public void shouldDeletePayment() {
 
-        List<Payment> expected = List.of(new Payment());
+        Mockito.doNothing().when(paymentDAO).deletePayment(1);
 
-        paymentDAO.deletePayment(1);
-        Mockito.when(paymentService.getAllPayments()).thenReturn(expected);
+        paymentService.deletePayment(1);
 
-        List<Payment> actual = paymentService.getAllPayments();
+        Mockito.verify(paymentDAO, times(1)).deletePayment(1);
 
-        Assertions.assertEquals(expected, actual);
     }
 }

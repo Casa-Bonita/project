@@ -8,8 +8,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
 
 class ReadingServiceImplTest {
 
@@ -18,9 +17,10 @@ class ReadingServiceImplTest {
     ReadingService readingService = new ReadingServiceImpl(readingDAO);
 
     @Test
-    void shouldReturnAllReadings() {
+    public void shouldReturnAllReadings() {
 
         List<Reading> expected = List.of(new Reading());
+
         Mockito.when(readingDAO.getAllReadings()).thenReturn(expected);
 
         List<Reading> actual = readingService.getAllReadings();
@@ -30,20 +30,20 @@ class ReadingServiceImplTest {
     }
 
     @Test
-    void shouldSaveReading() {
+    public void shouldSaveReading() {
 
         Reading expected = new Reading();
-        readingDAO.saveReading(expected);
 
-        Mockito.when(readingService.getReading(1)).thenReturn(expected);
+        Mockito.doNothing().when(readingDAO).saveReading(expected);
 
-        Reading actual = readingService.getReading(1);
+        readingService.saveReading(expected);
 
-        Assertions.assertEquals(expected, actual);
+        Mockito.verify(readingDAO, times(1)).saveReading(expected);
+
     }
 
     @Test
-    void shouldReturnReading() {
+    public void shouldReturnReadingById() {
 
         Reading expected = new Reading();
 
@@ -55,15 +55,13 @@ class ReadingServiceImplTest {
     }
 
     @Test
-    void shouldDeleteReading() {
+    public void shouldDeleteReading() {
 
-        List<Reading> expected = List.of(new Reading());
-        readingDAO.deleteReading(1);
+        Mockito.doNothing().when(readingDAO).deleteReading(1);
 
-        Mockito.when(readingService.getAllReadings()).thenReturn(expected);
+        readingService.deleteReading(1);
 
-        List<Reading> actual = readingService.getAllReadings();
+        Mockito.verify(readingDAO, times(1)).deleteReading(1);
 
-        Assertions.assertEquals(expected, actual);
     }
 }

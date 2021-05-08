@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 
 class PlaceServiceImplTest {
 
@@ -17,9 +17,10 @@ class PlaceServiceImplTest {
     PlaceService placeService = new PlaceServiceImpl(placeDAO);
 
     @Test
-    void shouldReturnAllPlaces() {
+    public void shouldReturnAllPlaces() {
 
         List<Place> expected = List.of(new Place());
+
         Mockito.when(placeDAO.getAllPlaces()).thenReturn(expected);
 
         List<Place> actual = placeService.getAllPlaces();
@@ -28,24 +29,23 @@ class PlaceServiceImplTest {
     }
 
     @Test
-    void shouldSavePlace() {
+    public void shouldSavePlace() {
 
         Place expected = new Place();
 
-        placeDAO.savePlace(expected);
+        Mockito.doNothing().when(placeDAO).savePlace(expected);
 
-        Mockito.when(placeService.getPlace(1)).thenReturn(expected);
+        placeService.savePlace(expected);
 
-        Place actual = placeService.getPlace(1);
-
-        Assertions.assertEquals(expected, actual);
+        Mockito.verify(placeDAO, times(1)).savePlace(expected);
 
     }
 
     @Test
-    void shouldReturnPlace() {
+    public void shouldReturnPlaceById() {
 
         Place expected = new Place();
+
         Mockito.when(placeDAO.getPlace(1)).thenReturn(expected);
 
         Place actual = placeService.getPlace(1);
@@ -54,16 +54,13 @@ class PlaceServiceImplTest {
     }
 
     @Test
-    void shouldDeletePlace() {
+    public void shouldDeletePlace() {
 
-        List<Place> expected = List.of(new Place());
+        Mockito.doNothing().when(placeDAO).deletePlace(1);
 
-        placeDAO.deletePlace(1);
+        placeService.deletePlace(1);
 
-        Mockito.when(placeService.getAllPlaces()).thenReturn(expected);
+        Mockito.verify(placeDAO, times(1)).deletePlace(1);
 
-        List<Place> actual = placeService.getAllPlaces();
-
-        Assertions.assertEquals(expected, actual);
     }
 }

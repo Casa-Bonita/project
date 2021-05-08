@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 }
         )
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TestAccount {
+public class TestAccountIT {
 
     @Autowired
     private AccountDAO accountDAO;

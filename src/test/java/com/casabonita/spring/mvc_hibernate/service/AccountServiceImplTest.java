@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 
 class AccountServiceImplTest {
 
@@ -17,9 +17,10 @@ class AccountServiceImplTest {
     AccountService accountService = new AccountServiceImpl(accountDAO);
 
     @Test
-    void shoulReturnAllAccounts() {
+    public void shouldReturnAllAccounts() {
 
         List<Account> expected = List.of(new Account());
+
         Mockito.when(accountDAO.getAllAccounts()).thenReturn(expected);
 
         List<Account> actual = accountService.getAllAccounts();
@@ -28,23 +29,23 @@ class AccountServiceImplTest {
     }
 
     @Test
-    void shouldSaveAccount() {
+    public void shouldSaveAccount() {
 
         Account expected = new Account();
 
-        accountDAO.saveAccount(expected);
+        Mockito.doNothing().when(accountDAO).saveAccount(expected);
 
-        Mockito.when(accountService.getAccount(1)).thenReturn(expected);
+        accountService.saveAccount(expected);
 
-        Account actual = accountService.getAccount(1);
+        Mockito.verify(accountDAO, times(1)).saveAccount(expected);
 
-        Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void shouldReturnAccount() {
+    public void shouldReturnAccountById() {
 
         Account expected = new Account();
+
         Mockito.when(accountDAO.getAccount(1)).thenReturn(expected);
 
         Account actual = accountService.getAccount(1);
@@ -53,16 +54,13 @@ class AccountServiceImplTest {
     }
 
     @Test
-    void shouldDeleteAccount() {
+    public void shouldDeleteAccount() {
 
-        List<Account> expected = List.of(new Account());
+        Mockito.doNothing().when(accountDAO).deleteAccount(1);
 
-        accountDAO.deleteAccount(1);
+        accountService.deleteAccount(1);
 
-        Mockito.when(accountService.getAllAccounts()).thenReturn(expected);
+        Mockito.verify(accountDAO, times(1)).deleteAccount(1);
 
-        List<Account> actual = accountService.getAllAccounts();
-
-        Assertions.assertEquals(expected, actual);
     }
 }

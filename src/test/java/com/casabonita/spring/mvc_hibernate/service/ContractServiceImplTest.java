@@ -8,7 +8,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
 
 class ContractServiceImplTest {
 
@@ -17,52 +17,52 @@ class ContractServiceImplTest {
     ContractService contractService = new ContractServiceImpl(contractDAO);
 
     @Test
-    void shouldReturnAllContracts() {
+    public void shouldReturnAllContracts() {
 
         List<Contract> expected = List.of(new Contract());
+
         Mockito.when(contractDAO.getAllContracts()).thenReturn(expected);
 
         List<Contract> actual = contractService.getAllContracts();
 
         Assertions.assertEquals(expected, actual);
+
     }
 
     @Test
-    void shouldSaveContract() {
+    public void shouldSaveContract() {
 
         Contract expected = new Contract();
 
-        contractDAO.saveContract(expected);
+        Mockito.doNothing().when(contractDAO).saveContract(expected);
 
-        Mockito.when(contractService.getContract(1)).thenReturn(expected);
+        contractService.saveContract(expected);
 
-        Contract actual = contractService.getContract(1);
+        Mockito.verify(contractDAO, times(1)).saveContract(expected);
 
-        Assertions.assertEquals(expected, actual);
     }
 
     @Test
-    void shouldReturnContract() {
+    public void shouldReturnContractById() {
 
         Contract expected = new Contract();
+
         Mockito.when(contractDAO.getContract(1)).thenReturn(expected);
 
         Contract actual = contractService.getContract(1);
 
         Assertions.assertEquals(expected, actual);
+
     }
 
     @Test
-    void shouldDeleteContract() {
+    public void shouldDeleteContract() {
 
-        List<Contract> expected = List.of(new Contract());
+        Mockito.doNothing().when(contractDAO).deleteContract(1);
 
-        contractDAO.deleteContract(1);
+        contractService.deleteContract(1);
 
-        Mockito.when(contractService.getAllContracts()).thenReturn(expected);
+        Mockito.verify(contractDAO, times(1)).deleteContract(1);
 
-        List<Contract> actual = contractService.getAllContracts();
-
-        Assertions.assertEquals(expected, actual);
     }
 }

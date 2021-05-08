@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 }
         )
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TestPayment {
+public class TestPaymentIT {
 
     @Autowired
     private AccountDAO accountDAO;

@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 }
         )
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TestRenter{
+public class TestRenterIT {
 
     @Autowired
     private RenterDAO renterDAO;

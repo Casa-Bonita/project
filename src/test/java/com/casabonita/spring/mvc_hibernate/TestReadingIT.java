@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 }
         )
 @RunWith(SpringJUnit4ClassRunner.class)
-public class TestReading {
+public class TestReadingIT {
 
     @Autowired
     private MeterDAO meterDAO;

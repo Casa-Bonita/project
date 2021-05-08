@@ -12,8 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +22,13 @@ public class StartController {
     private ContractService contractService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String showStartPage(Model model) throws ParseException {
+    public String showStartPage(Model model){
 
         Operations operations = new Operations();
         Contract contract;
         List<Contract> allContracts = contractService.getAllContracts();
 
         List<Summary> allSummaries = new ArrayList<>();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         for (int i = 0; i < allContracts.size(); i++) {
 
