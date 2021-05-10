@@ -46,4 +46,11 @@ public class ContractServiceImpl implements ContractService{
 
         contractDAO.deleteContract(id);
     }
+
+    @Override
+    @Transactional
+    public Contract getContractByNumber(String number) {
+
+        return contractDAO.getContractByNumber(number);
+    }
 }

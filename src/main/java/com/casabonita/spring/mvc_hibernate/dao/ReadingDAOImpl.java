@@ -21,7 +21,7 @@ public class ReadingDAOImpl implements ReadingDAO{
     public List<Reading> getAllReadings() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<Reading> allReadings = session.createQuery("from Reading", Reading.class).getResultList();
+        List<Reading> allReadings = session.createQuery("from Reading as r order by r.meter asc, r.transferDate asc", Reading.class).getResultList();
 
         return allReadings;
     }

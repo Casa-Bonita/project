@@ -19,7 +19,7 @@ public class Account {
     @Column(name="account_number")
     private String number;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name="contract_id")
     private Contract accountContract;
 

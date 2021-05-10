@@ -21,7 +21,7 @@ public class ContractDAOImpl implements ContractDAO{
     public List<Contract> getAllContracts() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<Contract> allContracts = session.createQuery("from Contract", Contract.class).getResultList();
+        List<Contract> allContracts = session.createQuery("from Contract as c order by c.number asc", Contract.class).getResultList();
 
         return allContracts;
     }
@@ -58,6 +58,23 @@ public class ContractDAOImpl implements ContractDAO{
         Query<Contract> query = session.createQuery("delete from Contract where id=:param3");
         query.setParameter("param3", id);
         query.executeUpdate();
+    }
 
+    @Override
+    public Contract getContractByNumber(String number) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        List<Contract> allContracts = session.createQuery("from Contract", Contract.class).getResultList();
+
+        Contract contract = null;
+
+        for (int i = 0; i < allContracts.size(); i++) {
+            if(number.equals(allContracts.get(i).getNumber())){
+                contract = allContracts.get(i);
+            }
+        }
+
+        return contract;
     }
 }

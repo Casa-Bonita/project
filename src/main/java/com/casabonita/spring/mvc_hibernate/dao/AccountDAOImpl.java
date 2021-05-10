@@ -1,7 +1,9 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
 import com.casabonita.spring.mvc_hibernate.entity.Account;
+import com.casabonita.spring.mvc_hibernate.entity.Meter;
 import com.casabonita.spring.mvc_hibernate.entity.Payment;
+import com.casabonita.spring.mvc_hibernate.entity.Place;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -22,7 +24,7 @@ public class AccountDAOImpl implements AccountDAO{
     public List<Account> getAllAccounts() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<Account> allAccounts = session.createQuery("from Account", Account.class).getResultList();
+        List<Account> allAccounts = session.createQuery("from Account as a order by a.number asc", Account.class).getResultList();
 
         return allAccounts;
     }
@@ -54,5 +56,23 @@ public class AccountDAOImpl implements AccountDAO{
         Query<Account> queryAccount = session.createQuery("delete from Account where id=:param2");
         queryAccount.setParameter("param2", id);
         queryAccount.executeUpdate();
+    }
+
+    @Override
+    public Account getAccountByNumber(String number) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        List<Account> allAccounts = session.createQuery("from Account", Account.class).getResultList();
+
+        Account account = null;
+
+        for (int i = 0; i < allAccounts.size(); i++) {
+            if(number.equals(allAccounts.get(i).getNumber())){
+                account = allAccounts.get(i);
+            }
+        }
+
+        return account;
     }
 }

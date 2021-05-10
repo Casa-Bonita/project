@@ -1,5 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
+import com.casabonita.spring.mvc_hibernate.entity.Account;
 import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import com.casabonita.spring.mvc_hibernate.entity.Meter;
 import com.casabonita.spring.mvc_hibernate.entity.Reading;
@@ -46,7 +47,11 @@ public class ReadingController {
     }
 
     @RequestMapping(value = "/saveReading", method = RequestMethod.POST)
-    public String saveReading(@ModelAttribute("meterData") Reading reading){
+    public String saveReading(@RequestParam("meter.number") int meterNumber, @ModelAttribute("reading") Reading reading){
+
+        Meter meter = meterService.getMeterByNumber(meterNumber);
+
+        reading.setMeter(meter);
 
         readingService.saveReading(reading);
 

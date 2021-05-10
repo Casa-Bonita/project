@@ -13,4 +13,6 @@ public interface PlaceService {
     Place getPlace(int id);
 
     void deletePlace(int id);
+
+    Place getPlaceByNumber(int number);
 }

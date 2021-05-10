@@ -14,4 +14,6 @@ public interface AccountService {
 
     void deleteAccount(int id);
 
+    Account getAccountByNumber(String number);
+
 }

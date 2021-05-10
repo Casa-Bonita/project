@@ -24,7 +24,7 @@ public class PlaceDAOImpl implements PlaceDAO{
     public List<Place> getAllPlaces() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<Place> allPlaces = session.createQuery("from Place", Place.class).getResultList();
+        List<Place> allPlaces = session.createQuery("from Place as p order by p.number asc", Place.class).getResultList();
 
         return allPlaces;
     }
@@ -66,5 +66,23 @@ public class PlaceDAOImpl implements PlaceDAO{
         Query<Place> queryPlace = session.createQuery("delete from Place where id=:param4");
         queryPlace.setParameter("param4", id);
         queryPlace.executeUpdate();
+    }
+
+    @Override
+    public Place getPlaceByNumber(int number) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        List<Place> allPlaces = session.createQuery("from Place", Place.class).getResultList();
+
+        Place place = null;
+
+        for (int i = 0; i < allPlaces.size(); i++) {
+            if(number == allPlaces.get(i).getNumber()){
+                place = allPlaces.get(i);
+            }
+        }
+
+        return place;
     }
 }

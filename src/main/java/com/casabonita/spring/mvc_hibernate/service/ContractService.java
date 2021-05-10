@@ -13,4 +13,6 @@ public interface ContractService {
     Contract getContract (int id);
 
     void deleteContract(int id);
+
+    Contract getContractByNumber (String number);
 }

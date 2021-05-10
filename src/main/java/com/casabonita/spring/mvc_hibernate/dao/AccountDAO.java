@@ -13,4 +13,6 @@ public interface AccountDAO {
     Account getAccount(int id);
 
     void deleteAccount(int id);
+
+    Account getAccountByNumber(String number);
 }

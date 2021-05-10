@@ -44,4 +44,11 @@ public class RenterServiceImpl implements RenterService{
 
         renterDAO.deleteRenter(id);
     }
+
+    @Override
+    @Transactional
+    public Renter getRenterByName(String name) {
+
+        return renterDAO.getRenterByName(name);
+    }
 }

@@ -14,4 +14,6 @@ public interface MeterService {
 
     void deleteMeter(int id);
 
+    Meter getMeterByNumber(int number);
+
 }

@@ -23,9 +23,6 @@ public class PlaceController {
     @Autowired
     private PlaceService placeService;
 
-    @Autowired
-    private ContractService contractService;
-
     @RequestMapping(value = "/places", method = RequestMethod.GET)
     public String showAllPlaces(Model model){
 

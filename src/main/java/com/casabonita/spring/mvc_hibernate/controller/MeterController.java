@@ -46,9 +46,14 @@ public class MeterController {
     }
 
     @RequestMapping(value = "/saveMeter", method = RequestMethod.POST)
-    public String saveMeter(@ModelAttribute("meter") Meter meter){
+    public String saveMeter(@RequestParam("meterPlace.number") int meterPlaceNumber, @ModelAttribute("meter") Meter meter){
+
+        Place place = placeService.getPlaceByNumber(meterPlaceNumber);
+
+        meter.setMeterPlace(place);
 
         meterService.saveMeter(meter);
+
         return "redirect:/meters";
 
     }

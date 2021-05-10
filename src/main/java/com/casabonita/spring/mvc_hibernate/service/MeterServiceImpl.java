@@ -45,4 +45,11 @@ public class MeterServiceImpl implements MeterService{
 
         meterDAO.deleteMeter(id);
     }
+
+    @Override
+    @Transactional
+    public Meter getMeterByNumber(int number) {
+
+        return meterDAO.getMeterByNumber(number);
+    }
 }

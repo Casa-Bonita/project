@@ -22,7 +22,7 @@ public class MeterDAOImpl implements MeterDAO{
     public List<Meter> getAllMeters() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<Meter> allMeters = session.createQuery("from Meter", Meter.class).getResultList();
+        List<Meter> allMeters = session.createQuery("from Meter as m order by m.number asc", Meter.class).getResultList();
 
         return allMeters;
     }
@@ -54,5 +54,23 @@ public class MeterDAOImpl implements MeterDAO{
         Query<Meter> queryMeter = session.createQuery("delete from Meter where id=:param2");
         queryMeter.setParameter("param2", id);
         queryMeter.executeUpdate();
+    }
+
+    @Override
+    public Meter getMeterByNumber(int number) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        List<Meter> allMeters = session.createQuery("from Meter", Meter.class).getResultList();
+
+        Meter meter = null;
+
+        for (int i = 0; i < allMeters.size(); i++) {
+            if(number == allMeters.get(i).getNumber()){
+                meter = allMeters.get(i);
+            }
+        }
+
+        return meter;
     }
 }

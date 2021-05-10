@@ -13,4 +13,6 @@ public interface RenterService {
     Renter getRenter (int id);
 
     void deleteRenter(int id);
+
+    Renter getRenterByName (String name);
 }

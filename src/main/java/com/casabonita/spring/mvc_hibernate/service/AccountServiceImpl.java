@@ -45,4 +45,11 @@ public class AccountServiceImpl implements AccountService{
 
         accountDAO.deleteAccount(id);
     }
+
+    @Override
+    @Transactional
+    public Account getAccountByNumber(String number) {
+
+        return accountDAO.getAccountByNumber(number);
+    }
 }

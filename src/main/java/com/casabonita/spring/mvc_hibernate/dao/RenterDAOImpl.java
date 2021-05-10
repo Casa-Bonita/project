@@ -1,5 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
+import com.casabonita.spring.mvc_hibernate.entity.Place;
 import com.casabonita.spring.mvc_hibernate.entity.Renter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -21,7 +22,7 @@ public class RenterDAOImpl implements RenterDAO{
     public List<Renter> getAllRenters() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<Renter> allRenters = session.createQuery("from Renter", Renter.class).getResultList();
+        List<Renter> allRenters = session.createQuery("from Renter as r order by r.name asc", Renter.class).getResultList();
 
         return allRenters;
     }
@@ -50,5 +51,23 @@ public class RenterDAOImpl implements RenterDAO{
         Query<Renter> query = session.createQuery("delete from Renter where id=:param");
         query.setParameter("param", id);
         query.executeUpdate();
+    }
+
+    @Override
+    public Renter getRenterByName(String name) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        List<Renter> allRenters = session.createQuery("from Renter", Renter.class).getResultList();
+
+        Renter renter = null;
+
+        for (int i = 0; i < allRenters.size(); i++) {
+            if(name.equals(allRenters.get(i).getName())){
+                renter = allRenters.get(i);
+            }
+        }
+
+        return renter;
     }
 }

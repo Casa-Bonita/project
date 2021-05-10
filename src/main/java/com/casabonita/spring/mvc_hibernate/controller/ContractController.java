@@ -1,8 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
-import com.casabonita.spring.mvc_hibernate.entity.Contract;
-import com.casabonita.spring.mvc_hibernate.entity.Place;
-import com.casabonita.spring.mvc_hibernate.entity.Renter;
+import com.casabonita.spring.mvc_hibernate.entity.*;
 import com.casabonita.spring.mvc_hibernate.service.ContractService;
 import com.casabonita.spring.mvc_hibernate.service.PlaceService;
 import com.casabonita.spring.mvc_hibernate.service.RenterService;
@@ -50,12 +48,21 @@ public class ContractController {
     }
 
     @RequestMapping(value = "/saveContract", method = RequestMethod.POST)
-    public String saveContract(@ModelAttribute("contract") Contract contract){
+    public String saveContract(@RequestParam("contractPlace.number") int contractPlaceNumber,
+                               @RequestParam("renter.name") String renterName,
+                               @ModelAttribute("contract") Contract contract){
+
+        Place place = placeService.getPlaceByNumber(contractPlaceNumber);
+
+        contract.setContractPlace(place);
+
+        Renter renter = renterService.getRenterByName(renterName);
+
+        contract.setRenter(renter);
 
         contractService.saveContract(contract);
 
         return "redirect:/contracts";
-
     }
 
     @RequestMapping(value = "/updateContract", method = RequestMethod.GET)

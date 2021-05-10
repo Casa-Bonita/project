@@ -13,4 +13,6 @@ public interface MeterDAO {
     Meter getMeter(int id);
 
     void deleteMeter(int id);
+
+    Meter getMeterByNumber(int number);
 }

@@ -45,4 +45,11 @@ public class PlaceServiceImpl implements PlaceService{
 
         placeDAO.deletePlace(id);
     }
+
+    @Override
+    @Transactional
+    public Place getPlaceByNumber(int number) {
+
+        return placeDAO.getPlace(number);
+    }
 }
