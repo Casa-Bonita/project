@@ -8,7 +8,7 @@ public interface ReadingService {
 
     List<Reading> getAllReadings();
 
-    void saveReading(Reading reading);
+    void saveReading(Reading reading, int meterNumber);
 
     Reading getReading(int id);
 

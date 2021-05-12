@@ -1,6 +1,8 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
+import com.casabonita.spring.mvc_hibernate.entity.Account;
 import com.casabonita.spring.mvc_hibernate.entity.Meter;
+import com.casabonita.spring.mvc_hibernate.entity.Place;
 import com.casabonita.spring.mvc_hibernate.entity.Reading;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -61,15 +63,10 @@ public class MeterDAOImpl implements MeterDAO{
 
         Session session = sessionFactory.getCurrentSession();
 
-        List<Meter> allMeters = session.createQuery("from Meter", Meter.class).getResultList();
+        Query query = session.createQuery(" FROM Meter WHERE number=:parameter");
+        query.setParameter("parameter", number);
 
-        Meter meter = null;
-
-        for (int i = 0; i < allMeters.size(); i++) {
-            if(number == allMeters.get(i).getNumber()){
-                meter = allMeters.get(i);
-            }
-        }
+        Meter meter = (Meter) query.getSingleResult();
 
         return meter;
     }

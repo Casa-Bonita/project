@@ -8,7 +8,7 @@ public interface AccountService {
 
     List<Account> getAllAccounts();
 
-    void saveAccount(Account account);
+    void saveAccount(Account account, String accountContractNumber);
 
     Account getAccount(int id);
 

@@ -52,15 +52,7 @@ public class ContractController {
                                @RequestParam("renter.name") String renterName,
                                @ModelAttribute("contract") Contract contract){
 
-        Place place = placeService.getPlaceByNumber(contractPlaceNumber);
-
-        contract.setContractPlace(place);
-
-        Renter renter = renterService.getRenterByName(renterName);
-
-        contract.setRenter(renter);
-
-        contractService.saveContract(contract);
+        contractService.saveContract(contract, contractPlaceNumber, renterName);
 
         return "redirect:/contracts";
     }
@@ -110,7 +102,7 @@ public class ContractController {
         List<Place> placeList = placeService.getAllPlaces();
 
         for (int i = 0; i < placeList.size(); i++) {
-            Integer placeNumber = placeList.get(i).getNumber();
+            Integer placeNumber = Integer.valueOf(placeList.get(i).getNumber());
             placeMap.put(placeNumber, placeNumber);
         }
         // sort HahsMap by TreeMap

@@ -8,7 +8,7 @@ public interface MeterService {
 
     List<Meter> getAllMeters();
 
-    void saveMeter(Meter meter);
+    void saveMeter(Meter meter, int meterPlaceNumber);
 
     Meter getMeter(int id);
 

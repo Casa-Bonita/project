@@ -1,6 +1,5 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
-import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import com.casabonita.spring.mvc_hibernate.entity.Meter;
 import com.casabonita.spring.mvc_hibernate.entity.Place;
 import com.casabonita.spring.mvc_hibernate.service.MeterService;
@@ -48,11 +47,7 @@ public class MeterController {
     @RequestMapping(value = "/saveMeter", method = RequestMethod.POST)
     public String saveMeter(@RequestParam("meterPlace.number") int meterPlaceNumber, @ModelAttribute("meter") Meter meter){
 
-        Place place = placeService.getPlaceByNumber(meterPlaceNumber);
-
-        meter.setMeterPlace(place);
-
-        meterService.saveMeter(meter);
+        meterService.saveMeter(meter, meterPlaceNumber);
 
         return "redirect:/meters";
 
@@ -84,7 +79,7 @@ public class MeterController {
         List<Place> placeList = placeService.getAllPlaces();
 
         for (int i = 0; i < placeList.size(); i++) {
-            Integer placeNumber = placeList.get(i).getNumber();
+            Integer placeNumber = Integer.valueOf(placeList.get(i).getNumber());
             placeMap.put(placeNumber, placeNumber);
         }
         // sort HahsMap by TreeMap

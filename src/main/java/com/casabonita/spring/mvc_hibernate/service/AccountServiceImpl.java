@@ -1,8 +1,9 @@
 package com.casabonita.spring.mvc_hibernate.service;
 
 import com.casabonita.spring.mvc_hibernate.dao.AccountDAO;
+import com.casabonita.spring.mvc_hibernate.dao.ContractDAO;
 import com.casabonita.spring.mvc_hibernate.entity.Account;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,11 +12,12 @@ import java.util.List;
 @Service
 public class AccountServiceImpl implements AccountService{
 
-//    @Autowired
     private final AccountDAO accountDAO;
+    private final ContractDAO contractDAO;
 
-    public AccountServiceImpl(AccountDAO accountDAO) {
+    public AccountServiceImpl(AccountDAO accountDAO, ContractDAO contractDAO) {
         this.accountDAO = accountDAO;
+        this.contractDAO = contractDAO;
     }
 
     @Override
@@ -27,7 +29,11 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     @Transactional
-    public void saveAccount(Account account) {
+    public void saveAccount(Account account, String accountContractNumber) {
+
+        Contract contract = contractDAO.getContractByNumber(accountContractNumber);
+
+        account.setAccountContract(contract);
 
         accountDAO.saveAccount(account);
     }

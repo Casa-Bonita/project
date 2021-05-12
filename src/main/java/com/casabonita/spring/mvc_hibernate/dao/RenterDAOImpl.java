@@ -53,19 +53,37 @@ public class RenterDAOImpl implements RenterDAO{
         query.executeUpdate();
     }
 
+//    @Override
+//    public Renter getRenterByName(String name) {
+//
+//        Session session = sessionFactory.getCurrentSession();
+//
+//        List<Renter> allRenters = session.createQuery("from Renter", Renter.class).getResultList();
+//
+//        Renter renter = null;
+//
+//        for (int i = 0; i < allRenters.size(); i++) {
+//            if(name.equals(allRenters.get(i).getName())){
+//                renter = allRenters.get(i);
+//            }
+//        }
+//
+//        return renter;
+//    }
+
     @Override
     public Renter getRenterByName(String name) {
 
         Session session = sessionFactory.getCurrentSession();
 
-        List<Renter> allRenters = session.createQuery("from Renter", Renter.class).getResultList();
+        Query query = session.createQuery(" FROM Renter WHERE name=:parameter");
+        query.setParameter("parameter", name);
 
         Renter renter = null;
-
-        for (int i = 0; i < allRenters.size(); i++) {
-            if(name.equals(allRenters.get(i).getName())){
-                renter = allRenters.get(i);
-            }
+        
+        List <Renter> listRenter = query.list();
+        if (listRenter != null && listRenter.size() > 0) {
+            renter = (Renter) listRenter.get(0);
         }
 
         return renter;

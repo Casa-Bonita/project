@@ -1,9 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
-import com.casabonita.spring.mvc_hibernate.entity.Contract;
-import com.casabonita.spring.mvc_hibernate.entity.Meter;
-import com.casabonita.spring.mvc_hibernate.entity.Place;
-import com.casabonita.spring.mvc_hibernate.entity.Reading;
+import com.casabonita.spring.mvc_hibernate.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -68,19 +65,37 @@ public class PlaceDAOImpl implements PlaceDAO{
         queryPlace.executeUpdate();
     }
 
+//    @Override
+//    public Place getPlaceByNumber(int number) {
+//
+//        Session session = sessionFactory.getCurrentSession();
+//
+//        List<Place> allPlaces = session.createQuery("from Place", Place.class).getResultList();
+//
+//        Place place = null;
+//
+//        for (int i = 0; i < allPlaces.size(); i++) {
+//            if(number == allPlaces.get(i).getNumber()){
+//                place = allPlaces.get(i);
+//            }
+//        }
+//
+//        return place;
+//    }
+
     @Override
     public Place getPlaceByNumber(int number) {
 
         Session session = sessionFactory.getCurrentSession();
 
-        List<Place> allPlaces = session.createQuery("from Place", Place.class).getResultList();
+        Query query = session.createQuery(" FROM Place WHERE number=:parameter");
+        query.setParameter("parameter", number);
 
         Place place = null;
 
-        for (int i = 0; i < allPlaces.size(); i++) {
-            if(number == allPlaces.get(i).getNumber()){
-                place = allPlaces.get(i);
-            }
+        List <Place> listPlace = query.list();
+        if (listPlace != null && listPlace.size() == 1) {
+            place = (Place) listPlace.get(0);
         }
 
         return place;

@@ -8,7 +8,7 @@ public interface PaymentService {
 
     List<Payment> getAllPayments();
 
-    void savePayment(Payment payment);
+    void savePayment(Payment payment, String accountNumber);
 
     Payment getPayment(int id);
 

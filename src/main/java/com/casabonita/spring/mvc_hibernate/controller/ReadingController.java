@@ -1,7 +1,5 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
-import com.casabonita.spring.mvc_hibernate.entity.Account;
-import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import com.casabonita.spring.mvc_hibernate.entity.Meter;
 import com.casabonita.spring.mvc_hibernate.entity.Reading;
 import com.casabonita.spring.mvc_hibernate.service.MeterService;
@@ -49,11 +47,7 @@ public class ReadingController {
     @RequestMapping(value = "/saveReading", method = RequestMethod.POST)
     public String saveReading(@RequestParam("meter.number") int meterNumber, @ModelAttribute("reading") Reading reading){
 
-        Meter meter = meterService.getMeterByNumber(meterNumber);
-
-        reading.setMeter(meter);
-
-        readingService.saveReading(reading);
+        readingService.saveReading(reading, meterNumber);
 
         return "redirect:/readings";
     }
@@ -84,7 +78,7 @@ public class ReadingController {
         List<Meter> meterList = meterService.getAllMeters();
 
         for (int i = 0; i < meterList.size(); i++) {
-            Integer meterNumber = meterList.get(i).getNumber();
+            Integer meterNumber = Integer.valueOf(meterList.get(i).getNumber());
             meterMap.put(meterNumber, meterNumber);
         }
         // sort HahsMap by TreeMap

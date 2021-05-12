@@ -60,20 +60,33 @@ public class ContractDAOImpl implements ContractDAO{
         query.executeUpdate();
     }
 
+//    @Override
+//    public Contract getContractByNumber(String number) {
+//
+//        Session session = sessionFactory.getCurrentSession();
+//
+//        List<Contract> allContracts = session.createQuery("from Contract", Contract.class).getResultList();
+//
+//        Contract contract = null;
+//
+//        for (int i = 0; i < allContracts.size(); i++) {
+//            if(number.equals(allContracts.get(i).getNumber())){
+//                contract = allContracts.get(i);
+//            }
+//        }
+//
+//        return contract;
+//    }
+
     @Override
     public Contract getContractByNumber(String number) {
 
         Session session = sessionFactory.getCurrentSession();
 
-        List<Contract> allContracts = session.createQuery("from Contract", Contract.class).getResultList();
+        Query query = session.createQuery(" FROM Contract WHERE number=:parameter");
+        query.setParameter("parameter", number);
 
-        Contract contract = null;
-
-        for (int i = 0; i < allContracts.size(); i++) {
-            if(number.equals(allContracts.get(i).getNumber())){
-                contract = allContracts.get(i);
-            }
-        }
+        Contract contract = (Contract) query.getSingleResult();
 
         return contract;
     }

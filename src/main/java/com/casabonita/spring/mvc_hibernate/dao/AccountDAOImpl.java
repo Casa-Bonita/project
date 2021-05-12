@@ -1,9 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
-import com.casabonita.spring.mvc_hibernate.entity.Account;
-import com.casabonita.spring.mvc_hibernate.entity.Meter;
-import com.casabonita.spring.mvc_hibernate.entity.Payment;
-import com.casabonita.spring.mvc_hibernate.entity.Place;
+import com.casabonita.spring.mvc_hibernate.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -63,15 +60,10 @@ public class AccountDAOImpl implements AccountDAO{
 
         Session session = sessionFactory.getCurrentSession();
 
-        List<Account> allAccounts = session.createQuery("from Account", Account.class).getResultList();
+        Query query = session.createQuery(" FROM Account WHERE number=:parameter");
+        query.setParameter("parameter", number);
 
-        Account account = null;
-
-        for (int i = 0; i < allAccounts.size(); i++) {
-            if(number.equals(allAccounts.get(i).getNumber())){
-                account = allAccounts.get(i);
-            }
-        }
+        Account account = (Account) query.getSingleResult();
 
         return account;
     }

@@ -2,7 +2,6 @@ package com.casabonita.spring.mvc_hibernate.controller;
 
 import com.casabonita.spring.mvc_hibernate.entity.Account;
 import com.casabonita.spring.mvc_hibernate.entity.Contract;
-import com.casabonita.spring.mvc_hibernate.entity.Place;
 import com.casabonita.spring.mvc_hibernate.service.AccountService;
 import com.casabonita.spring.mvc_hibernate.service.ContractService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +47,7 @@ public class AccountController {
     @RequestMapping(value = "/saveAccount", method = RequestMethod.POST)
     public String saveAccount(@RequestParam("accountContract.number") String accountContractNumber, @ModelAttribute("account") Account account){
 
-        Contract contract = contractService.getContractByNumber(accountContractNumber);
-
-        account.setAccountContract(contract);
-
-        accountService.saveAccount(account);
+        accountService.saveAccount(account, accountContractNumber);
 
         return "redirect:/accounts";
 

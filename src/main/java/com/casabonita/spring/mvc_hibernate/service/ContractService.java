@@ -8,7 +8,7 @@ public interface ContractService {
 
     List<Contract> getAllContracts();
 
-    void saveContract(Contract contract);
+    void saveContract(Contract contract, int contractPlaceNumber, String renterName);
 
     Contract getContract (int id);
 

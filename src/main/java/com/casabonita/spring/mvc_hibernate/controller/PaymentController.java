@@ -1,7 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
 import com.casabonita.spring.mvc_hibernate.entity.Account;
-import com.casabonita.spring.mvc_hibernate.entity.Meter;
 import com.casabonita.spring.mvc_hibernate.entity.Payment;
 import com.casabonita.spring.mvc_hibernate.service.AccountService;
 import com.casabonita.spring.mvc_hibernate.service.PaymentService;
@@ -48,11 +47,7 @@ public class PaymentController {
     @RequestMapping(value = "/savePayment", method = RequestMethod.POST)
     public String savePayment(@RequestParam("account.number") String accountNumber, @ModelAttribute("payment") Payment payment){
 
-        Account account = accountService.getAccountByNumber(accountNumber);
-
-        payment.setAccount(account);
-
-        paymentService.savePayment(payment);
+        paymentService.savePayment(payment, accountNumber);
 
         return "redirect:/payments";
     }
