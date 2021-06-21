@@ -1,6 +1,5 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
-import com.casabonita.spring.mvc_hibernate.entity.Place;
 import com.casabonita.spring.mvc_hibernate.entity.Renter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -36,7 +35,7 @@ public class RenterDAOImpl implements RenterDAO{
     }
 
     @Override
-    public Renter getRenter(int id) {
+    public Renter getRenter(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Renter renter = session.get(Renter.class, id);
@@ -45,47 +44,24 @@ public class RenterDAOImpl implements RenterDAO{
     }
 
     @Override
-    public void deleteRenter(int id) {
+    public Renter getRenterByName(String name) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("from Renter where name=:param");
+        query.setParameter("param", name);
+
+        Renter renter = (Renter) query.getSingleResult();
+
+        return renter;
+    }
+
+    @Override
+    public void deleteRenterById(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Query<Renter> query = session.createQuery("delete from Renter where id=:param");
         query.setParameter("param", id);
         query.executeUpdate();
-    }
-
-//    @Override
-//    public Renter getRenterByName(String name) {
-//
-//        Session session = sessionFactory.getCurrentSession();
-//
-//        List<Renter> allRenters = session.createQuery("from Renter", Renter.class).getResultList();
-//
-//        Renter renter = null;
-//
-//        for (int i = 0; i < allRenters.size(); i++) {
-//            if(name.equals(allRenters.get(i).getName())){
-//                renter = allRenters.get(i);
-//            }
-//        }
-//
-//        return renter;
-//    }
-
-    @Override
-    public Renter getRenterByName(String name) {
-
-        Session session = sessionFactory.getCurrentSession();
-
-        Query query = session.createQuery(" FROM Renter WHERE name=:parameter");
-        query.setParameter("parameter", name);
-
-        Renter renter = null;
-        
-        List <Renter> listRenter = query.list();
-        if (listRenter != null && listRenter.size() > 0) {
-            renter = (Renter) listRenter.get(0);
-        }
-
-        return renter;
     }
 }

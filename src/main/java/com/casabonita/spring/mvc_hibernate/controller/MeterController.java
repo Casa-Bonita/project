@@ -54,7 +54,7 @@ public class MeterController {
     }
 
     @RequestMapping(value = "/updateMeter", method = RequestMethod.GET)
-    public String updateMeter(@RequestParam("metId") int id, Model model){
+    public String updateMeter(@RequestParam("metId") Integer id, Model model){
 
         Meter meter = meterService.getMeter(id);
         model.addAttribute("meter", meter);
@@ -63,14 +63,14 @@ public class MeterController {
     }
 
     @RequestMapping(value = "/deleteMeter", method = RequestMethod.GET)
-    public String deleteMeter(@RequestParam("metId") int id){
+    public String deleteMeter(@RequestParam("metId") Integer id){
 
-        meterService.deleteMeter(id);
+        meterService.deleteMeterById(id);
 
         return "redirect:/meters";
     }
 
-    // Отображение перечня отсортированных по возрастанию Place-ов
+    // Отображение перечня отсортированных по возрастанию Place-ов без Meter-ов
     @ModelAttribute("placeMap")
     public TreeMap<Integer, Integer> getSortedPlaceMap() {
 
@@ -79,8 +79,10 @@ public class MeterController {
         List<Place> placeList = placeService.getAllPlaces();
 
         for (int i = 0; i < placeList.size(); i++) {
-            Integer placeNumber = Integer.valueOf(placeList.get(i).getNumber());
-            placeMap.put(placeNumber, placeNumber);
+            if(placeList.get(i).getMeter() == null){
+                Integer placeNumber = Integer.valueOf(placeList.get(i).getNumber());
+                placeMap.put(placeNumber, placeNumber);
+            }
         }
         // sort HahsMap by TreeMap
         TreeMap<Integer, Integer> sortedPlaceMap = new TreeMap<>();

@@ -19,11 +19,10 @@ public class StartController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String showStartPage(Model model){
 
-        List<Summary> allSummaries = startService.getAllSummries();
+        List<Summary> allSummaries = startService.getAllSummaries();
 
         model.addAttribute("summaryList", allSummaries);
 
         return "start_page";
     }
-
 }

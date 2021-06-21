@@ -34,7 +34,7 @@ public class AccountDAOImpl implements AccountDAO{
     }
 
     @Override
-    public Account getAccount(int id) {
+    public Account getAccount(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Account account = session.get(Account.class, id);
@@ -43,16 +43,19 @@ public class AccountDAOImpl implements AccountDAO{
     }
 
     @Override
-    public void deleteAccount(int id) {
+    public Account getAccountByContractId(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Payment> queryPayment = session.createQuery("delete from Payment where account.id=:param1");
-        queryPayment.setParameter("param1", id);
-        queryPayment.executeUpdate();
 
-        Query<Account> queryAccount = session.createQuery("delete from Account where id=:param2");
-        queryAccount.setParameter("param2", id);
-        queryAccount.executeUpdate();
+        Query query = session.createQuery("from Account where accountContract.id=:param");
+        query.setParameter("param", id);
+
+        List results = query.getResultList();
+        if (results.isEmpty()) {
+            return null; // no-results case
+        } else {
+            return (Account) results.get(0);
+        }
     }
 
     @Override
@@ -60,11 +63,21 @@ public class AccountDAOImpl implements AccountDAO{
 
         Session session = sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery(" FROM Account WHERE number=:parameter");
-        query.setParameter("parameter", number);
+        Query query = session.createQuery(" from Account where number=:param");
+        query.setParameter("param", number);
 
         Account account = (Account) query.getSingleResult();
 
         return account;
+    }
+
+    @Override
+    public void deleteAccountById(Integer id) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        Query<Account> queryAccount = session.createQuery("delete from Account where id=:param");
+        queryAccount.setParameter("param", id);
+        queryAccount.executeUpdate();
     }
 }

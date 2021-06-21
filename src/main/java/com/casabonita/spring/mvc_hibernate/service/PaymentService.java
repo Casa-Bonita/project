@@ -10,7 +10,10 @@ public interface PaymentService {
 
     void savePayment(Payment payment, String accountNumber);
 
-    Payment getPayment(int id);
+    Payment getPayment(Integer id);
 
-    void deletePayment(int id);
+    void deletePaymentById(Integer id);
+
+    void deletePaymentByAccountId(Integer id);
+
 }

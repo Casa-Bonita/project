@@ -10,7 +10,9 @@ public interface ReadingDAO {
 
     void saveReading(Reading reading);
 
-    Reading getReading(int id);
+    Reading getReading(Integer id);
 
-    void deleteReading(int id);
+    void deleteReadingById(Integer id);
+
+    void deleteReadingByMeterId(Integer id);
 }

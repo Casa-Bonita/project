@@ -43,8 +43,24 @@ public class TestReadingIT {
     private DataSource dataSource;
 
     @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
+    public void testGetAllReadings() throws ParseException{
+
+        List<Reading> readingList = readingDAO.getAllReadings();
+
+        String d1 = "2021-03-01";
+        String d2 = "2021-02-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        assertThat(readingList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+        assertThat(readingList).extracting(x -> x.getMeter().getId()).contains(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
+        assertThat(readingList).extracting(x -> x.getTransferData()).contains(11100, 11000, 21900, 21800, 3700, 3800, 6800, 6900, 15900, 15800, 32700, 32600, 29000, 28900);
+        assertThat(readingList).extracting(x -> sdf.parse(x.getTransferDate().toString())).contains(sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
+    }
+
+    @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql"})
-    public void testSave() throws ParseException {
+    public void testSaveReading() throws ParseException {
 
         String d = "2021-01-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -75,7 +91,7 @@ public class TestReadingIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
-    public void testGetById() throws ParseException{
+    public void testGetReading() throws ParseException{
 
         String d = "2021-03-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -107,10 +123,10 @@ public class TestReadingIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
-    public void testDeleteById() throws ParseException{
+    public void testDeleteReadingById() throws ParseException{
 
         int id = 1;
-        readingDAO.deleteReading(id);
+        readingDAO.deleteReadingById(id);
 
         List<Reading> readingList = readingDAO.getAllReadings();
 
@@ -126,7 +142,29 @@ public class TestReadingIT {
         assertThat(readingList).extracting(x -> x.getMeter().getId()).contains(1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
         assertThat(readingList).extracting(x -> x.getTransferData()).contains(11000, 21900, 21800, 3700, 3800, 6800, 6900, 15900, 15800, 32700, 32600, 29000, 28900);
         assertThat(readingList).extracting(x -> sdf.parse(x.getTransferDate().toString())).contains(sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
+    }
 
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
+    public void testDeleteReadingByMeterId() throws ParseException{
+
+        int id = 1;
+        readingDAO.deleteReadingByMeterId(id);
+
+        List<Reading> readingList = readingDAO.getAllReadings();
+
+        assertThat(readingList)
+                .isNotEmpty()
+                .hasSize(12);
+
+        String d1 = "2021-03-01";
+        String d2 = "2021-02-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        assertThat(readingList).extracting(x -> x.getId()).contains(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+        assertThat(readingList).extracting(x -> x.getMeter().getId()).contains(2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
+        assertThat(readingList).extracting(x -> x.getTransferData()).contains(21900, 21800, 3700, 3800, 6800, 6900, 15900, 15800, 32700, 32600, 29000, 28900);
+        assertThat(readingList).extracting(x -> sdf.parse(x.getTransferDate().toString())).contains(sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
     }
 
     @Test
@@ -148,22 +186,5 @@ public class TestReadingIT {
         assertThat(readingExpected.getMeter().getId()).isEqualTo(readingActual.getMeter().getId());
         assertThat(data).isEqualTo(readingActual.getTransferData());
         assertThat(readingExpected.getTransferDate()).isEqualTo(readingActual.getTransferDate());
-    }
-
-    @Test
-    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
-    public void testGetAll() throws ParseException{
-
-        List<Reading> readingList = readingDAO.getAllReadings();
-
-        String d1 = "2021-03-01";
-        String d2 = "2021-02-01";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        assertThat(readingList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
-        assertThat(readingList).extracting(x -> x.getMeter().getId()).contains(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
-        assertThat(readingList).extracting(x -> x.getTransferData()).contains(11100, 11000, 21900, 21800, 3700, 3800, 6800, 6900, 15900, 15800, 32700, 32600, 29000, 28900);
-        assertThat(readingList).extracting(x -> sdf.parse(x.getTransferDate().toString())).contains(sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
-
     }
 }

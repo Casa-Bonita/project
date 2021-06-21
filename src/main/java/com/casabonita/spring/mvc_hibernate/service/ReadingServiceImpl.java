@@ -29,28 +29,46 @@ public class ReadingServiceImpl implements ReadingService{
 
     @Override
     @Transactional
-    public void saveReading(Reading reading, int meterNumber) {
+    public void saveReading(Reading reading, String meterNumber) {
+
+        Reading readingToSave;
+
+        if(reading.getId() == null){
+            readingToSave = new Reading();
+        } else{
+            readingToSave = readingDAO.getReading(reading.getId());
+        }
 
         Meter meter = meterDAO.getMeterByNumber(meterNumber);
+        readingToSave.setMeter(meter);
 
-        reading.setMeter(meter);
+        readingToSave.setTransferData(reading.getTransferData());
+        readingToSave.setTransferDate(reading.getTransferDate());
 
-        readingDAO.saveReading(reading);
+        readingDAO.saveReading(readingToSave);
 
     }
 
     @Override
     @Transactional
-    public Reading getReading(int id) {
+    public Reading getReading(Integer id) {
 
         return readingDAO.getReading(id);
     }
 
     @Override
     @Transactional
-    public void deleteReading(int id) {
+    public void deleteReadingById(Integer id) {
 
-        readingDAO.deleteReading(id);
+        readingDAO.deleteReadingById(id);
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteReadingByMeterId(Integer id) {
+
+        readingDAO.deleteReadingByMeterId(id);
 
     }
 }

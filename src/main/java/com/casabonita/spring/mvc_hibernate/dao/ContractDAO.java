@@ -10,9 +10,13 @@ public interface ContractDAO {
 
     void saveContract(Contract contract);
 
-    Contract getContract(int id);
+    Contract getContract(Integer id);
 
-    void deleteContract(int id);
+    Contract getContractByPlaceId(Integer id);
+
+    List <Contract> getContractByRenterId(Integer id);
 
     Contract getContractByNumber (String number);
+
+    void deleteContractById(Integer id);
 }

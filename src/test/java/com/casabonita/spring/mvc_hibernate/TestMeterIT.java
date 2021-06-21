@@ -45,12 +45,23 @@ public class TestMeterIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
-    public void testSave(){
+    public void testGetAllMeters(){
+
+        List<Meter> meterList = meterDAO.getAllMeters();
+
+        assertThat(meterList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
+        assertThat(meterList).extracting(x -> x.getNumber()).contains("428510", "428511", "428512", "428513", "428514", "428515", "428516");
+        assertThat(meterList).extracting(x -> x.getMeterPlace().getId()).contains(1, 2, 3, 4, 5, 6, 7);
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
+    public void testSaveMeter(){
 
         int testPlaceId = 1;
-        Place place = placeDAO.getPlace(testPlaceId);
+        Place place = placeDAO.getPlaceById(testPlaceId);
 
-        int testNumber = 123456;
+        String testNumber = "TestNumber";
 
         Meter meter = new Meter();
 
@@ -73,10 +84,10 @@ public class TestMeterIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
-    public void testGetById(){
+    public void testGetMeter(){
 
         int id = 1;
-        int meterNumber = 428510;
+        String meterNumber = "428510";
         int placeId = 1;
 
         // проверка через getMeter
@@ -95,15 +106,73 @@ public class TestMeterIT {
                 .column("id").hasValues(id)
                 .column("meter_number").hasValues(meterNumber)
                 .column("place_id").hasValues(placeId);
-
     }
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
-    public void testDeleteById(){
+    public void testGetMeterByPlaceId(){
 
         int id = 1;
-        meterDAO.deleteMeter(id);
+        String meterNumber = "428510";
+        int placeId = 1;
+
+        // проверка через getMeter
+        Meter meter = meterDAO.getMeterByPlaceId(id);
+
+        assertThat(id).isEqualTo(meter.getId());
+        assertThat(meterNumber).isEqualTo(meter.getNumber());
+        assertThat(placeId).isEqualTo(meter.getMeterPlace().getId());
+
+        // проверка без getMeter через request из БД
+        Request request = new Request(dataSource,
+                "SELECT * FROM meter WHERE place_id = 1");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("meter_number").hasValues(meterNumber)
+                .column("place_id").hasValues(placeId);
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
+    public void testGetMeterByNumber(){
+
+        int id = 1;
+        String meterNumber = "428510";
+        int placeId = 1;
+
+        // проверка через getMeter
+        Meter meter = meterDAO.getMeterByNumber(meterNumber);
+
+        assertThat(id).isEqualTo(meter.getId());
+        assertThat(meterNumber).isEqualTo(meter.getNumber());
+        assertThat(placeId).isEqualTo(meter.getMeterPlace().getId());
+
+        // проверка без getMeter через request из БД
+        Request request = new Request(dataSource,
+                "SELECT * FROM meter WHERE meter_number = '428510'");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("meter_number").hasValues(meterNumber)
+                .column("place_id").hasValues(placeId);
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql"})
+    public void testDeleteMeterById(){
+
+        int id = 1;
+        meterDAO.deleteMeterById(id);
+
+        // проверка через request удаления строки
+        Request requestOne = new Request(dataSource,
+                "SELECT * FROM meter WHERE id = 1");
+
+        Assertions.assertThat(requestOne)
+                .isEmpty();
 
         // проверка через request всех оставшихся после удаления строк таблицы
         Request requestAll = new Request(dataSource,
@@ -111,14 +180,14 @@ public class TestMeterIT {
 
         Assertions.assertThat(requestAll)
                 .column("id").hasValues(2, 3, 4, 5, 6, 7)
-                .column("meter_number").hasValues(428511, 428512, 428513, 428514, 428515, 428516)
+                .column("meter_number").hasValues("428511", "428512", "428513", "428514", "428515", "428516")
                 .column("place_id").hasValues(2, 3, 4, 5, 6, 7);
 
         //проверка через getAllMeters
         List<Meter> meterList = meterDAO.getAllMeters();
 
         assertThat(meterList).extracting(x -> x.getId()).contains(2, 3, 4, 5, 6, 7);
-        assertThat(meterList).extracting(x -> x.getNumber()).contains(428511, 428512, 428513, 428514, 428515, 428516);
+        assertThat(meterList).extracting(x -> x.getNumber()).contains("428511", "428512", "428513", "428514", "428515", "428516");
         assertThat(meterList).extracting(x -> x.getMeterPlace().getId()).contains(2, 3, 4, 5, 6, 7);
     }
 
@@ -126,7 +195,7 @@ public class TestMeterIT {
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
     public void testUpdate(){
 
-        int meterNumber = 123456;;
+        String meterNumber = "123456";;
 
         int id = 1;
         Meter meterExpected = meterDAO.getMeter(id);
@@ -152,17 +221,4 @@ public class TestMeterIT {
         assertThat(meterNumber).isEqualTo(meterActual.getNumber());
         assertThat(meterExpected.getMeterPlace().getId()).isEqualTo(meterActual.getMeterPlace().getId());
     }
-
-    @Test
-    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
-    public void testGetAll(){
-
-        List<Meter> meterList = meterDAO.getAllMeters();
-
-        assertThat(meterList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
-        assertThat(meterList).extracting(x -> x.getNumber()).contains(428510, 428511, 428512, 428513, 428514, 428515, 428516);
-        assertThat(meterList).extracting(x -> x.getMeterPlace().getId()).contains(1, 2, 3, 4, 5, 6, 7);
-
-    }
-
 }

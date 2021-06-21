@@ -5,13 +5,11 @@ import com.casabonita.spring.mvc_hibernate.service.RenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -39,22 +37,15 @@ public class RenterController {
     }
 
     @RequestMapping(value = "/saveRenter", method = RequestMethod.POST)
-    public String saveRenter(@Valid @ModelAttribute("renter") Renter renter, BindingResult bindingResult){
+    public String saveRenter(@ModelAttribute("renter") Renter renter){
 
-        if(bindingResult.hasErrors()){
+        renterService.saveRenter(renter);
 
-            return "renter/renter_info";
-        }
-        else{
-
-            renterService.saveRenter(renter);
-
-            return "redirect:/renters";
-        }
+        return "redirect:/renters";
     }
 
     @RequestMapping(value = "/updateRenter", method = RequestMethod.GET)
-    public String updateRenter(@RequestParam("rentId") int id, Model model){
+    public String updateRenter(@RequestParam("rentId") Integer id, Model model){
 
         Renter renter = renterService.getRenter(id);
         model.addAttribute("renter", renter);
@@ -63,9 +54,9 @@ public class RenterController {
     }
 
     @RequestMapping(value = "/deleteRenter", method = RequestMethod.GET)
-    public String deleteRenter(@RequestParam("rentId") int id){
+    public String deleteRenter(@RequestParam("rentId") Integer id){
 
-        renterService.deleteRenter(id);
+        renterService.deleteRenterById(id);
 
         return "redirect:/renters";
     }

@@ -1,23 +1,30 @@
 INSERT INTO place (number, name, square, floor, type)
 VALUES
-	(42, 'Buildings-1', 45.8, 2, 'office'),
-	(43, 'Buildings-2', 35.7, 2, 'office'),
-	(44, 'Buildings-3', 50.1, 2, 'office'),
-	(10, 'H&M', 39.6, 3, 'shop'),
-	(37, 'Post office', 6.0, 1, 'island'),
-	(40, 'Cafe', 62.0, 0, 'other'),
-	(26, 'Union cards', 2.0, 0, 'atm');
+(42, 'Place-01', 45.8, 2, 'office'),
+(43, 'Place-02', 35.7, 2, 'office'),
+(44, 'Place-03', 50.1, 2, 'office'),
+(10, 'H&M', 39.6, 3, 'shop'),
+(37, 'Post office', 6.0, 1, 'island'),
+(40, 'Cafe', 62.0, 0, 'other'),
+(26, 'Union cards', 2.0, 0, 'atm'),
+(87, 'Place-04', 500.0, -1, 'parking'),
+(53, 'Place-05', 250.0, 4, 'food cort'),
+(69, 'Place-06', 25.0, 3, 'library'),
+(94, 'Place-07', 55.8, 4, 'administration'),
+(12, 'Place-08', 42.3, 3, 'office'),
+(21, 'Place-09', 18.7, 5, 'pharmacy'),
+(29, 'Place-10', 312.1, 6, 'warehouse');
 
 
 INSERT INTO meter (meter_number, place_id)
 VALUES
-(428510, 1),
-(428511, 2),
-(428512, 3),
-(428513, 4),
-(428514, 5),
-(428515, 6),
-(428516, 7);
+('428510', 1),
+('428511', 2),
+('428512', 3),
+('428513', 4),
+('428514', 5),
+('428515', 6),
+('428516', 7);
 
 
 INSERT INTO meter_data (meter_id, data, data_date)
@@ -271,7 +278,7 @@ VALUES
 (1, 900, '2019-04-01', 'Oplata za elektroenergiu za mart 2019'),
 (1, 1000, '2019-03-01', 'Oplata za elektroenergiu za fevral 2019'),
 (1, 1100, '2019-02-01', 'Oplata za elektroenergiu za yanvar 2019'),
-(1, 900, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2019'),
+(1, 900, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2018'),
 (2, 2200, '2021-03-01', 'Oplata za elektroenergiu za fevral 2021'),
 (2, 2100, '2021-02-01', 'Oplata za elektroenergiu za yanvar 2021'),
 (2, 2000, '2021-01-01', 'Oplata za elektroenergiu za dekabr 2020'),
@@ -298,7 +305,7 @@ VALUES
 (2, 2000, '2019-04-01', 'Oplata za elektroenergiu za mart 2019'),
 (2, 2200, '2019-03-01', 'Oplata za elektroenergiu za fevral 2019'),
 (2, 2100, '2019-02-01', 'Oplata za elektroenergiu za yanvar 2019'),
-(2, 2000, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2019'),
+(2, 2000, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2018'),
 (3, 1500, '2021-03-01', 'Oplata za elektroenergiu za fevral 2021'),
 (3, 1700, '2021-02-01', 'Oplata za elektroenergiu za yanvar 2021'),
 (3, 1300, '2021-01-01', 'Oplata za elektroenergiu za dekabr 2020'),
@@ -325,7 +332,7 @@ VALUES
 (3, 1300, '2019-04-01', 'Oplata za elektroenergiu za mart 2019'),
 (3, 1500, '2019-03-01', 'Oplata za elektroenergiu za fevral 2019'),
 (3, 1700, '2019-02-01', 'Oplata za elektroenergiu za yanvar 2019'),
-(3, 1300, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2019'),
+(3, 1300, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2018'),
 (4, 3000, '2021-03-01', 'Oplata za elektroenergiu za fevral 2021'),
 (4, 2900, '2021-02-01', 'Oplata za elektroenergiu za yanvar 2021'),
 (4, 3100, '2021-01-01', 'Oplata za elektroenergiu za dekabr 2020'),
@@ -352,7 +359,7 @@ VALUES
 (4, 3100, '2019-04-01', 'Oplata za elektroenergiu za mart 2019'),
 (4, 3000, '2019-03-01', 'Oplata za elektroenergiu za fevral 2019'),
 (4, 2900, '2019-02-01', 'Oplata za elektroenergiu za yanvar 2019'),
-(4, 3100, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2019'),
+(4, 3100, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2018'),
 (5, 2400, '2021-03-01', 'Oplata za elektroenergiu za fevral 2021'),
 (5, 2500, '2021-02-01', 'Oplata za elektroenergiu za yanvar 2021'),
 (5, 2600, '2021-01-01', 'Oplata za elektroenergiu za dekabr 2020'),
@@ -379,7 +386,7 @@ VALUES
 (5, 2600, '2019-04-01', 'Oplata za elektroenergiu za mart 2019'),
 (5, 2400, '2019-03-01', 'Oplata za elektroenergiu za fevral 2019'),
 (5, 2500, '2019-02-01', 'Oplata za elektroenergiu za yanvar 2019'),
-(5, 2600, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2019'),
+(5, 2600, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2018'),
 (6, 3500, '2021-03-01', 'Oplata za elektroenergiu za fevral 2021'),
 (6, 3400, '2021-02-01', 'Oplata za elektroenergiu za yanvar 2021'),
 (6, 3600, '2021-01-01', 'Oplata za elektroenergiu za dekabr 2020'),
@@ -406,7 +413,7 @@ VALUES
 (6, 3600, '2019-04-01', 'Oplata za elektroenergiu za mart 2019'),
 (6, 3500, '2019-03-01', 'Oplata za elektroenergiu za fevral 2019'),
 (6, 3400, '2019-02-01', 'Oplata za elektroenergiu za yanvar 2019'),
-(6, 3600, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2019'),
+(6, 3600, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2018'),
 (7, 2000, '2021-03-01', 'Oplata za elektroenergiu za fevral 2021'),
 (7, 1900, '2021-02-01', 'Oplata za elektroenergiu za yanvar 2021'),
 (7, 1800, '2021-01-01', 'Oplata za elektroenergiu za dekabr 2020'),
@@ -433,4 +440,4 @@ VALUES
 (7, 1800, '2019-04-01', 'Oplata za elektroenergiu za mart 2019'),
 (7, 2000, '2019-03-01', 'Oplata za elektroenergiu za fevral 2019'),
 (7, 1900, '2019-02-01', 'Oplata za elektroenergiu za yanvar 2019'),
-(7, 1800, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2019');
+(7, 1800, '2019-01-01', 'Oplata za elektroenergiu za dekabr 2018');

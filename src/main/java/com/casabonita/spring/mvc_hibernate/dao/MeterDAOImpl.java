@@ -1,9 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.dao;
 
-import com.casabonita.spring.mvc_hibernate.entity.Account;
-import com.casabonita.spring.mvc_hibernate.entity.Meter;
-import com.casabonita.spring.mvc_hibernate.entity.Place;
-import com.casabonita.spring.mvc_hibernate.entity.Reading;
+import com.casabonita.spring.mvc_hibernate.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -37,7 +34,7 @@ public class MeterDAOImpl implements MeterDAO{
     }
 
     @Override
-    public Meter getMeter(int id) {
+    public Meter getMeter(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Meter meter = session.get(Meter.class, id);
@@ -46,28 +43,41 @@ public class MeterDAOImpl implements MeterDAO{
     }
 
     @Override
-    public void deleteMeter(int id) {
+    public Meter getMeterByPlaceId(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
-        Query<Reading> queryReading = session.createQuery("delete from Reading where meter.id=:param1");
-        queryReading.setParameter("param1", id);
-        queryReading.executeUpdate();
 
-        Query<Meter> queryMeter = session.createQuery("delete from Meter where id=:param2");
-        queryMeter.setParameter("param2", id);
-        queryMeter.executeUpdate();
+        Query query = session.createQuery("from Meter where meterPlace.id=:param");
+        query.setParameter("param", id);
+
+        List results = query.getResultList();
+        if (results.isEmpty()) {
+            return null; // no-results case
+        } else {
+            return (Meter) results.get(0);
+        }
     }
 
     @Override
-    public Meter getMeterByNumber(int number) {
+    public Meter getMeterByNumber(String number) {
 
         Session session = sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery(" FROM Meter WHERE number=:parameter");
-        query.setParameter("parameter", number);
+        Query query = session.createQuery(" from Meter where number=:param");
+        query.setParameter("param", number);
 
         Meter meter = (Meter) query.getSingleResult();
 
         return meter;
+    }
+
+    @Override
+    public void deleteMeterById(Integer id) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        Query<Meter> queryMeter = session.createQuery("delete from Meter where id=:param");
+        queryMeter.setParameter("param", id);
+        queryMeter.executeUpdate();
     }
 }

@@ -10,9 +10,9 @@ public interface RenterService {
 
     void saveRenter(Renter renter);
 
-    Renter getRenter (int id);
-
-    void deleteRenter(int id);
+    Renter getRenter(Integer id);
 
     Renter getRenterByName (String name);
+
+    void deleteRenterById(Integer id);
 }

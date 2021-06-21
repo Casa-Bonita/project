@@ -1,8 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.service;
 
-import com.casabonita.spring.mvc_hibernate.dao.PlaceDAO;
-import com.casabonita.spring.mvc_hibernate.entity.Place;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.casabonita.spring.mvc_hibernate.dao.*;
+import com.casabonita.spring.mvc_hibernate.entity.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,11 +10,20 @@ import java.util.List;
 @Service
 public class PlaceServiceImpl implements PlaceService{
 
-//    @Autowired
+    private final AccountDAO accountDAO;
+    private final ContractDAO contractDAO;
+    private final MeterDAO meterDAO;
+    private final PaymentDAO paymentDAO;
     private final PlaceDAO placeDAO;
+    private final ReadingDAO readingDAO;
 
-    public PlaceServiceImpl(PlaceDAO placeDAO) {
+    public PlaceServiceImpl(AccountDAO accountDAO, ContractDAO contractDAO, MeterDAO meterDAO, PaymentDAO paymentDAO, PlaceDAO placeDAO, ReadingDAO readingDAO) {
+        this.accountDAO = accountDAO;
+        this.contractDAO = contractDAO;
+        this.meterDAO = meterDAO;
+        this.paymentDAO = paymentDAO;
         this.placeDAO = placeDAO;
+        this.readingDAO = readingDAO;
     }
 
     @Override
@@ -34,22 +42,49 @@ public class PlaceServiceImpl implements PlaceService{
 
     @Override
     @Transactional
-    public Place getPlace(int id) {
+    public Place getPlaceById(Integer id) {
 
-        return placeDAO.getPlace(id);
-    }
-
-    @Override
-    @Transactional
-    public void deletePlace(int id) {
-
-        placeDAO.deletePlace(id);
+        return placeDAO.getPlaceById(id);
     }
 
     @Override
     @Transactional
     public Place getPlaceByNumber(int number) {
 
-        return placeDAO.getPlace(number);
+        return placeDAO.getPlaceByNumber(number);
+    }
+
+    @Override
+    @Transactional
+    public void deletePlaceById(Integer id) {
+
+        Meter meter = meterDAO.getMeterByPlaceId(id);
+        Integer meterId;
+
+        Contract contract = contractDAO.getContractByPlaceId(id);
+        Integer contractId;
+
+        if(contract != null){
+            Account account = accountDAO.getAccountByContractId(contract.getId());
+            Integer accountId;
+
+            if(account != null){
+                accountId = account.getId();
+                paymentDAO.deletePaymentByAccountId(accountId);
+                accountDAO.deleteAccountById(accountId);
+            }
+
+            contractId = contract.getId();
+            contractDAO.deleteContractById(contractId);
+        }
+
+        if(meter != null){
+            meterId = meter.getId();
+            readingDAO.deleteReadingByMeterId(meterId);
+            meterDAO.deleteMeterById(meterId);
+        }
+
+        placeDAO.deletePlaceById(id);
+
     }
 }

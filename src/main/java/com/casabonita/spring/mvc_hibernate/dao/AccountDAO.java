@@ -10,9 +10,12 @@ public interface AccountDAO {
 
     void saveAccount(Account account);
 
-    Account getAccount(int id);
+    Account getAccount(Integer id);
 
-    void deleteAccount(int id);
+    Account getAccountByContractId(Integer id);
 
     Account getAccountByNumber(String number);
+
+    void deleteAccountById(Integer id);
+
 }

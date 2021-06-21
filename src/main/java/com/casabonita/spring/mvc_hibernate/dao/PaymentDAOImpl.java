@@ -36,7 +36,7 @@ public class PaymentDAOImpl implements PaymentDAO{
     }
 
     @Override
-    public Payment getPayment(int id) {
+    public Payment getPayment(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Payment payment = session.get(Payment.class, id);
@@ -45,12 +45,22 @@ public class PaymentDAOImpl implements PaymentDAO{
     }
 
     @Override
-    public void deletePayment(int id) {
+    public void deletePaymentById(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Query<Payment> query = session.createQuery("delete from Payment where id=:param");
         query.setParameter("param", id);
         query.executeUpdate();
+
+    }
+
+    @Override
+    public void deletePaymentByAccountId(Integer id) {
+
+        Session session = sessionFactory.getCurrentSession();
+        Query<Payment> queryPayment = session.createQuery("delete from Payment where account.id=:param");
+        queryPayment.setParameter("param", id);
+        queryPayment.executeUpdate();
 
     }
 }

@@ -42,8 +42,25 @@ public class TestPaymentIT {
     private DataSource dataSource;
 
     @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
+    public void testGetAllPayments() throws ParseException{
+
+        List<Payment> paymentList = paymentDAO.getAllPayments();
+
+        String d1 = "2021-03-01";
+        String d2 = "2021-02-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        assertThat(paymentList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+        assertThat(paymentList).extracting(x -> x.getAccount().getId()).contains(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
+        assertThat(paymentList).extracting(x -> x.getAmount()).contains(1000, 1100, 2200, 2100, 1500, 1700, 3000, 2900, 2400, 2500, 3500, 3400, 2000, 1900);
+        assertThat(paymentList).extracting(x -> sdf.parse(x.getDate().toString())).contains( sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
+        assertThat(paymentList).extracting(x -> x.getPurpose()).contains("Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021");
+    }
+
+    @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql"})
-    public void testSave() throws ParseException {
+    public void testSavePayment() throws ParseException {
 
         String d = "2021-01-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -78,7 +95,7 @@ public class TestPaymentIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
-    public void testGetById() throws ParseException{
+    public void testGetPayment() throws ParseException{
 
         String d = "2021-03-01";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -89,6 +106,7 @@ public class TestPaymentIT {
         Date date = sdf.parse(d);
         String purpose = "Oplata za elektroenergiu za fevral 2021";
 
+        // проверка через getPayment
         Payment payment = paymentDAO.getPayment(id);
 
         assertThat(id).isEqualTo(payment.getId());
@@ -108,15 +126,14 @@ public class TestPaymentIT {
                 .column("payment").hasValues(amount)
                 .column("payment_date").hasValues(d)
                 .column("payment_purpose").hasValues(purpose);
-
     }
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
-    public void testDeleteById() throws ParseException{
+    public void testDeletePaymentById() throws ParseException{
 
         int id = 1;
-        paymentDAO.deletePayment(id);
+        paymentDAO.deletePaymentById(id);
 
         List<Payment> paymentList = paymentDAO.getAllPayments();
 
@@ -133,6 +150,30 @@ public class TestPaymentIT {
         assertThat(paymentList).extracting(x -> x.getAmount()).contains(1100, 2200, 2100, 1500, 1700, 3000, 2900, 2400, 2500, 3500, 3400, 2000, 1900);
         assertThat(paymentList).extracting(x -> sdf.parse(x.getDate().toString())).contains(sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
         assertThat(paymentList).extracting(x -> x.getPurpose()).contains("Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021");
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
+    public void testDeletePaymentByAccountId() throws ParseException{
+
+        int id = 1;
+        paymentDAO.deletePaymentByAccountId(id);
+
+        List<Payment> paymentList = paymentDAO.getAllPayments();
+
+        assertThat(paymentList)
+                .isNotEmpty()
+                .hasSize(12);
+
+        String d1 = "2021-03-01";
+        String d2 = "2021-02-01";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        assertThat(paymentList).extracting(x -> x.getId()).contains(3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
+        assertThat(paymentList).extracting(x -> x.getAccount().getId()).contains(2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
+        assertThat(paymentList).extracting(x -> x.getAmount()).contains(2200, 2100, 1500, 1700, 3000, 2900, 2400, 2500, 3500, 3400, 2000, 1900);
+        assertThat(paymentList).extracting(x -> sdf.parse(x.getDate().toString())).contains(sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
+        assertThat(paymentList).extracting(x -> x.getPurpose()).contains("Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021");
     }
 
     @Test
@@ -155,23 +196,5 @@ public class TestPaymentIT {
         assertThat(paymentExpected.getAmount()).isEqualTo(paymentActual.getAmount());
         assertThat(paymentExpected.getDate()).isEqualTo(paymentActual.getDate());
         assertThat(purpose).isEqualTo(paymentActual.getPurpose());
-    }
-
-    @Test
-    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
-    public void testGetAll() throws ParseException{
-
-        List<Payment> paymentList = paymentDAO.getAllPayments();
-
-        String d1 = "2021-03-01";
-        String d2 = "2021-02-01";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        assertThat(paymentList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);
-        assertThat(paymentList).extracting(x -> x.getAccount().getId()).contains(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7);
-        assertThat(paymentList).extracting(x -> x.getAmount()).contains(1000, 1100, 2200, 2100, 1500, 1700, 3000, 2900, 2400, 2500, 3500, 3400, 2000, 1900);
-        assertThat(paymentList).extracting(x -> sdf.parse(x.getDate().toString())).contains( sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2), sdf.parse(d1), sdf.parse(d2));
-        assertThat(paymentList).extracting(x -> x.getPurpose()).contains("Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021", "Oplata za elektroenergiu za fevral 2021", "Oplata za elektroenergiu za yanvar 2021");
-
     }
 }

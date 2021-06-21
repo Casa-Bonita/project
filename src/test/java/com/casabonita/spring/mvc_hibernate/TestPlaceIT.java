@@ -40,7 +40,21 @@ public class TestPlaceIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql"})
-    public void testSave(){
+    public void testGetAllPlaces() {
+
+        List<Place> placeList = placeDAO.getAllPlaces();
+
+        assertThat(placeList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
+        assertThat(placeList).extracting(x -> x.getNumber()).contains(42, 43, 44, 10, 37, 40, 26);
+        assertThat(placeList).extracting(x -> x.getName()).contains("Place-01", "Place-02", "Place-03", "H&M", "Post office", "Cafe", "Union cards");
+        assertThat(placeList).extracting(x -> x.getSquare()).contains(45.8, 35.7, 50.1, 39.6, 6.0, 62.0, 2.0);
+        assertThat(placeList).extracting(x -> x.getFloor()).contains(2, 2, 2, 3, 1, 0, 0);
+        assertThat(placeList).extracting(x -> x.getType()).contains("office", "office", "office", "shop", "island", "other", "atm");
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql"})
+    public void testSavePlace(){
 
         int testContractId = 1;
         Contract contract = contractDAO.getContract(testContractId);
@@ -78,17 +92,17 @@ public class TestPlaceIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql"})
-    public void testGetById() {
+    public void testGetPlaceById() {
 
         int id = 1;
         int number = 42;
-        String name = "Buildings-1";
+        String name = "Place-01";
         Double square = 45.8;
         int floor = 2;
         String type = "office";
 
         // проверка через getPlace
-        Place place = placeDAO.getPlace(id);
+        Place place = placeDAO.getPlaceById(id);
 
         assertThat(id).isEqualTo(place.getId());
         assertThat(number).isEqualTo(place.getNumber());
@@ -112,11 +126,46 @@ public class TestPlaceIT {
     }
 
     @Test
-    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql", "/scripts/reading_init.sql"})
-    public void testDeleteById() {
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql"})
+    public void testGetPlaceByNumber() {
 
         int id = 1;
-        placeDAO.deletePlace(id);
+        int number = 42;
+        String name = "Place-01";
+        Double square = 45.8;
+        int floor = 2;
+        String type = "office";
+
+        // проверка через getPlace
+        Place place = placeDAO.getPlaceByNumber(number);
+
+        assertThat(id).isEqualTo(place.getId());
+        assertThat(number).isEqualTo(place.getNumber());
+        assertThat(name).isEqualTo(place.getName());
+        assertThat(square).isEqualTo(place.getSquare());
+        assertThat(floor).isEqualTo(place.getFloor());
+        assertThat(type).isEqualTo(place.getType());
+
+        // проверка без getPlace через request из БД
+        Request request = new Request(dataSource,
+                "SELECT * FROM place WHERE number = 42");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("number").hasValues(number)
+                .column("name").hasValues(name)
+                .column("square").hasValues(square)
+                .column("floor").hasValues(floor)
+                .column("type").hasValues(type);
+    }
+
+    @Test
+    @Sql({"/scripts/place_init.sql"})
+    public void testDeletePlaceById() {
+
+        int id = 1;
+        placeDAO.deletePlaceById(id);
 
         // проверка через request удаления строки
         Request requestOne = new Request(dataSource,
@@ -132,7 +181,7 @@ public class TestPlaceIT {
         Assertions.assertThat(requestAll)
                 .column("id").hasValues(2, 3, 4, 5, 6, 7)
                 .column("number").hasValues(43, 44, 10, 37, 40, 26)
-                .column("name").hasValues("Buildings-2", "Buildings-3", "H&M", "Post office", "Cafe", "Union cards")
+                .column("name").hasValues("Place-02", "Place-03", "H&M", "Post office", "Cafe", "Union cards")
                 .column("square").hasValues(35.7, 50.1, 39.6, 6.0, 62.0, 2.0)
                 .column("floor").hasValues(2, 2, 3, 1, 0, 0)
                 .column("type").hasValues("office", "office", "shop", "island", "other", "atm");
@@ -142,7 +191,7 @@ public class TestPlaceIT {
 
         assertThat(placeList).extracting(x -> x.getId()).contains(2, 3, 4, 5, 6, 7);
         assertThat(placeList).extracting(x -> x.getNumber()).contains(43, 44, 10, 37, 40, 26);
-        assertThat(placeList).extracting(x -> x.getName()).contains("Buildings-2", "Buildings-3", "H&M", "Post office", "Cafe", "Union cards");
+        assertThat(placeList).extracting(x -> x.getName()).contains("Place-02", "Place-03", "H&M", "Post office", "Cafe", "Union cards");
         assertThat(placeList).extracting(x -> x.getSquare()).contains(35.7, 50.1, 39.6, 6.0, 62.0, 2.0);
         assertThat(placeList).extracting(x -> x.getFloor()).contains(2, 2, 3, 1, 0, 0);
         assertThat(placeList).extracting(x -> x.getType()).contains("office", "office", "shop", "island", "other", "atm");
@@ -155,13 +204,13 @@ public class TestPlaceIT {
         int testNumber = 123456;
 
         int id = 1;
-        Place placeExpected = placeDAO.getPlace(id);
+        Place placeExpected = placeDAO.getPlaceById(id);
 
         placeExpected.setNumber(testNumber);
 
         placeDAO.savePlace(placeExpected);
 
-        Place placeActual = placeDAO.getPlace(id);
+        Place placeActual = placeDAO.getPlaceById(id);
 
         // тест без использования getPlace
         Request request = new Request(dataSource,
@@ -183,21 +232,5 @@ public class TestPlaceIT {
         assertThat(placeExpected.getSquare()).isEqualTo(placeActual.getSquare());
         assertThat(placeExpected.getFloor()).isEqualTo(placeActual.getFloor());
         assertThat(placeExpected.getType()).isEqualTo(placeActual.getType());
-
-    }
-
-    @Test
-    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/meter_init.sql"})
-    public void testGetAll() {
-
-        List<Place> placeList = placeDAO.getAllPlaces();
-
-        assertThat(placeList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
-        assertThat(placeList).extracting(x -> x.getNumber()).contains(42, 43, 44, 10, 37, 40, 26);
-        assertThat(placeList).extracting(x -> x.getName()).contains("Buildings-1", "Buildings-2", "Buildings-3", "H&M", "Post office", "Cafe", "Union cards");
-        assertThat(placeList).extracting(x -> x.getSquare()).contains(45.8, 35.7, 50.1, 39.6, 6.0, 62.0, 2.0);
-        assertThat(placeList).extracting(x -> x.getFloor()).contains(2, 2, 2, 3, 1, 0, 0);
-        assertThat(placeList).extracting(x -> x.getType()).contains("office", "office", "office", "shop", "island", "other", "atm");
-
     }
 }

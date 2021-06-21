@@ -15,7 +15,7 @@ public class StartService {
     @Autowired
     private PlaceService placeService;
 
-    public List<Summary> getAllSummries() {
+    public List<Summary> getAllSummaries() {
 
         Operations operations = new Operations();
         Place place;

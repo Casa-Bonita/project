@@ -45,7 +45,8 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/saveAccount", method = RequestMethod.POST)
-    public String saveAccount(@RequestParam("accountContract.number") String accountContractNumber, @ModelAttribute("account") Account account){
+    public String saveAccount(@RequestParam("accountContract.number") String accountContractNumber,
+                              @ModelAttribute("account") Account account){
 
         accountService.saveAccount(account, accountContractNumber);
 
@@ -54,7 +55,7 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/updateAccount", method = RequestMethod.GET)
-    public String updateAccount(@RequestParam("accId") int id, Model model){
+    public String updateAccount(@RequestParam("accId") Integer id, Model model){
 
         Account account = accountService.getAccount(id);
         model.addAttribute("account", account);
@@ -63,14 +64,14 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/deleteAccount", method = RequestMethod.GET)
-    public String deleteAccount(@RequestParam("accId") int id){
+    public String deleteAccount(@RequestParam("accId") Integer id){
 
-        accountService.deleteAccount(id);
+        accountService.deleteAccountById(id);
 
         return "redirect:/accounts";
     }
 
-    // Отображение перечня отсортированных по возрастанию Contract-ов
+    // Отображение перечня отсортированных по возрастанию "свободных" Contract-ов (без Account-ов)
     @ModelAttribute("contractMap")
     public TreeMap<String, String> getSortedContractMap() {
 
@@ -79,8 +80,10 @@ public class AccountController {
         List<Contract> contractList = contractService.getAllContracts();
 
         for (int i = 0; i < contractList.size(); i++) {
-            String contractNumber = contractList.get(i).getNumber();
-            contractMap.put(contractNumber, contractNumber);
+            if(contractList.get(i).getAccount() == null){
+                String contractNumber = contractList.get(i).getNumber();
+                contractMap.put(contractNumber, contractNumber);
+            }
         }
         // sort HahsMap by TreeMap
         TreeMap<String, String> sortedContractMap = new TreeMap<>();

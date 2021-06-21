@@ -10,7 +10,10 @@ public interface PaymentDAO {
 
     void savePayment(Payment payment);
 
-    Payment getPayment(int id);
+    Payment getPayment(Integer id);
 
-    void deletePayment(int id);
+    void deletePaymentById(Integer id);
+
+    void deletePaymentByAccountId(Integer id);
+
 }

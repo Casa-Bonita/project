@@ -45,7 +45,7 @@ public class ReadingController {
     }
 
     @RequestMapping(value = "/saveReading", method = RequestMethod.POST)
-    public String saveReading(@RequestParam("meter.number") int meterNumber, @ModelAttribute("reading") Reading reading){
+    public String saveReading(@RequestParam("meter.number") String meterNumber, @ModelAttribute("reading") Reading reading){
 
         readingService.saveReading(reading, meterNumber);
 
@@ -53,7 +53,7 @@ public class ReadingController {
     }
 
     @RequestMapping(value = "/updateReading", method = RequestMethod.GET)
-    public String updateReading(@RequestParam("readId") int id, Model model){
+    public String updateReading(@RequestParam("readId") Integer id, Model model){
 
         Reading reading = readingService.getReading(id);
         model.addAttribute("reading", reading);
@@ -62,27 +62,27 @@ public class ReadingController {
     }
 
     @RequestMapping(value = "/deleteReading", method = RequestMethod.GET)
-    public String deleteReading(@RequestParam("readId") int id){
+    public String deleteReading(@RequestParam("readId") Integer id){
 
-        readingService.deleteReading(id);
+        readingService.deleteReadingById(id);
 
         return "redirect:/readings";
     }
 
     // Отображение перечня отсортированных по возрастанию Meter-ов
     @ModelAttribute("meterMap")
-    public TreeMap<Integer, Integer> getSortedMeterMap() {
+    public TreeMap<String, String> getSortedMeterMap() {
 
-        Map<Integer, Integer> meterMap = new HashMap<>();
+        Map<String, String> meterMap = new HashMap<>();
 
         List<Meter> meterList = meterService.getAllMeters();
 
         for (int i = 0; i < meterList.size(); i++) {
-            Integer meterNumber = Integer.valueOf(meterList.get(i).getNumber());
+            String meterNumber = meterList.get(i).getNumber();
             meterMap.put(meterNumber, meterNumber);
         }
         // sort HahsMap by TreeMap
-        TreeMap<Integer, Integer> sortedMeterMap = new TreeMap<>();
+        TreeMap<String, String> sortedMeterMap = new TreeMap<>();
         sortedMeterMap.putAll(meterMap);
 
         return sortedMeterMap;

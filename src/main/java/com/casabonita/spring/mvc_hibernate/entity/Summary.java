@@ -5,7 +5,7 @@ public class Summary {
     private String placeName;
     private String renterName;
     private String contractNumber;
-    private int meterNumber;
+    private String meterNumber;
     private int lastMeterData;
     private String accountNumber;
     private int totalPayments;
@@ -13,7 +13,7 @@ public class Summary {
     public Summary() {
     }
 
-    public Summary(String placeName, String renterName, String contractNumber, int meterNumber, int lastMeterData, String accountNumber, int totalPayments) {
+    public Summary(String placeName, String renterName, String contractNumber, String meterNumber, int lastMeterData, String accountNumber, int totalPayments) {
         this.placeName = placeName;
         this.renterName = renterName;
         this.contractNumber = contractNumber;
@@ -47,11 +47,11 @@ public class Summary {
         this.contractNumber = contractNumber;
     }
 
-    public int getMeterNumber() {
+    public String getMeterNumber() {
         return meterNumber;
     }
 
-    public void setMeterNumber(int meterNumber) {
+    public void setMeterNumber(String meterNumber) {
         this.meterNumber = meterNumber;
     }
 

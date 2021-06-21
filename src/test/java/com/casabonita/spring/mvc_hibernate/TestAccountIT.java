@@ -41,7 +41,18 @@ public class TestAccountIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
-    public void testSave(){
+    public void testGetAllAccounts(){
+
+        List<Account> accountList = accountDAO.getAllAccounts();
+
+        assertThat(accountList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
+        assertThat(accountList).extracting(x -> x.getNumber()).contains("62.01.001", "62.01.002", "62.01.003", "62.01.004", "62.01.005", "62.01.006", "62.01.007");
+        assertThat(accountList).extracting(x -> x.getAccountContract().getId()).contains(1, 2, 3, 4, 5, 6, 7);
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
+    public void testSaveAccount(){
 
         int testContractId = 1;
         Contract contract = contractDAO.getContract(testContractId);
@@ -69,12 +80,13 @@ public class TestAccountIT {
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
-    public void testGetById(){
+    public void testGetAccount(){
 
         int id = 1;
         String accountNumber = "62.01.001";
         int contractId = 1;
 
+        // проверка через getAccount
         Account account = accountDAO.getAccount(id);
 
         assertThat(id).isEqualTo(account.getId());
@@ -90,15 +102,66 @@ public class TestAccountIT {
                 .column("id").hasValues(id)
                 .column("account_number").hasValues(accountNumber)
                 .column("contract_id").hasValues(contractId);
-
     }
 
     @Test
     @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
-    public void testDeleteById(){
+    public void testGetAccountByContractId(){
 
         int id = 1;
-        accountDAO.deleteAccount(id);
+        String accountNumber = "62.01.001";
+        int contractId = 1;
+
+        // проверка через getAccount
+        Account account = accountDAO.getAccountByContractId(contractId);
+
+        assertThat(id).isEqualTo(account.getId());
+        assertThat(accountNumber).isEqualTo(account.getNumber());
+        assertThat(contractId).isEqualTo(account.getAccountContract().getId());
+
+        // проверка без getAccount через request из БД
+        Request request = new Request(dataSource,
+                "SELECT * FROM account WHERE contract_id = 1");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("account_number").hasValues(accountNumber)
+                .column("contract_id").hasValues(contractId);
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
+    public void testGetAccountByNumber(){
+
+        int id = 1;
+        String accountNumber = "62.01.001";
+        int contractId = 1;
+
+        // проверка через getAccount
+        Account account = accountDAO.getAccountByNumber(accountNumber);
+
+        assertThat(id).isEqualTo(account.getId());
+        assertThat(accountNumber).isEqualTo(account.getNumber());
+        assertThat(contractId).isEqualTo(account.getAccountContract().getId());
+
+        // проверка без getAccount через request из БД
+        Request request = new Request(dataSource,
+                "SELECT * FROM account WHERE account_number = '62.01.001'");
+
+        Assertions.assertThat(request)
+                .hasNumberOfRows(1)
+                .column("id").hasValues(id)
+                .column("account_number").hasValues(accountNumber)
+                .column("contract_id").hasValues(contractId);
+    }
+
+    @Test
+    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql"})
+    public void testDeleteAccountById(){
+
+        int id = 1;
+        accountDAO.deleteAccountById(id);
 
         // проверка через request удаления строки
         Request requestOne = new Request(dataSource,
@@ -153,17 +216,5 @@ public class TestAccountIT {
         assertThat(accountExpected.getId()).isEqualTo(accountActual.getId());
         assertThat(accountNumber).isEqualTo(accountActual.getNumber());
         assertThat(accountExpected.getAccountContract().getId()).isEqualTo(accountActual.getAccountContract().getId());
-
-    }
-
-    @Test
-    @Sql({"/scripts/renter_init.sql", "/scripts/place_init.sql", "/scripts/contract_init.sql", "/scripts/account_init.sql", "/scripts/payment_init.sql"})
-    public void testGetAll(){
-
-        List<Account> accountList = accountDAO.getAllAccounts();
-
-        assertThat(accountList).extracting(x -> x.getId()).contains(1, 2, 3, 4, 5, 6, 7);
-        assertThat(accountList).extracting(x -> x.getNumber()).contains("62.01.001", "62.01.002", "62.01.003", "62.01.004", "62.01.005", "62.01.006", "62.01.007");
-        assertThat(accountList).extracting(x -> x.getAccountContract().getId()).contains(1, 2, 3, 4, 5, 6, 7);
     }
 }

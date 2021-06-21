@@ -34,7 +34,7 @@ public class ContractDAOImpl implements ContractDAO{
     }
 
     @Override
-    public Contract getContract(int id) {
+    public Contract getContract(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Contract contract = session.get(Contract.class, id);
@@ -43,51 +43,54 @@ public class ContractDAOImpl implements ContractDAO{
     }
 
     @Override
-    public void deleteContract(int id) {
+    public Contract getContractByPlaceId(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
 
-        Query<Payment> queryPayment = session.createQuery("delete from Payment where account.id=:param1");
-        queryPayment.setParameter("param1", id);
-        queryPayment.executeUpdate();
+        Query query = session.createQuery("from Contract where contractPlace.id=:param");
+        query.setParameter("param", id);
 
-        Query<Account> queryAccount = session.createQuery("delete from Account where accountContract.id=:param2");
-        queryAccount.setParameter("param2", id);
-        queryAccount.executeUpdate();
-
-        Query<Contract> query = session.createQuery("delete from Contract where id=:param3");
-        query.setParameter("param3", id);
-        query.executeUpdate();
+        List results = query.getResultList();
+        if (results.isEmpty()) {
+            return null; // no-results case
+        } else {
+            return (Contract) results.get(0);
+        }
     }
 
-//    @Override
-//    public Contract getContractByNumber(String number) {
-//
-//        Session session = sessionFactory.getCurrentSession();
-//
-//        List<Contract> allContracts = session.createQuery("from Contract", Contract.class).getResultList();
-//
-//        Contract contract = null;
-//
-//        for (int i = 0; i < allContracts.size(); i++) {
-//            if(number.equals(allContracts.get(i).getNumber())){
-//                contract = allContracts.get(i);
-//            }
-//        }
-//
-//        return contract;
-//    }
+    @Override
+    public List<Contract> getContractByRenterId(Integer id) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        Query query = session.createQuery("from Contract where renter.id=:param");
+        query.setParameter("param", id);
+
+        List<Contract> contractList = query.getResultList();
+
+        return contractList;
+    }
 
     @Override
     public Contract getContractByNumber(String number) {
 
         Session session = sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery(" FROM Contract WHERE number=:parameter");
-        query.setParameter("parameter", number);
+        Query query = session.createQuery("from Contract where number=:param");
+        query.setParameter("param", number);
 
         Contract contract = (Contract) query.getSingleResult();
 
         return contract;
+    }
+
+    @Override
+    public void deleteContractById(Integer id) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        Query<Contract> query = session.createQuery("delete from Contract where id=:param");
+        query.setParameter("param", id);
+        query.executeUpdate();
     }
 }

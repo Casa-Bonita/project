@@ -35,7 +35,7 @@ public class ReadingDAOImpl implements ReadingDAO{
     }
 
     @Override
-    public Reading getReading(int id) {
+    public Reading getReading(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Reading reading = session.get(Reading.class, id);
@@ -44,12 +44,22 @@ public class ReadingDAOImpl implements ReadingDAO{
     }
 
     @Override
-    public void deleteReading(int id) {
+    public void deleteReadingById(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Query<Reading> query = session.createQuery("delete from Reading where id=:param");
         query.setParameter("param", id);
         query.executeUpdate();
+
+    }
+
+    @Override
+    public void deleteReadingByMeterId(Integer id) {
+
+        Session session = sessionFactory.getCurrentSession();
+        Query<Reading> queryReading = session.createQuery("delete from Reading where meter.id=:param");
+        queryReading.setParameter("param", id);
+        queryReading.executeUpdate();
 
     }
 }

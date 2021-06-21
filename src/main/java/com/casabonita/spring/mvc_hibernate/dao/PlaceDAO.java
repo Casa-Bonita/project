@@ -10,9 +10,9 @@ public interface PlaceDAO {
 
     void savePlace (Place place);
 
-    Place getPlace(int id);
-
-    void deletePlace(int id);
+    Place getPlaceById(Integer id);
 
     Place getPlaceByNumber(int number);
+
+    void deletePlaceById(Integer id);
 }

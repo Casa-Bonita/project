@@ -21,7 +21,7 @@ public class PlaceDAOImpl implements PlaceDAO{
     public List<Place> getAllPlaces() {
 
         Session session = sessionFactory.getCurrentSession();
-        List<Place> allPlaces = session.createQuery("from Place as p order by p.number asc", Place.class).getResultList();
+        List<Place> allPlaces = session.createQuery("from Place as p order by p.name asc", Place.class).getResultList();
 
         return allPlaces;
     }
@@ -35,7 +35,7 @@ public class PlaceDAOImpl implements PlaceDAO{
     }
 
     @Override
-    public Place getPlace(int id) {
+    public Place getPlaceById(Integer id) {
 
         Session session = sessionFactory.getCurrentSession();
         Place place = session.get(Place.class, id);
@@ -44,60 +44,25 @@ public class PlaceDAOImpl implements PlaceDAO{
     }
 
     @Override
-    public void deletePlace(int id) {
-
-        Session session = sessionFactory.getCurrentSession();
-
-        Query<Reading> queryReading = session.createQuery("delete from Reading where meter.id=:param1");
-        queryReading.setParameter("param1", id);
-        queryReading.executeUpdate();
-
-        Query<Meter> queryMeter = session.createQuery("delete from Meter where meterPlace.id=:param2");
-        queryMeter.setParameter("param2", id);
-        queryMeter.executeUpdate();
-
-        Query<Contract> queryContract = session.createQuery("delete from Contract where contractPlace.id=:param3");
-        queryContract.setParameter("param3", id);
-        queryContract.executeUpdate();
-
-        Query<Place> queryPlace = session.createQuery("delete from Place where id=:param4");
-        queryPlace.setParameter("param4", id);
-        queryPlace.executeUpdate();
-    }
-
-//    @Override
-//    public Place getPlaceByNumber(int number) {
-//
-//        Session session = sessionFactory.getCurrentSession();
-//
-//        List<Place> allPlaces = session.createQuery("from Place", Place.class).getResultList();
-//
-//        Place place = null;
-//
-//        for (int i = 0; i < allPlaces.size(); i++) {
-//            if(number == allPlaces.get(i).getNumber()){
-//                place = allPlaces.get(i);
-//            }
-//        }
-//
-//        return place;
-//    }
-
-    @Override
     public Place getPlaceByNumber(int number) {
 
         Session session = sessionFactory.getCurrentSession();
 
-        Query query = session.createQuery(" FROM Place WHERE number=:parameter");
-        query.setParameter("parameter", number);
+        Query query = session.createQuery(" from Place where number=:param");
+        query.setParameter("param", number);
 
-        Place place = null;
-
-        List <Place> listPlace = query.list();
-        if (listPlace != null && listPlace.size() == 1) {
-            place = (Place) listPlace.get(0);
-        }
+        Place place = (Place) query.getSingleResult();
 
         return place;
+    }
+
+    @Override
+    public void deletePlaceById(Integer id) {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        Query<Place> queryPlace = session.createQuery("delete from Place where id=:param");
+        queryPlace.setParameter("param", id);
+        queryPlace.executeUpdate();
     }
 }

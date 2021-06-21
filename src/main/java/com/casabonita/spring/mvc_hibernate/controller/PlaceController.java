@@ -1,8 +1,6 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
-import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import com.casabonita.spring.mvc_hibernate.entity.Place;
-import com.casabonita.spring.mvc_hibernate.service.ContractService;
 import com.casabonita.spring.mvc_hibernate.service.PlaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Controller
 public class PlaceController {
@@ -50,18 +45,18 @@ public class PlaceController {
     }
 
     @RequestMapping(value = "/updatePlace", method = RequestMethod.GET)
-    public String updatePlace(@RequestParam("plcId") int id, Model model){
+    public String updatePlace(@RequestParam("plcId") Integer id, Model model){
 
-        Place place = placeService.getPlace(id);
+        Place place = placeService.getPlaceById(id);
         model.addAttribute("place", place);
 
         return "place/place_info";
     }
 
     @RequestMapping(value = "/deletePlace", method = RequestMethod.GET)
-    public String deletePlace(@RequestParam("plcId") int id){
+    public String deletePlace(@RequestParam("plcId") Integer id){
 
-        placeService.deletePlace(id);
+        placeService.deletePlaceById(id);
 
         return "redirect:/places";
     }

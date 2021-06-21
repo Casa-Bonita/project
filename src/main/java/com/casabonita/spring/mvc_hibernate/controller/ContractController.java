@@ -1,6 +1,8 @@
 package com.casabonita.spring.mvc_hibernate.controller;
 
-import com.casabonita.spring.mvc_hibernate.entity.*;
+import com.casabonita.spring.mvc_hibernate.entity.Contract;
+import com.casabonita.spring.mvc_hibernate.entity.Place;
+import com.casabonita.spring.mvc_hibernate.entity.Renter;
 import com.casabonita.spring.mvc_hibernate.service.ContractService;
 import com.casabonita.spring.mvc_hibernate.service.PlaceService;
 import com.casabonita.spring.mvc_hibernate.service.RenterService;
@@ -58,7 +60,7 @@ public class ContractController {
     }
 
     @RequestMapping(value = "/updateContract", method = RequestMethod.GET)
-    public String updateContract(@RequestParam("contrId") int id, Model model){
+    public String updateContract(@RequestParam("contrId") Integer id, Model model){
 
         Contract contract = contractService.getContract(id);
         model.addAttribute("contract", contract);
@@ -67,9 +69,9 @@ public class ContractController {
     }
 
     @RequestMapping(value = "/deleteContract", method = RequestMethod.GET)
-    public String deleteContract(@RequestParam("contrId") int id){
+    public String deleteContract(@RequestParam("contrId") Integer id){
 
-        contractService.deleteContract(id);
+        contractService.deleteContractById(id);
 
         return "redirect:/contracts";
     }
@@ -93,7 +95,7 @@ public class ContractController {
         return sortedRenterMap;
     }
 
-    // Отображение перечня отсортированных по возрастанию Place-ов
+    // Отображение перечня отсортированных по возрастанию Place-ов без Contract-ов
     @ModelAttribute("placeMap")
     public TreeMap<Integer, Integer> getSortedPlaceMap() {
 
@@ -102,8 +104,10 @@ public class ContractController {
         List<Place> placeList = placeService.getAllPlaces();
 
         for (int i = 0; i < placeList.size(); i++) {
-            Integer placeNumber = Integer.valueOf(placeList.get(i).getNumber());
-            placeMap.put(placeNumber, placeNumber);
+            if(placeList.get(i).getContract() == null){
+                Integer placeNumber = Integer.valueOf(placeList.get(i).getNumber());
+                placeMap.put(placeNumber, placeNumber);
+            }
         }
         // sort HahsMap by TreeMap
         TreeMap<Integer, Integer> sortedPlaceMap = new TreeMap<>();

@@ -1,5 +1,5 @@
 CREATE TABLE place (
-                       id integer PRIMARY KEY,
+                       id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                        number integer,
                        name varchar(25),
                        square NUMERIC(4,1),
@@ -9,14 +9,14 @@ CREATE TABLE place (
 
 
 CREATE TABLE meter (
-                       id integer PRIMARY KEY,
-                       meter_number integer,
+                       id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                       meter_number varchar(25),
                        place_id integer REFERENCES place (id)
 );
 
 
 CREATE TABLE meter_data (
-                            id integer PRIMARY KEY,
+                            id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                             meter_id integer REFERENCES meter(id),
                             data integer,
                             data_date date
@@ -24,7 +24,7 @@ CREATE TABLE meter_data (
 
 
 CREATE TABLE renter (
-                        id integer PRIMARY KEY,
+                        id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                         name varchar(50),
                         ogrn varchar(25),
                         inn varchar(25),
@@ -37,7 +37,7 @@ CREATE TABLE renter (
 
 
 CREATE TABLE contract (
-                          id integer PRIMARY KEY,
+                          id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                           number varchar(25),
                           contract_date date,
                           fare integer,
@@ -50,14 +50,14 @@ CREATE TABLE contract (
 
 
 CREATE TABLE account (
-                         id integer PRIMARY KEY,
+                         id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                          account_number varchar(25),
                          contract_id integer REFERENCES contract (id)
 );
 
 
 CREATE TABLE account_data (
-                              id integer PRIMARY KEY,
+                              id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                               account_id integer REFERENCES account (id),
                               payment integer,
                               payment_date date,

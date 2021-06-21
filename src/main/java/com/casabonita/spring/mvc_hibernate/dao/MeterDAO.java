@@ -10,9 +10,11 @@ public interface MeterDAO {
 
     void saveMeter(Meter meter);
 
-    Meter getMeter(int id);
+    Meter getMeter(Integer id);
 
-    void deleteMeter(int id);
+    Meter getMeterByPlaceId(Integer id);
 
-    Meter getMeterByNumber(int number);
+    Meter getMeterByNumber(String number);
+
+    void deleteMeterById(Integer id);
 }

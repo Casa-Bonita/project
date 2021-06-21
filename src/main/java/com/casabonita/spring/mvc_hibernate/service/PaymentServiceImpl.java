@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-;
-
 @Service
 public class PaymentServiceImpl implements PaymentService{
 
@@ -33,26 +31,45 @@ public class PaymentServiceImpl implements PaymentService{
     @Transactional
     public void savePayment(Payment payment, String accountNumber) {
 
+        Payment paymentToSave;
+
+        if(payment.getId() == null){
+            paymentToSave = new Payment();
+        } else{
+            paymentToSave = paymentDAO.getPayment(payment.getId());
+        }
+
         Account account = accountDAO.getAccountByNumber(accountNumber);
+        paymentToSave.setAccount(account);
 
-        payment.setAccount(account);
+        paymentToSave.setAmount(payment.getAmount());
+        paymentToSave.setDate(payment.getDate());
+        paymentToSave.setPurpose(payment.getPurpose());
 
-        paymentDAO.savePayment(payment);
+        paymentDAO.savePayment(paymentToSave);
 
     }
 
     @Override
     @Transactional
-    public Payment getPayment(int id) {
+    public Payment getPayment(Integer id) {
 
         return paymentDAO.getPayment(id);
     }
 
     @Override
     @Transactional
-    public void deletePayment(int id) {
+    public void deletePaymentById(Integer id) {
 
-        paymentDAO.deletePayment(id);
+        paymentDAO.deletePaymentById(id);
+
+    }
+
+    @Override
+    @Transactional
+    public void deletePaymentByAccountId(Integer id) {
+
+        paymentDAO.deletePaymentByAccountId(id);
 
     }
 }

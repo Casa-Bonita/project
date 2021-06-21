@@ -1,8 +1,7 @@
 package com.casabonita.spring.mvc_hibernate.service;
 
-import com.casabonita.spring.mvc_hibernate.dao.ContractDAO;
-import com.casabonita.spring.mvc_hibernate.dao.PlaceDAO;
-import com.casabonita.spring.mvc_hibernate.dao.RenterDAO;
+import com.casabonita.spring.mvc_hibernate.dao.*;
+import com.casabonita.spring.mvc_hibernate.entity.Account;
 import com.casabonita.spring.mvc_hibernate.entity.Contract;
 import com.casabonita.spring.mvc_hibernate.entity.Place;
 import com.casabonita.spring.mvc_hibernate.entity.Renter;
@@ -14,12 +13,16 @@ import java.util.List;
 @Service
 public class ContractServiceImpl implements ContractService{
 
+    private final AccountDAO accountDAO;
     private final ContractDAO contractDAO;
+    private final PaymentDAO paymentDAO;
     private final PlaceDAO placeDAO;
     private final RenterDAO renterDAO;
 
-    public ContractServiceImpl(ContractDAO contractDAO, PlaceDAO placeDAO, RenterDAO renterDAO) {
+    public ContractServiceImpl(AccountDAO accountDAO, ContractDAO contractDAO, PaymentDAO paymentDAO, PlaceDAO placeDAO, RenterDAO renterDAO) {
+        this.accountDAO = accountDAO;
         this.contractDAO = contractDAO;
+        this.paymentDAO = paymentDAO;
         this.placeDAO = placeDAO;
         this.renterDAO = renterDAO;
     }
@@ -35,30 +38,50 @@ public class ContractServiceImpl implements ContractService{
     @Transactional
     public void saveContract(Contract contract, int contractPlaceNumber, String renterName) {
 
-        Place place = placeDAO.getPlaceByNumber(contractPlaceNumber);
+        Contract contractToSave;
 
-        contract.setContractPlace(place);
+        if(contract.getId() == null){
+            contractToSave = new Contract();
+        } else{
+            contractToSave = contractDAO.getContract(contract.getId());
+        }
+
+        contractToSave.setNumber(contract.getNumber());
+        contractToSave.setDate(contract.getDate());
+        contractToSave.setFare(contract.getFare());
+        contractToSave.setStartDate(contract.getStartDate());
+        contractToSave.setFinishDate(contract.getFinishDate());
+        contractToSave.setPaymentDay(contract.getPaymentDay());
+
+        Place place = placeDAO.getPlaceByNumber(contractPlaceNumber);
+        contractToSave.setContractPlace(place);
 
         Renter renter = renterDAO.getRenterByName(renterName);
+        contractToSave.setRenter(renter);
 
-        contract.setRenter(renter);
-
-        contractDAO.saveContract(contract);
+        contractDAO.saveContract(contractToSave);
 
     }
 
     @Override
     @Transactional
-    public Contract getContract(int id) {
+    public Contract getContract(Integer id) {
 
         return contractDAO.getContract(id);
     }
 
     @Override
     @Transactional
-    public void deleteContract(int id) {
+    public Contract getContractByPlaceId(Integer id) {
 
-        contractDAO.deleteContract(id);
+        return contractDAO.getContractByPlaceId(id);
+    }
+
+    @Override
+    @Transactional
+    public List<Contract> getContractByRenterId(Integer id) {
+
+        return contractDAO.getContractByRenterId(id);
     }
 
     @Override
@@ -66,5 +89,21 @@ public class ContractServiceImpl implements ContractService{
     public Contract getContractByNumber(String number) {
 
         return contractDAO.getContractByNumber(number);
+    }
+
+    @Override
+    @Transactional
+    public void deleteContractById(Integer id) {
+
+        Account account = accountDAO.getAccountByContractId(id);
+        Integer accountId;
+
+        if(account != null){
+            accountId = account.getId();
+            paymentDAO.deletePaymentByAccountId(accountId);
+            accountDAO.deleteAccountById(accountId);
+        }
+
+        contractDAO.deleteContractById(id);
     }
 }

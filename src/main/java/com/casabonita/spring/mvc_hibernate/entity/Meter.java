@@ -13,23 +13,23 @@ public class Meter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    private int id;
+    private Integer id;
 
     @Column(name="meter_number")
-    private int number;
+    private String number;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name="place_id")
     private Place meterPlace;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "meter")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "meter", orphanRemoval = true)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Reading> readingsList;
 
     public Meter() {
     }
 
-    public Meter(int number, Place meterPlace) {
+    public Meter(String number, Place meterPlace) {
         this.number = number;
         this.meterPlace = meterPlace;
     }
@@ -42,19 +42,19 @@ public class Meter {
         reading.setMeter(this);
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 

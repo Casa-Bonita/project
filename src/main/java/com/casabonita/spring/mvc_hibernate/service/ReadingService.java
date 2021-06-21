@@ -8,9 +8,11 @@ public interface ReadingService {
 
     List<Reading> getAllReadings();
 
-    void saveReading(Reading reading, int meterNumber);
+    void saveReading(Reading reading, String meterNumber);
 
-    Reading getReading(int id);
+    Reading getReading(Integer id);
 
-    void deleteReading(int id);
+    void deleteReadingById(Integer id);
+
+    void deleteReadingByMeterId(Integer id);
 }

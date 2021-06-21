@@ -53,7 +53,7 @@ public class PaymentController {
     }
 
     @RequestMapping(value = "/updatePayment", method = RequestMethod.GET)
-    public String updatePayment(@RequestParam("paymId") int id, Model model){
+    public String updatePayment(@RequestParam("paymId") Integer id, Model model){
 
         Payment payment = paymentService.getPayment(id);
         model.addAttribute("payment", payment);
@@ -62,9 +62,9 @@ public class PaymentController {
     }
 
     @RequestMapping(value = "/deletePayment", method = RequestMethod.GET)
-    public String deletePayment(@RequestParam("paymId") int id){
+    public String deletePayment(@RequestParam("paymId") Integer id){
 
-        paymentService.deletePayment(id);
+        paymentService.deletePaymentById(id);
 
         return "redirect:/payments";
     }

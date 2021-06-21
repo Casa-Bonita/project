@@ -14,20 +14,15 @@ public class Renter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
-    private int id;
+    private Integer id;
 
     @Column(name="name")
-//    @Size(min=3, max=50, message="Renter name must be at least 3 and no more than 50 characters long")
-//    @NotBlank(message="Renter name is required field")
     private String name;
 
     @Column(name="ogrn")
-//    @Size(min=13, max=13, message="Renter OGRN must be 13 characters long")
     private String ogrn;
 
     @Column(name="inn")
-//    @Pattern(regexp="^[A-Za-z0-9]{3}(\\d?){2}[A-Za-z0-9]{3}$", message="Please use pattern XXXXPPXXX, where:" +
-//            " X - any word character or number, and PP - a number in the range 0-99.")
     private String inn;
 
     @Column(name="registr_date")
@@ -44,7 +39,6 @@ public class Renter {
     private String contactName;
 
     @Column(name="phone")
-//    @Pattern(regexp="^(\\+7\\()\\d{3}\\)\\d{3}(-\\d{2}){2}$", message="Please use pattern +7(XXX)XXX-XX-XX")
     private String phoneNumber;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "renter")
@@ -73,11 +67,11 @@ public class Renter {
         contract.setRenter(this);
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

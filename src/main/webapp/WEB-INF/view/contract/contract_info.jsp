@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -43,7 +44,7 @@
             </tr>
 
             <tr>
-                <td><form:label path="contractPlace.number">Place number under contract</form:label></td>
+                <td><form:label path="contractPlace.number">Place number WITHOUT the contract</form:label></td>
                 <td><form:select path="contractPlace.number" items="${placeMap}"/></td>
             </tr>
 
@@ -56,10 +57,35 @@
 
         <br><br>
 
-        <input type="submit" value="OK">
+        <c:if test="${placeMap.size() eq 0}">
 
-        <input type="button" value="Cancel"
-               onClick="window.location.href='/contracts'"/>
+            <p> You can't add a new Contract because there are no free Places </p>
+            <br><br>
+            <input type="button" value="Cancel"
+                   onClick="window.location.href='/contracts'"/>
+        </c:if>
+
+        <c:if test="${placeMap.size() ne 0}">
+            <input type="submit" value="OK">
+
+            <input type="button" value="Cancel"
+                   onClick="window.location.href='/contracts'"/>
+        </c:if>
+
+        <c:if test="${renterMap.size() eq 0}">
+
+            <p> You can't add a new Contract because there are no Renters </p>
+            <br><br>
+            <input type="button" value="Cancel"
+                   onClick="window.location.href='/contracts'"/>
+        </c:if>
+
+        <c:if test="${renterMap.size() ne 0}">
+            <input type="submit" value="OK">
+
+            <input type="button" value="Cancel"
+                   onClick="window.location.href='/contracts'"/>
+        </c:if>
 
     </form:form>
 

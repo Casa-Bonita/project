@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+    	http://www.springframework.org/schema/beans/spring-beans.xsd
+    	http://www.springframework.org/schema/context
+    	http://www.springframework.org/schema/context/spring-context.xsd
+    	http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <mvc:annotation-driven/>
+
+    <context:component-scan base-package="com.casabonita.spring.mvc_hibernate" />
+
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <beans profile="test">
+        <bean id="dataSourceH2" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+              destroy-method="close">
+            <property name="driverClass" value="org.h2.Driver" />
+            <property name="jdbcUrl" value="jdbc:h2:mem:testdb" />
+            <property name="user" value="sa" />
+            <property name="password" value="" />
+        </bean>
+
+        <bean id="sessionFactoryH2"
+              class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+            <property name="dataSource" ref="dataSourceH2" />
+            <property name="packagesToScan" value="com.casabonita.spring.mvc_hibernate.entity" />
+            <property name="hibernateProperties">
+                <props>
+                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgresPlusDialect</prop>
+                    <prop key="hibernate.show_sql">true</prop>
+                    <prop key="hibernate.hbm2ddl.auto">create</prop>
+                </props>
+            </property>
+        </bean>
+
+        <bean id="transactionManagerH2"
+              class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+            <property name="sessionFactory" ref="sessionFactoryH2"/>
+        </bean>
+
+        <bean id="jdbcTemplate"
+              class="org.springframework.jdbc.core.JdbcTemplate">
+            <property name="dataSource" ref="dataSourceH2"/>
+        </bean>
+
+        <tx:annotation-driven transaction-manager="transactionManagerH2" />
+    </beans>
+
+    <beans profile="!test">
+        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+              destroy-method="close">
+            <property name="driverClass" value="org.postgresql.Driver" />
+            <property name="jdbcUrl" value="jdbc:postgresql://127.0.0.1:5432/my_db" />
+            <property name="user" value="postgres" />
+            <property name="password" value="Pol670240" />
+        </bean>
+
+        <bean id="sessionFactory"
+              class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+            <property name="dataSource" ref="dataSource" />
+            <property name="packagesToScan" value="com.casabonita.spring.mvc_hibernate.entity" />
+            <property name="hibernateProperties">
+                <props>
+                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgresPlusDialect</prop>
+                    <prop key="hibernate.show_sql">true</prop>
+                </props>
+            </property>
+        </bean>
+
+        <bean id="transactionManager"
+              class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+            <property name="sessionFactory" ref="sessionFactory"/>
+        </bean>
+
+        <tx:annotation-driven transaction-manager="transactionManager" />
+    </beans>
+
+</beans>
