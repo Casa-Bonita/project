@@ -31,7 +31,6 @@ public class RenterDAOImpl implements RenterDAO{
 
         Session session = sessionFactory.getCurrentSession();
         session.saveOrUpdate(renter);
-
     }
 
     @Override

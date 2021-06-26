@@ -57,35 +57,30 @@
 
         <br><br>
 
-        <c:if test="${placeMap.size() eq 0}">
+        <c:choose>
+            <c:when test="${placeMap.size() eq 0}">
 
-            <p> You can't add a new Contract because there are no free Places </p>
-            <br><br>
-            <input type="button" value="Cancel"
-                   onClick="window.location.href='/contracts'"/>
-        </c:if>
+                <p> You can't add a new Contract because there are no free Places </p>
+                <br><br>
+                <input type="button" value="Cancel"
+                       onClick="window.location.href='/contracts'"/>
+            </c:when>
 
-        <c:if test="${placeMap.size() ne 0}">
-            <input type="submit" value="OK">
+            <c:when test="${renterMap.size() eq 0}">
 
-            <input type="button" value="Cancel"
-                   onClick="window.location.href='/contracts'"/>
-        </c:if>
+                <p> You can't add a new Contract because there are no Renters </p>
+                <br><br>
+                <input type="button" value="Cancel"
+                       onClick="window.location.href='/contracts'"/>
+            </c:when>
 
-        <c:if test="${renterMap.size() eq 0}">
+            <c:otherwise>
+                <input type="submit" value="OK">
 
-            <p> You can't add a new Contract because there are no Renters </p>
-            <br><br>
-            <input type="button" value="Cancel"
-                   onClick="window.location.href='/contracts'"/>
-        </c:if>
-
-        <c:if test="${renterMap.size() ne 0}">
-            <input type="submit" value="OK">
-
-            <input type="button" value="Cancel"
-                   onClick="window.location.href='/contracts'"/>
-        </c:if>
+                <input type="button" value="Cancel"
+                       onClick="window.location.href='/contracts'"/>
+            </c:otherwise>
+        </c:choose>
 
     </form:form>
 
