@@ -110,9 +110,9 @@ class ContractServiceImplTest {
     public void shouldDeleteContractById() {
 
         Account accountExpected = new Account();
-        int accountId = 1;
+        int contractId = 1;
 
-        Mockito.when(accountDAO.getAccountByContractId(accountId)).thenReturn(accountExpected);
+        Mockito.when(accountDAO.getAccountByContractId(contractId)).thenReturn(accountExpected);
 
         Mockito.doNothing().when(contractDAO).deleteContractById(1);
 
